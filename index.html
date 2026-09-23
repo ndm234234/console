@@ -237,6 +237,27 @@ html[data-theme="light"] .sq-focus.on:hover,html[data-theme="light"] .sq-focus.h
 .n-tags{flex:0 1 auto;display:inline-flex;flex-wrap:nowrap;align-items:center;justify-content:flex-end;gap:4px;min-width:0;overflow:hidden}
 .nm-inp{flex:1;min-width:0;height:22px;padding:0 6px;font-size:12px;background:var(--bg);border:1px solid var(--bl);border-radius:4px;color:var(--tx);outline:0;box-sizing:border-box}
 .n.renaming{cursor:default}
+/* Звезда избранного: место под неё держим всегда, чтобы строки не прыгали */
+.fav-b{flex:none;width:18px;height:18px;margin:0;padding:0;border:0;border-radius:4px;background:transparent;color:#5f7391;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;visibility:hidden;font-size:13px;line-height:1}
+.fav-b::before{content:"☆"}
+.fav-b.on::before{content:"★"}
+.n:hover .fav-b,.n:focus-within .fav-b,.fav-b.on{visibility:visible}
+.fav-b:hover{color:#ffc04d;background:#1b2942}
+.fav-b.on{color:#ffc04d}
+.fav-head{font-weight:600}
+.fav-head .fav-ic{color:#ffc04d;display:inline-flex;align-items:center;justify-content:center;width:16px;font-size:13px;line-height:1}
+.fav-row .ici{color:#8fa3bd}
+.fav-where{font-size:10px;color:var(--mu);white-space:nowrap}
+.fav-dead .nm{color:#7c8aa0;text-decoration:line-through}
+.fav-more{color:var(--mu);font-size:11px}
+.fav-more:hover{color:var(--bl)}
+.fav-btn{display:inline-flex;align-items:center;gap:6px}
+.fav-btn.on{color:#e8b64c;border-color:#5a4a20}
+.tctx-star{color:#ffc04d;font-size:13px}
+html[data-theme="light"] .fav-b{color:#8695aa}
+html[data-theme="light"] .fav-b:hover{color:#c98a12;background:#e8eef8}
+html[data-theme="light"] .fav-b.on,html[data-theme="light"] .fav-head .fav-ic,html[data-theme="light"] .tctx-star{color:#d99b12}
+html[data-theme="light"] .fav-btn.on{color:#a9740a;border-color:#e2c58a}
 .nm mark{background:#3a5a2a;color:#d8f5c8;border-radius:2px;padding:0 1px}
 .n-cnt{flex:0 0 22px;width:22px;min-width:22px;height:16px;display:inline-flex;align-items:center;justify-content:flex-end;font-size:11px;line-height:1;color:var(--mu);font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
 .n-tail{flex:0 0 18px;width:18px;min-width:18px;height:16px;display:inline-flex;align-items:center;justify-content:center}
@@ -927,7 +948,7 @@ const tblOpen=new Set();
 const propsIpsOpen=new Set();
 const TYPE_PREVIEW=6;
 const typeFilts=new Set(),searchFields=new Set(),treeTags=new Set(["ip"]);
-const open=new Set(["d1","d3","unalloc:d1","s1","a1"]);
+const open=new Set(["favs","d1","d3","unalloc:d1","s1","a1"]);
 const treeMatchCache=new Map(),searchMatchCache=new Map();
 const rolesRU=[{id:"adm",n:"Администратор",users:["root","admin"]},{id:"op",n:"Оператор",users:["ivan","olga","petr","anna","sergey"]},{id:"gd",n:"Охрана",users:Array.from({length:12},(_,i)=>"guard"+(i+1))}];
 const rolesEN=[{id:"adm",n:"Administrator",users:["root","admin"]},{id:"op",n:"Operator",users:["ivan","olga","petr","anna","sergey"]},{id:"gd",n:"Security",users:Array.from({length:12},(_,i)=>"guard"+(i+1))}];
@@ -1825,6 +1846,107 @@ function jumpScope(n){
   if(n.type==="domain"||n.type==="unalloc"||n.type==="server"||n.type==="folder")return n;
   return foldersOfDevice(n.id)[0]||srv(n.id)||null;
 }
+// ── Избранное ─────────────────────────────────────────────────────────────
+// Ярлык помнит не только объект, но и вид, из которого его добавили: один и тот
+// же объект живёт в дереве в нескольких местах (папка, архив, GPU), поэтому
+// возврат должен вести именно туда, откуда ушли.
+const FAV_OPEN="favs",FAV_STORE="cfg.favs.v1",FAV_HEAD=8;
+const FAV_OFF="☆",FAV_ON="★";
+let favShowAll=false;
+let favs=loadFavs();
+function loadFavs(){
+  try{
+    const list=JSON.parse(localStorage.getItem(FAV_STORE)||"[]");
+    return Array.isArray(list)?list.filter(f=>f&&typeof f.id==="string"):[];
+  }catch(e){return[]}
+}
+function saveFavs(){try{localStorage.setItem(FAV_STORE,JSON.stringify(favs))}catch(e){}}
+function favIndex(id){return favs.findIndex(f=>f.id===id)}
+function isFav(id){return favIndex(id)>=0}
+// Детекторы живут только внутри камеры — отдельным ярлыком они бессмысленны
+function favCanAdd(n){return!!n&&n.type!=="det"}
+function favRecord(id,ctx){
+  const n=find(id)?.n,home=homeOf(n)||{};
+  return{id,name:locName(n),ctx:ctx||"",slice:home.slice||slice,group:home.group||groupBy,tab:sel===id?tab:"gen",ts:Date.now()};
+}
+function addFav(id,ctx){
+  if(!favCanAdd(find(id)?.n)||isFav(id))return false;
+  favs.unshift(favRecord(id,ctx));open.add(FAV_OPEN);return true;
+}
+// Карточку перерисовываем, только если менялась звезда её объекта
+function favChanged(cardToo){saveFavs();renderTree();if(cardToo&&app==="hw")gear()}
+function toggleFav(id,ctx,e){
+  if(e){e.stopPropagation();e.preventDefault()}
+  const i=favIndex(id);
+  if(i>=0){favs.splice(i,1);toast("Убрано из избранного")}
+  else if(addFav(id,ctx))toast("Добавлено в избранное");
+  else return;
+  favChanged(id===sel);
+}
+// Клавиша F: одно выделение — переключить, несколько — добавить все
+function toggleFavSel(){
+  if(app!=="hw")return;
+  if(treeSel.size>1&&treeSel.has(sel)){favAddSelected();return}
+  if(find(sel))toggleFav(sel,selCtx);
+}
+function favAddSelected(){
+  closeTreeCtx();
+  const ids=[...treeSel].filter(id=>!isFav(id)&&favCanAdd(find(id)?.n));
+  if(!ids.length){toast("Уже в избранном");return}
+  ids.reverse().forEach(id=>addFav(id,""));
+  favChanged(ids.includes(sel));
+  toast(i18n("Добавлено в избранное")+`: ${ids.length}`);
+}
+function openFavId(id){const i=favIndex(id);if(i>=0)openFav(i)}
+function openFav(i){
+  const f=favs[i];if(!f)return;
+  if(!find(f.id)){toast("Объект удалён — ярлык больше никуда не ведёт");return}
+  // Папку возврата подсказываем заранее: объект может лежать сразу в нескольких
+  if(f.ctx.startsWith("f:"))selFolder=f.ctx.slice(2);
+  openNode(f.id,{slice:f.slice,group:f.group,tab:f.tab||"gen"});
+}
+// Строк в дереве тысячи, поэтому кнопка максимально лёгкая: звезда рисуется в CSS,
+// а клик ловится делегированием на #tree (см. bindTreeDbl)
+function favStarHtml(id,ctx){
+  const on=isFav(id);
+  return `<button type="button" class="fav-b${on?" on":""}" tabindex="-1" data-fid="${id}"${ctx?` data-fctx="${ctx}"`:""} title="${i18n(on?"Убрать из избранного":"В избранное")}"></button>`;
+}
+function inspectorFavBtn(n){
+  if(!favCanAdd(n))return"";
+  const on=isFav(n.id),lb=i18n(on?"Убрать из избранного":"В избранное");
+  return `<button type="button" class="btn s fav-btn${on?" on":""}" title="${lb} (F)" aria-pressed="${on}" onclick="toggleFav('${n.id}','${selCtx||""}',event)">${on?FAV_ON:FAV_OFF}<span>${i18n(on?"В избранном":"В избранное")}</span></button>`;
+}
+// Закреплённая группа в начале дерева: плоский список ярлыков. Он один и тот же
+// в любом срезе и не зависит от поиска и фильтров — это адреса, а не выборка.
+function favRowsHtml(){
+  if(!favs.length)return"";
+  const op=open.has(FAV_OPEN);
+  const more=Math.max(0,favs.length-FAV_HEAD);
+  const shown=op?(favShowAll||!more?favs:favs.slice(0,FAV_HEAD)):[];
+  let h=`<div class="n srv fav-head" title="${i18n("Избранное: быстрый возврат к отмеченным объектам")}" onclick="treeToggleId('${FAV_OPEN}')">
+    ${treeChevron(FAV_OPEN,"dom",true,op)}<span class="ici fav-ic" aria-hidden="true">${FAV_ON}</span><span class="nm">${i18n("Избранное")}</span>${treeCntHtml(favs.length)}</div>`;
+  h+=shown.map((f,i)=>favRowHtml(f,i)).join("");
+  if(op&&more&&!favShowAll)h+=`<div class="n fav-more" onclick="toggleFavAll(event)" style="padding-left:22px"><span class="tw"></span><span class="nm">${i18n("ещё")} ${more}</span></div>`;
+  return h;
+}
+function favRowHtml(f,i){
+  const n=find(f.id)?.n;
+  // Здесь звезда со своим обработчиком: клик по ней не должен открывать саму строку
+  const rm=`<button type="button" class="fav-b on" tabindex="-1" title="${i18n("Убрать из избранного")}" onclick="toggleFav('${f.id}','',event)"></button>`;
+  if(!n)return `<div class="n fav-row fav-dead" style="padding-left:22px" title="${i18n("Объект удалён — ярлык больше никуда не ведёт")}">
+    <span class="tw"></span><span class="ici">✕</span><span class="nm">${escHtml(f.name||f.id)}</span>${rm}<span class="n-meta"><span class="fav-where">${i18n("удалён")}</span></span></div>`;
+  return `<div class="n fav-row ${sel===f.id?"on":""}" style="padding-left:22px" title="${escHtml(jumpPathText(n))}" onclick="openFav(${i})">
+    <span class="tw"></span>${treeIconHtml(n)}<span class="nm">${escHtml(locName(n))}</span>${rm}<span class="n-meta"><span class="fav-where">${escHtml(sliceLabel(f.slice))}</span></span></div>`;
+}
+function toggleFavAll(e){if(e)e.stopPropagation();favShowAll=!favShowAll;renderTree()}
+// Избранное — такой же источник целей перехода, как разделы и настройки
+function favoriteTargets(){
+  return favs.map(f=>{
+    const n=find(f.id)?.n;
+    return n?jumpItem({key:"fav:"+f.id,node:n,title:locName(n),where:"★ "+i18n("Избранное"),icon:n.type,
+      keywords:targetKeywords("избранное закладка ярлык"),go:()=>openFavId(f.id)}):null;
+  }).filter(Boolean);
+}
 // Переход по ключу цели: объект дерева или любая другая цель индекса
 function jumpTo(key){
   const t=jumpByKey(key);
@@ -2061,6 +2183,7 @@ function nodeTargets(q){
   if(!q)return[];
   return jumpCandidates().filter(n=>hitFieldsIn(n,q,SEARCH_FIELD_IDS).length).map(nodeTarget);
 }
+registerJumpSource("favorites",favoriteTargets);
 registerJumpSource("sections",sectionTargets);
 registerJumpSource("views",viewTargets);
 registerJumpSource("options",optionTargets);
@@ -2132,18 +2255,20 @@ function jumpList(){
   jumpIdx=0;
   let head;
   if(!q){
-    // Пустой запрос: недавнее, дополненное разделами — переход всегда в один клик
+    // Пустой запрос: избранное и недавнее, дополненные разделами — всегда один клик
     const seen=new Set();
     jumpItems=[];
-    [...recent.map(jumpByKey).filter(Boolean),...sectionTargets()].forEach(t=>{
-      if(seen.has(t.key))return;seen.add(t.key);jumpItems.push(t);
+    [...favoriteTargets().slice(0,5),...recent.map(jumpByKey).filter(Boolean),...sectionTargets()].forEach(t=>{
+      const k=t.node?t.node.id:t.key;
+      if(seen.has(k))return;seen.add(k);jumpItems.push(t);
     });
-    head=i18n(recent.length?"Недавнее и разделы":"Разделы");
+    head=i18n(favs.length?"Избранное и недавнее":(recent.length?"Недавнее и разделы":"Разделы"));
   }else{
-    const hits=[];
+    const hits=[],seen=new Set();
     JUMP_SOURCES.forEach((s,si)=>s.match(q).forEach((t,i)=>hits.push({t,si,i,r:jumpRank(t,q)})));
     hits.sort((a,b)=>a.r-b.r||a.si-b.si||a.i-b.i);
-    jumpItems=hits.map(x=>x.t);
+    // Объект в избранном не дублируем строкой из дерева: у ярлыка выше приоритет
+    jumpItems=hits.map(x=>x.t).filter(t=>{const k=t.node?t.node.id:t.key;if(seen.has(k))return false;seen.add(k);return true});
     head=`${i18n("Найдено:")} ${jumpItems.length}${jumpItems.length>JUMP_LIMIT?` · ${i18n("показаны первые")} ${JUMP_LIMIT}`:""}`;
     if(!jumpItems.length){jumpIds=[];list.innerHTML=`<div class="sub" style="padding:12px">${i18n("Ничего не найдено")}</div>`;return}
   }
@@ -2928,6 +3053,7 @@ function bindTreeDbl(){
   // Двойной клик сам не ловим: после первого клика строка перерисована.
   let lastClick={id:null,t:0};
   treeEl.addEventListener("mousedown",e=>{
+    if(e.target.closest(".fav-b"))return;
     if(!(e.shiftKey||e.ctrlKey||e.metaKey))return;
     if(e.target.closest(".tw"))return;
     if(e.target.closest(".n-add"))return;
@@ -2941,6 +3067,8 @@ function bindTreeDbl(){
     pick(id,{range:e.shiftKey,additive:!e.shiftKey&&(e.ctrlKey||e.metaKey),ctx:row.dataset.ctx});
   });
   treeEl.addEventListener("click",e=>{
+    const star=e.target.closest(".fav-b");
+    if(star){toggleFav(star.dataset.fid,star.dataset.fctx||"",e);return}
     if(e.target.closest(".tw"))return;
     if(e.target.closest(".n-add"))return;
     if(e.target.closest(".nm-inp"))return;
@@ -3103,6 +3231,7 @@ function tctxSep(){return`<div class="tctx-sep" role="separator"></div>`}
 function tctxPlusIcon(){return`<span class="tctx-ic tctx-plus" aria-hidden="true">+</span>`}
 function tctxSearchIcon(){return`<span class="tctx-ic tctx-search" aria-hidden="true"></span>`}
 function tctxNewTabIcon(){return`<span class="tctx-ic tctx-newtab" aria-hidden="true">${svgIc(`<rect x="2.2" y="4.2" width="7.6" height="7.6" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M6.2 2.2h5.6v5.6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.8 2.2 7 7" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>`)}</span>`}
+function tctxStarIcon(on){return`<span class="tctx-ic tctx-star${on?" on":""}" aria-hidden="true">${on?FAV_ON:FAV_OFF}</span>`}
 function tctxItem(label,action,icon,disabled){
   const ic=icon||`<span class="tctx-ic"></span>`;
   if(disabled)return `<button type="button" role="menuitem" disabled>${ic}<span class="tctx-lbl">${label}</span></button>`;
@@ -3169,6 +3298,8 @@ function openTreeCtx(n,xy){
   const multi=treeSel.size>1&&treeSel.has(n.id);
   let main=[];
   if(multi){
+    main.push(tctxItem(`${i18n("В избранное")} (${treeSel.size})`,`favAddSelected()`,tctxStarIcon(false)));
+    main.push(tctxSep());
     main.push(tctxItem(`${i18n("Удалить выбранные")} (${treeSel.size})`,`deleteSelected()`));
     main.push(tctxItem(i18n("Снять выделение"),`closeTreeCtx();clearTreeSel()`));
   }else{
@@ -3224,6 +3355,10 @@ function openTreeCtx(n,xy){
       main.push(...rest);
     }
     if(main.length)main.push(tctxSep());
+    if(favCanAdd(n)){
+      const on=isFav(n.id);
+      main.push(tctxItem(i18n(on?"Убрать из избранного":"В избранное"),`closeTreeCtx();toggleFav('${n.id}','${selCtx||""}')`,tctxStarIcon(on)));
+    }
     main.push(tctxItem(i18n("Открыть в новой вкладке"),`ctxOpenNewTab('${n.id}')`,tctxNewTabIcon()));
   }
   menu.innerHTML=main.join("");
@@ -3246,6 +3381,8 @@ function treeCtx(e,id){
   const xy={x:e.clientX,y:e.clientY};
   if(sel!==id){
     if(!(treeSel.has(id)&&treeSel.size>1))resetTreeSel(id);
+    // Правый клик выбирает именно то вхождение строки, по которому кликнули
+    selCtx=e.target.closest?.(".n[data-pick]")?.dataset.ctx||null;
     sel=id;tab="gen";setD(false);expandTo(id);renderTree();gear();
   }
   openTreeCtx(n,xy);
@@ -3269,7 +3406,7 @@ function nrow(n,l,ctx,force){
   const hit=(q||treeFiltOn())&&selfInView(n)&&matchesSearch(n,q);
   let h=`<div class="n ${treeRowHi(n.id,ctx)} ${childOff?"off":""}${hit?" qhit":""}${treeRenameId===n.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(n.id,ctx)}${treeCtxAttr(n.id)}${treeExpandMeta(n.id,"node",hasKids)}>
     ${treeChevron(n.id,"node",hasKids,op)}
-    ${treeIconHtml(n)}<span class="nm">${treeNameCell(n,q)}</span>${treeRowMeta(n,q,shown.length,op)}</div>`;
+    ${treeIconHtml(n)}<span class="nm">${treeNameCell(n,q)}</span>${favStarHtml(n.id,ctx)}${treeRowMeta(n,q,shown.length,op)}</div>`;
   if(op)h+=shown.map(x=>nrow(x,l+1,ctx,childForce)).join("");
   return h}
 function svcrow(n,l,force){
@@ -3278,7 +3415,7 @@ function svcrow(n,l,force){
   const hit=!!q&&matchesSearch(n,q);
   if(q&&!force&&!hit)return"";
   return `<div class="n ${sel===n.id?"on":""}${hit?" qhit":""}${treeRenameId===n.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(n.id)}${treeCtxAttr(n.id)}>
-    <span class="tw"></span>${treeIconHtml(n)}<span class="nm">${treeNameCell(n,q)}</span><span class="n-meta">${treeStatusSlot(n)}</span></div>`;
+    <span class="tw"></span>${treeIconHtml(n)}<span class="nm">${treeNameCell(n,q)}</span>${favStarHtml(n.id)}<span class="n-meta">${treeStatusSlot(n)}</span></div>`;
 }
 // Где в «Серверах» лежит выбранный объект — его ветку показываем даже без сигнала
 let srvBr={sid:null,did:null};
@@ -3306,7 +3443,7 @@ function srow(s,l=1,bare=false,force=false){
     // Нераспределённые ещё не подключены к домену — всегда серым
     let h=`<div class="n srv ${sel===s.id?"on":""} off${srvHit?" qhit":""}${treeRenameId===s.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(s.id)}${treeCtxAttr(s.id)}>
       <span style="width:11px;flex:none"></span>
-      ${treeIconHtml(s)}<span class="nm">${treeNameCell(s,q)}</span></div>`;
+      ${treeIconHtml(s)}<span class="nm">${treeNameCell(s,q)}</span>${favStarHtml(s.id)}</div>`;
     return h;
   }
   const childForce=!!force||srvHit;
@@ -3326,7 +3463,7 @@ function srow(s,l=1,bare=false,force=false){
   const op=hasKids&&(open.has(s.id)||qAutoOpen(q,srvHit,force,!!kidsHtml)||(treeFiltOn()&&!q));
   let h=`<div class="n srv ${sel===s.id?"on":""}${srvHit?" qhit":""}${treeRenameId===s.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(s.id)}${treeCtxAttr(s.id)}${treeExpandMeta(s.id,"srv",hasKids)}>
     ${treeChevron(s.id,"srv",hasKids,op)}
-    ${treeIconHtml(s)}<span class="nm">${treeNameCell(s,q)}</span>${treeRowMeta(s,q,cnt,op)}</div>`;
+    ${treeIconHtml(s)}<span class="nm">${treeNameCell(s,q)}</span>${favStarHtml(s.id)}${treeRowMeta(s,q,cnt,op)}</div>`;
   if(op){
     h+=kidsHtml;
     if(!hasActiveFilters())h+=arcMode?addArchRow(l+1,s):addTreeRow(l+1,s);
@@ -3348,7 +3485,7 @@ function drow(d){
   const op=hasKids&&(open.has(d.id)||!!q||treeFiltOn());
   let h=`<div class="n srv ${sel===d.id?"on":""}${qHit?" qhit":""}${treeRenameId===d.id?" renaming":""}"${treeRowPick(d.id)}${treeCtxAttr(d.id)}${treeExpandMeta(d.id,"dom",hasKids)}>
     ${treeChevron(d.id,"dom",hasKids,op)}
-    ${treeIconHtml(d)}<span class="nm">${treeNameCell(d,q)}</span>${treeRowMeta(d,q,domainServerCount(d),op)}</div>`;
+    ${treeIconHtml(d)}<span class="nm">${treeNameCell(d,q)}</span>${favStarHtml(d.id)}${treeRowMeta(d,q,domainServerCount(d),op)}</div>`;
   if(op)h+=srvHtml+netHtml+(sliceHasArch()&&!hasActiveFilters()?addArchRow(1,d):"")+norecHtml+uaHtml;
   return h}
 function urow(l,domain,force){
@@ -3359,7 +3496,7 @@ function urow(l,domain,force){
   const op=open.has(ua.id)||qAutoOpen(q,selfHit,force,!!childHtml)||(treeFiltOn()&&!q&&!!childHtml);
   let h=`<div class="n srv ${sel===ua.id?"on":""}${selfHit?" qhit":""}" style="padding-left:${pad}px" data-pick="${ua.id}"${treeCtxAttr(ua.id)}${treeExpandMeta(ua.id,"dom",true)}>
     ${treeChevron(ua.id,"dom",true,op)}
-    ${ic("unalloc")}<span class="nm">${displayNameHtml(ua,q)}</span>${treeCntHtml(list.length)}</div>`;
+    ${ic("unalloc")}<span class="nm">${displayNameHtml(ua,q)}</span>${favStarHtml(ua.id)}${treeCntHtml(list.length)}</div>`;
   if(op){
     h+=childHtml;
     if(!hasActiveFilters())h+=addManualSrvRow(l+1,domain.id);
@@ -3400,7 +3537,7 @@ function frow(f,l,force){
   const op=hasKids&&(open.has(f.id)||auto);
   let h=`<div class="n srv fld ${sel===f.id?"on":""}${selfHit?" qhit":""}${treeRenameId===f.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(f.id)}${treeCtxAttr(f.id)}${treeExpandMeta(f.id,"dom",hasKids)}>
     ${treeChevron(f.id,"dom",hasKids,op)}
-    ${ic(op?"folderOpen":"folder")}<span class="nm">${hlText(locName(f),selfHit?q:"")}</span>${treeCntHtml(folderCount(f))}</div>`;
+    ${ic(op?"folderOpen":"folder")}<span class="nm">${hlText(locName(f),selfHit?q:"")}</span>${favStarHtml(f.id)}${treeCntHtml(folderCount(f))}</div>`;
   if(op){
     h+=subs;
     h+=devs.map(d=>nrow(d,l+1,"f:"+f.id,childForce)).join("");
@@ -3421,7 +3558,7 @@ function nfrow(d,l,force){
   const op=hasKids&&(open.has(node.id)||auto);
   let h=`<div class="n srv fld ${sel===node.id?"on":""}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(node.id)}${treeExpandMeta(node.id,"dom",hasKids)}>
     ${treeChevron(node.id,"dom",hasKids,op)}
-    ${ic("unalloc")}<span class="nm">${hlText(locName(node),selfHit?q:"")}</span>${treeCntHtml(all.length)}</div>`;
+    ${ic("unalloc")}<span class="nm">${hlText(locName(node),selfHit?q:"")}</span>${favStarHtml(node.id)}${treeCntHtml(all.length)}</div>`;
   if(op)h+=devs.map(x=>nrow(x,l+1,"nf:"+d.id,childForce)).join("");
   return h;
 }
@@ -3440,7 +3577,7 @@ function dfrow(d){
   const op=open.has(d.id)||!!q||treeFiltOn();
   let h=`<div class="n srv ${sel===d.id?"on":""}${qHit?" qhit":""}${treeRenameId===d.id?" renaming":""}"${treeRowPick(d.id)}${treeCtxAttr(d.id)}${treeExpandMeta(d.id,"dom",hasKids)}>
     ${treeChevron(d.id,"dom",hasKids,op)}
-    ${treeIconHtml(d)}<span class="nm">${treeNameCell(d,q)}</span>${treeCntHtml(domainDeviceCount(d.id))}</div>`;
+    ${treeIconHtml(d)}<span class="nm">${treeNameCell(d,q)}</span>${favStarHtml(d.id)}${treeCntHtml(domainDeviceCount(d.id))}</div>`;
   if(op){h+=kidsHtml;h+=addFolderRow(1,d.id)}
   return h;
 }
@@ -3453,9 +3590,11 @@ function addFolderRow(level,domainId){
 // Одно дерево: корень — домены, срез решает что показать, группировка — как.
 function treeHw(){
   srvBr=srvsSelBranch();
+  // Избранное закреплено сверху и не участвует в поиске и фильтрах дерева
+  const fav=favRowsHtml();
   const h=domains.map(d=>groupBy==="server"?drow(d):dfrow(d)).join("");
-  if(!hasActiveFilters())return h+addDomainRow();
-  return h||`<div class="n n-empty">${i18n("Ничего не найдено")} · <button type="button" class="lk-add" onclick="resetAllFilters()">${i18n("Сбросить фильтры")}</button></div>`;
+  if(!hasActiveFilters())return fav+h+addDomainRow();
+  return fav+(h||`<div class="n n-empty">${i18n("Ничего не найдено")} · <button type="button" class="lk-add" onclick="resetAllFilters()">${i18n("Сбросить фильтры")}</button></div>`);
 }
 // ── Дерево «Сервера» ──────────────────────────────────────────────────────
 // Режим «Камеры»: домен → сервер → архив → камеры, которые на него пишутся.
@@ -3468,7 +3607,7 @@ function scamrow(n,l,ctx,force){
   const hit=!!q&&matchesSearch(n,q);
   if(q&&!force&&!hit)return"";
   return `<div class="n ${rowOn(n.id,ctx)}${hit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(n.id,ctx)}>
-    <span class="tw"></span>${treeIconHtml(n)}<span class="nm">${displayNameHtml(n,q)}</span>${treeRowMeta(n,q,0,false)}</div>`;
+    <span class="tw"></span>${treeIconHtml(n)}<span class="nm">${displayNameHtml(n,q)}</span>${favStarHtml(n.id,ctx)}${treeRowMeta(n,q,0,false)}</div>`;
 }
 // Раскрывать ли контейнер при поиске: найден сам или (не под найденным предком) есть совпадения внутри
 function qAutoOpen(q,selfHit,force,anyInside){return!!q&&(selfHit||(!force&&anyInside))}
@@ -3496,7 +3635,7 @@ function nvrrow(owner,cams,l,ctx,force){
   const edge=edgeStorage(owner);
   let h=`<div class="n srv ${rowOn(owner.id,ctx)}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(owner.id,ctx)}${treeExpandMeta(owner.id,"srv",true)}>
     ${treeChevron(owner.id,"srv",true,op)}
-    ${treeIconHtml(owner)}<span class="nm">${displayNameHtml(owner,q)}</span>${edge?`<span class="n-tail"><span class="cnt" title="${i18n("Встроенное хранилище")}">${ic("storage")}</span></span>`:""}${treeCntHtml(cams.length)}</div>`;
+    ${treeIconHtml(owner)}<span class="nm">${displayNameHtml(owner,q)}</span>${favStarHtml(owner.id,ctx)}${edge?`<span class="n-tail"><span class="cnt" title="${i18n("Встроенное хранилище")}">${ic("storage")}</span></span>`:""}${treeCntHtml(cams.length)}</div>`;
   if(op)h+=vis.map(c=>scamrow(c,l+1,ctx,true)).join("");
   return h;
 }
@@ -3518,7 +3657,7 @@ function gcamrow(cam,dets,l,ctx,force){
   const op=hasKids&&(open.has(cam.id)||(!!q&&!childForce&&!!vis.length));
   let h=`<div class="n ${rowOn(cam.id,ctx)}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(cam.id,ctx)}${treeExpandMeta(cam.id,"node",hasKids)}>
     ${treeChevron(cam.id,"node",hasKids,op)}
-    ${treeIconHtml(cam)}<span class="nm">${displayNameHtml(cam,q)}</span>${treeCntHtml(dets.length)}</div>`;
+    ${treeIconHtml(cam)}<span class="nm">${displayNameHtml(cam,q)}</span>${favStarHtml(cam.id,ctx)}${treeCntHtml(dets.length)}</div>`;
   if(op)h+=vis.map(d=>gdetrow(d,l+1,ctx,true)).join("");
   return h;
 }
@@ -3530,7 +3669,7 @@ function gpurow(sv,l,force){
   if(!sliceOpensArch()){
     if(q&&!selfHit)return"";
     return `<div class="n srv gpu ${sel===node.id?"on":""}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(node.id)}>
-      <span class="tw"></span>${ic("gpu")}<span class="nm">${hlText(locName(node),selfHit?q:"")}</span>${treeCntHtml(list.length)}</div>`;
+      <span class="tw"></span>${ic("gpu")}<span class="nm">${hlText(locName(node),selfHit?q:"")}</span>${favStarHtml(node.id)}${treeCntHtml(list.length)}</div>`;
   }
   const vis=list.filter(x=>selfInView(x.cam)&&(childForce||!q||matchesSearch(x.cam,q)||x.dets.some(d=>srvDetHit(d,q))));
   if(hideEmptyBranch(q,selfHit,vis.length))return"";
@@ -3538,7 +3677,7 @@ function gpurow(sv,l,force){
   const op=hasKids&&(open.has(node.id)||qAutoOpen(q,selfHit,force,!!vis.length)||(treeFiltOn()&&!q));
   let h=`<div class="n srv gpu ${sel===node.id?"on":""}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(node.id)}${treeExpandMeta(node.id,"srv",hasKids)}>
     ${treeChevron(node.id,"srv",hasKids,op)}
-    ${ic("gpu")}<span class="nm">${hlText(locName(node),selfHit?q:"")}</span>${treeCntHtml(list.length)}</div>`;
+    ${ic("gpu")}<span class="nm">${hlText(locName(node),selfHit?q:"")}</span>${favStarHtml(node.id)}${treeCntHtml(list.length)}</div>`;
   if(op)h+=vis.map(x=>gcamrow(x.cam,x.dets,l+1,ctx,childForce)).join("");
   return h;
 }
@@ -3556,7 +3695,7 @@ function arow(a,l,force){
   if(!sliceOpensArch()){
     if(q&&!selfHit)return"";
     return `<div class="n srv ${sel===a.id?"on":""}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(a.id)}>
-      <span class="tw"></span>${ic("storage")}<span class="nm">${hlText(locName(a),selfHit?q:"")}</span>${treeCntHtml(cams.length)}</div>`;
+      <span class="tw"></span>${ic("storage")}<span class="nm">${hlText(locName(a),selfHit?q:"")}</span>${favStarHtml(a.id)}${treeCntHtml(cams.length)}</div>`;
   }
   const {groups,loose}=groupCamsByIpsrv(cams);
   const build=()=>groups.map(g=>nvrrow(g.owner,g.cams,l+1,ctx,childForce)).filter(Boolean).join("")
@@ -3569,7 +3708,7 @@ function arow(a,l,force){
   const op=hasKids&&(open.has(a.id)||qAutoOpen(q,selfHit,force,!!inner)||(treeFiltOn()&&!q));
   let h=`<div class="n srv ${sel===a.id?"on":""}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(a.id)}${treeExpandMeta(a.id,"srv",hasKids)}>
     ${treeChevron(a.id,"srv",hasKids,op)}
-    ${ic("storage")}<span class="nm">${hlText(locName(a),selfHit?q:"")}</span>${treeCntHtml(cams.length)}</div>`;
+    ${ic("storage")}<span class="nm">${hlText(locName(a),selfHit?q:"")}</span>${favStarHtml(a.id)}${treeCntHtml(cams.length)}</div>`;
   if(op)h+=inner??build();
   return h;
 }
@@ -3584,7 +3723,7 @@ function norow(d,l,force){
   const op=hasKids&&(open.has(n.id)||qAutoOpen(q,selfHit,force,!!vis.length)||(treeFiltOn()&&!q));
   let h=`<div class="n srv norec ${sel===n.id?"on":""}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(n.id)}${treeExpandMeta(n.id,"dom",hasKids)}>
     ${treeChevron(n.id,"dom",hasKids,op)}
-    ${ic("unalloc")}<span class="nm">${hlText(locName(n),selfHit?q:"")}</span>${treeCntHtml(cams.length)}</div>`;
+    ${ic("unalloc")}<span class="nm">${hlText(locName(n),selfHit?q:"")}</span>${favStarHtml(n.id)}${treeCntHtml(cams.length)}</div>`;
   if(op)h+=vis.map(c=>scamrow(c,l+1,"norec:"+d.id,true)).join("");
   return h;
 }
@@ -3630,7 +3769,7 @@ function gear(){
   const n=f.n,tabs=tabsFor(n);
   if(tabs.length&&!tabs.some(([id])=>id===tab))tab=tabs[0][0];
   const tabsH=tabs.map(([id,x])=>`<button class="tab ${tab===id?"on":""}" onclick="tab='${id}';gear()">${i18n(x)}</button>`).join("");
-  const addBtn=inspectorAddBtn(n);
+  const addBtn=inspectorFavBtn(n)+inspectorAddBtn(n);
   const scClass=n.type==="unalloc"?"sc sc-unalloc":"sc";
   document.getElementById("main").innerHTML=mainHd(crumbsHtml(sel),objectTitle(n),"",tabsH,addBtn)+`<div class="${scClass}">${hiddenSelNoteHtml()}${objectStatusNotesHtml(n)}${form(n)}</div>`;
   syncDomAct();
@@ -5799,7 +5938,8 @@ function wnx(){
   document.getElementById("wiz").classList.remove("open");toast(name+" добавлен");paint();
 }
 // Стрелки по дереву: ↑↓ — соседняя строка, → раскрыть, ← свернуть
-function treeRows(){return[...document.querySelectorAll("#tree .n:not(.n-add):not(.n-empty)")].filter(el=>el.dataset.pick||el.onclick)}
+// Ярлыки избранного из обхода стрелками исключаем: клик по ним уводит в другой срез
+function treeRows(){return[...document.querySelectorAll("#tree .n:not(.n-add):not(.n-empty):not(.fav-head):not(.fav-row):not(.fav-more)")].filter(el=>el.dataset.pick||el.onclick)}
 function treeMove(dir,fromSearch){
   const rows=treeRows();if(!rows.length)return;
   let i=rows.findIndex(el=>el.classList.contains("on"));
@@ -5845,6 +5985,7 @@ document.onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key==="k"){e.preventDefault(
   if((e.key==="Delete"||e.key==="Backspace")&&treeSel.size>1&&app==="hw"&&!e.target.closest("input,textarea,select")){e.preventDefault();deleteSelected()}
   if(inTextField(e.target)||overlayOpen()||e.ctrlKey||e.metaKey||e.altKey)return;
   if(e.key==="/"){const q=document.getElementById("q");if(q){e.preventDefault();q.focus();q.select()}return}
+  if(e.key==="f"||e.key==="F"||e.key==="а"||e.key==="А"){e.preventDefault();toggleFavSel();return}
   if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();treeMove(e.key==="ArrowDown"?1:-1);return}
   if(e.key==="ArrowRight"||e.key==="ArrowLeft"){e.preventDefault();treeFold(e.key==="ArrowRight")}
 };

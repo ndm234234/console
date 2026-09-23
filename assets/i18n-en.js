@@ -1,4 +1,10 @@
 window.I18N_EN={
+"Избранное":"Favorites","В избранное":"Add to favorites","В избранном":"In favorites","Убрать из избранного":"Remove from favorites",
+"Избранное: быстрый возврат к отмеченным объектам":"Favorites: quick return to starred objects",
+"Добавлено в избранное":"Added to favorites","Убрано из избранного":"Removed from favorites","Уже в избранном":"Already in favorites",
+"Объект удалён — ярлык больше никуда не ведёт":"Object deleted — this shortcut leads nowhere",
+"Избранное и недавнее":"Favorites and recent","избранное закладка ярлык":"favorites bookmark shortcut",
+"ещё":"more","удалён":"deleted",
 "Сервера":"Servers","Устройства":"Devices","Оборудование":"Hardware","Детекторы":"Detectors","Архив":"Archive","Автоматизация":"Automation","Пользователи":"Users","Опции":"Options","Журнал":"Log",
 "Журнал событий — просмотр и аудит, не настройка":"Event log — view and audit, not configuration",
 "ЦПУ":"CPU","ОЗУ":"RAM","Сеть":"Network","Язык":"Language","Тема":"Theme","Тёмная":"Dark","Светлая":"Light","Русский":"Russian","English":"English",
