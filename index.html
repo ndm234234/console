@@ -14,30 +14,43 @@ html[data-theme="light"]{--bg:#eef2f7;--p:#ffffff;--p2:#f3f6fb;--ln:#d5dde8;--tx
 *::-webkit-scrollbar-thumb{background:#243548;border-radius:99px}
 *::-webkit-scrollbar-thumb:hover{background:#334860}
 button,input,select{font:inherit;color:var(--tx)}button{cursor:pointer}
-.app{height:100vh;display:grid;grid-template-rows:56px 1fr 48px}
-header{display:flex;align-items:center;gap:10px;padding:0 14px;background:var(--p);border-bottom:1px solid var(--ln)}
+.app{height:100vh;display:grid;grid-template-rows:56px 1fr}
+.app-body{min-height:0;display:grid;grid-template-columns:var(--rw,60px) minmax(0,1fr)}
+.pane{min-width:0;min-height:0;display:grid;grid-template-rows:minmax(0,1fr) 48px}
+header{display:flex;align-items:center;gap:12px;padding:0 14px;background:var(--p);border-bottom:1px solid var(--ln);position:relative;z-index:30}
 .logo{display:flex;align-items:center;font-weight:700}.logo b{width:32px;height:32px;display:grid;place-items:center;background:transparent}
 .logo b svg,.logo b img{display:block;width:32px;height:32px}
-nav{display:flex;gap:2px;flex:1;overflow:auto;min-width:0;align-items:center}
-.nav{border:0;background:0;color:var(--mu);padding:6px 10px;border-radius:0;white-space:nowrap;display:inline-flex;align-items:center;font-weight:500;transition:color .12s}
-.nav:hover{background:transparent;color:var(--tx)}
-.nav.on{background:transparent;color:#fff;font-weight:600}
-.hr-tools{display:flex;align-items:center;gap:8px;flex:none;margin-left:8px}
-.hchip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--ln);background:var(--p2);border-radius:8px;padding:6px 11px;color:var(--tx);font-size:12px;font-weight:600;white-space:nowrap;line-height:1}
-.hchip .hic{display:inline-flex;opacity:.95;line-height:0}
-.hchip:hover{border-color:#3f6fac;background:#162945}
-.hchip.on{border-color:#3f6fac;background:#1a2d4d;color:#fff;box-shadow:inset 0 0 0 1px #456fa8}
-.hload{display:inline-flex;align-items:baseline;gap:8px;padding:6px 8px;border-radius:8px;background:#0e1622;border:1px solid var(--ln);font-size:12px;color:var(--mu);font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1.2;cursor:default;box-sizing:border-box}
-.hload .hmet{display:inline-flex;align-items:baseline;gap:.3em}
-.hload .hlab{font-weight:500;margin:0}
-.hload b{color:var(--tx);font-weight:500;margin:0}
-.hload[hidden]{display:none!important}
-.hload .hsrv{width:6.5rem;flex:none;overflow:hidden;text-overflow:ellipsis;color:#7f92ab;font-size:11px;margin-left:2px;padding-left:10px;border-left:1px solid #2a374b;box-sizing:border-box}
-html[data-theme="light"] .nav.on{background:transparent;color:#1a2332}
-html[data-theme="light"] .hchip.on{background:#e8f0ff;color:#1a3a7a;box-shadow:inset 0 0 0 1px #b7cff5}
-html[data-theme="light"] .hchip:hover{background:#eef4fc;border-color:#b7cff5}
-html[data-theme="light"] .hload{background:#f7f9fc}
-html[data-theme="light"] .hload .hsrv{border-left-color:#d5dde8}
+.hr-tools{display:flex;align-items:center;gap:8px;flex:none;margin-left:auto}
+/* Строка запроса: всегда на виду, сразу за логотипом, как промпт в чате */
+.omni{position:relative;flex:1 1 auto;min-width:0;max-width:660px}
+.omni-box{display:flex;align-items:center;gap:8px;height:38px;padding:0 6px 0 12px;border:1px solid #2a3b55;border-radius:12px;background:#0d1521;box-shadow:inset 0 1px 3px #0008;transition:border-color .12s,box-shadow .12s}
+.omni-box:hover{border-color:#36507a}
+.omni-box.focus{border-color:#4a7ab8;box-shadow:inset 0 1px 3px #0008,0 0 0 3px #2a4a7833}
+.omni-lead{flex:none;display:inline-flex;color:#5c7390;line-height:0}
+.omni-lead svg{width:15px;height:15px;display:block}
+.omni-box input{flex:1;min-width:0;height:100%;border:0;border-radius:0;background:transparent;box-shadow:none;padding:0;font-size:13.5px}
+.omni-box input::placeholder{color:#6a7d97}
+.omni-clear{flex:none;border:0;background:transparent;color:var(--mu);font-size:12px;line-height:1;padding:5px 7px;border-radius:6px}
+.omni-clear:hover{color:var(--tx);background:#1b2942}
+.omni-clear.hide{display:none}
+.omni-pop{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--p);border:1px solid var(--ln);border-radius:12px;box-shadow:0 18px 48px #000b;overflow:hidden}
+.omni-pop[hidden]{display:none}
+/* Разделы — лентой слева сверху вниз, только значки; название в подсказке */
+.rail{display:flex;flex-direction:column;gap:2px;padding:8px 6px;background:#080c13;border-right:1px solid var(--ln);overflow:auto}
+.rl{display:grid;place-items:center;width:100%;height:44px;border:0;background:transparent;color:var(--mu);border-radius:10px;padding:0;transition:background .12s,color .12s}
+.rl-ic{line-height:0}
+.rl-ic svg{width:22px;height:22px;display:block}
+.rl:hover{color:var(--tx);background:#141d2b}
+.rl.on{color:#fff;background:#18304f;box-shadow:inset 0 0 0 1px #2c4f7d}
+.rl-low{margin-top:auto}
+.flash{animation:flashBox 1.6s ease-out}
+@keyframes flashBox{0%,55%{box-shadow:0 0 0 2px var(--bl);border-radius:8px}100%{box-shadow:0 0 0 2px transparent}}
+html[data-theme="light"] .rail{background:#e7ecf4}
+html[data-theme="light"] .rl:hover{background:#dbe4f0;color:var(--tx)}
+html[data-theme="light"] .rl.on{background:#2f6fed;color:#fff;box-shadow:none}
+html[data-theme="light"] .omni-box{background:#fff;border-color:var(--ln);box-shadow:none}
+html[data-theme="light"] .omni-box.focus{box-shadow:0 0 0 3px #2f6fed22}
+html[data-theme="light"] .omni-clear:hover{background:#e8eef8}
 html[data-theme="light"] .ubtn:hover,html[data-theme="light"] .ubtn.on{background:#e8f0ff;border-color:#b7cff5}
 html[data-theme="light"] .uav{background:#dce6f5;color:#3a4d66}
 html[data-theme="light"] .usign{border-color:#e0a0a6;color:#b33a44}
@@ -58,15 +71,17 @@ html[data-theme="light"] .usign:hover{background:#fdecee}
 .usign{margin-top:2px;width:100%;border:1px solid #7a3a42;background:transparent;color:#ff9ca1;border-radius:8px;padding:8px 10px}
 .usign:hover{background:#3a1d25}
 .ws{min-height:0;display:grid;grid-template-columns:var(--aw,360px) 4px 1fr}.ws.one{grid-template-columns:1fr}.ws.one .rsz{display:none}
-aside,main{min-height:0;overflow:hidden}aside{background:#0b1018;border-right:1px solid var(--ln);display:flex;flex-direction:column}
+aside,main{min-height:0;overflow:hidden}aside{background:#0b1018;border-right:1px solid var(--ln);display:flex;flex-direction:column;container-type:inline-size}
+/* Узкая панель: у кнопок срезов остаются подписи, картинки уступают место тексту */
+@container (max-width:430px){.view-sw .fchip .ici{display:none}.view-sw .fchip{padding:6px 5px}}
 .rsz{width:4px;cursor:col-resize;background:transparent;position:relative;z-index:2}
 .rsz:hover,.rsz.on{background:var(--bl)}
 .box{padding:4px 8px;border-bottom:1px solid var(--ln);flex:none}
 .srch{display:flex;gap:4px}.srch input{flex:1;height:var(--ctrl-h);padding:0 10px;font-size:13px;box-sizing:border-box}
 .srch .btn{padding:0 10px;height:var(--ctrl-h);flex:none;box-sizing:border-box}
 .filt{display:grid;grid-template-columns:1.35fr 1.2fr 1fr;gap:4px;margin-bottom:4px}
-.view-sw{display:flex;flex:none;gap:2px;padding:10px 8px 0;margin:0;border:0;border-radius:0;background:#0b1018}
-.view-sw .fchip{flex:1 1 0;min-width:0;border:0;border-radius:8px;background:transparent;color:var(--mu);min-height:32px;padding:6px 10px;font-size:12px;line-height:1.2;text-align:center;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:background .12s,color .12s}
+.view-sw{display:flex;flex-wrap:wrap;flex:none;gap:2px;padding:10px 8px 0;margin:0;border:0;border-radius:0;background:#0b1018}
+.view-sw .fchip{flex:1 1 auto;min-width:58px;border:0;border-radius:8px;background:transparent;color:var(--mu);min-height:32px;padding:6px 7px;font-size:12px;line-height:1.2;text-align:center;font-weight:600;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:background .12s,color .12s}
 .view-sw .fchip .ici{flex:none;line-height:0;opacity:.92}
 .view-sw .fchip .ici .ic-svg{width:15px;height:15px;display:block}
 .view-sw .fchip span{flex:none;white-space:normal;text-align:center}
@@ -74,6 +89,15 @@ aside,main{min-height:0;overflow:hidden}aside{background:#0b1018;border-right:1p
 .view-sw .fchip.on{color:#fff;background:#1a2d4d}
 .gear-body{flex:1;display:flex;flex-direction:column;min-height:0;background:#0b1018}
 .gear-tree-head{flex:none;padding:8px 8px 6px}
+.grp-sw{display:flex;gap:4px;margin:0 0 6px;padding:2px;border:1px solid #1e2d42;border-radius:7px;background:#0a1018}
+.grp-b{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:5px;background:transparent;color:var(--mu);padding:5px 8px;font-size:11px;font-weight:600;line-height:1.2;cursor:pointer}
+.grp-b .ici{flex:none;line-height:0;opacity:.85}
+.grp-b .ici .ic-svg{width:13px;height:13px;display:block}
+.grp-b:hover:not(.on){color:var(--tx);background:#152232}
+.grp-b.on{color:#fff;background:#1a2d4d}
+html[data-theme="light"] .grp-sw{border-color:var(--ln);background:var(--p2)}
+html[data-theme="light"] .grp-b:hover:not(.on){background:#e8eef8;color:var(--tx)}
+html[data-theme="light"] .grp-b.on{background:#2f6fed;color:#fff}
 .gear-tree-head .sq{min-height:28px;border-radius:6px;background:#0b1018;border:1px solid transparent;box-shadow:none;transition:background .12s,border-color .12s,box-shadow .12s}
 .gear-tree-head .sq:hover{background:#152232}
 .gear-tree-head .sq:focus-within{border-color:#4a7ab8;background:#0b1018;box-shadow:0 0 0 1px #2a4a7855}
@@ -301,6 +325,26 @@ label{display:block;font-size:12px;color:var(--mu);margin-bottom:4px}
 .it{display:flex;gap:10px;align-items:center;padding:9px;background:var(--p2);border-radius:7px;margin:0 0 6px;cursor:pointer;border:1px solid transparent}
 .it:hover,.it.on{border-color:var(--bl)}.it span:nth-child(2){flex:1;min-width:0}.it small{display:block;color:var(--mu)}
 .it .btn{flex:none;white-space:nowrap}
+.btn.danger{color:#f0b4b8;border-color:#7d3a3f}.btn.danger:hover{background:#2a1518;border-color:var(--rd)}
+.btn:disabled{opacity:.5;cursor:default}
+.dom-acts{display:flex;flex-wrap:wrap;gap:8px}
+.unalloc-bulk{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 8px;padding:6px 8px;border:1px solid var(--ln);border-radius:8px;background:var(--bg)}
+.unalloc-all{display:inline-flex;align-items:center;gap:8px;margin-right:auto;cursor:pointer;font-size:13px;user-select:none}
+.unalloc-all .sub{margin:0}
+.unalloc-row{cursor:pointer}.unalloc-row.done{cursor:default;opacity:.75}
+.unalloc-row.picked{border-color:var(--bl);background:rgba(47,111,237,.12)}
+.unalloc-chk-slot{width:16px;flex:none;display:inline-flex;align-items:center}
+.unalloc-chk-slot input,.unalloc-all input{margin:0;cursor:pointer}
+.ipres-sum{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.ipst{font-size:12px;white-space:nowrap;flex:none;padding:2px 8px;border-radius:99px;border:1px solid var(--ln)}
+.ipst-ok{color:#75e1a9;border-color:#2c5a3d}.ipst-err{color:#f0b4b8;border-color:#7d3a3f}.ipst-mu{color:var(--mu)}
+textarea.ip-list{display:block;width:100%;box-sizing:border-box;margin-top:4px;padding:8px 10px;background:var(--p2);border:1px solid var(--ln);border-radius:7px;outline:0;color:var(--tx);font:12px/1.5 ui-monospace,Consolas,monospace;resize:vertical;min-height:120px}
+textarea.ip-list:focus{border-color:var(--bl)}
+.ip-list-foot{display:flex;justify-content:space-between;gap:8px;margin-top:4px}.ip-list-foot .sub{margin:0}
+#wizIpsCnt.err{color:#f0b4b8}
+html[data-theme="light"] .ipst-ok{color:#1b7a45;border-color:#9fd6b5}
+html[data-theme="light"] .ipst-err,html[data-theme="light"] .btn.danger,html[data-theme="light"] #wizIpsCnt.err{color:#b3303a;border-color:#e8b4b8}
+html[data-theme="light"] .btn.danger:hover{background:#fdecee}
 .unalloc-added{display:inline-flex;align-items:center;gap:8px;flex:none}
 .unalloc-added-st{font-size:12px;color:#75e1a9;font-weight:500;white-space:nowrap}
 .unalloc-scroll{max-height:min(55vh,420px);overflow:auto;padding-right:2px;scrollbar-width:thin;scrollbar-color:#2f3f55 transparent}
@@ -579,8 +623,6 @@ html[data-theme="light"] .dev-bulk-badge{background:#d6e4f8;color:#2f5fad}
 .dev-back{display:flex;align-items:center;gap:8px;margin-bottom:2px}.dev-back .lk{font-size:13px}
 @media(max-width:1100px){.dev-card{grid-template-columns:repeat(3,minmax(120px,1fr));width:100%}[class*="dev-gc"]{grid-column:auto!important;grid-row:auto!important}.dr.device-wizard{width:min(1180px,calc(100vw - 48px))}}
 @media(max-width:700px){.dev-settings,.dev-grid,.dev-common-auth,.dev-card{grid-template-columns:1fr}[class*="dev-gc"]{grid-column:auto!important;grid-row:auto!important}.dev-result-main{grid-template-columns:max-content 6px 1fr auto}.dev-common-auth>span{align-self:auto}}
-.jump{display:none;position:fixed;inset:0;background:#000a;z-index:50;place-items:start center;padding-top:12vh}
-.jump.open{display:grid}
 .confirm{display:none;position:fixed;inset:0;background:#000a;z-index:55;place-items:center;padding:16px}
 .confirm.open{display:grid}
 .cbox{width:min(420px,92vw);background:var(--p);border:1px solid var(--ln);border-radius:12px;overflow:hidden;box-shadow:0 16px 48px #0008}
@@ -591,14 +633,22 @@ html[data-theme="light"] .dev-bulk-badge{background:#d6e4f8;color:#2f5fad}
 .confirm-opt input{margin:0;cursor:pointer}
 .cwarn{margin-top:10px;color:#f0b4b8;font-size:12px}
 .cfoot{padding:12px 16px;border-top:1px solid var(--ln);display:flex;justify-content:flex-end;gap:8px}
-.jbox{width:min(560px,92vw);background:var(--p);border:1px solid var(--ln);border-radius:12px;overflow:hidden;box-shadow:0 16px 48px #0008}
-.jlist{max-height:360px;overflow:auto}
+.jlist{max-height:min(420px,60vh);overflow:auto}
 .res{display:flex;gap:8px;padding:8px 12px;cursor:pointer;border-left:3px solid transparent}
 .res:hover,.res.on{background:#172a46;border-left-color:var(--bl)}
 .res .pth{font-size:11px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.srh{padding:6px 12px;font-size:11px;color:var(--mu);font-weight:600}
+.srh{padding:6px 12px;font-size:11px;color:var(--mu);font-weight:600;display:flex;justify-content:space-between;gap:8px}
+.srh-keys{font-weight:400;opacity:.7}
+.res{align-items:center}
+.res mark,.tag mark{background:#3a5a2a;color:#d8f5c8;border-radius:2px;padding:0 1px}
+.res .tag{display:inline-block;vertical-align:1px;margin-left:4px;max-width:none}
+.res-where{flex:none;font-size:10px;color:var(--mu);border:1px solid var(--ln);border-radius:4px;padding:1px 6px}
+.stchip-n{padding:0 8px 0 0;margin-left:-3px;font-size:10px;font-weight:500;opacity:.65;font-variant-numeric:tabular-nums}
+.sq-kbd,.hkbd{flex:none;align-self:center;font:500 10px/1 Inter,"Segoe UI",sans-serif;color:#6b7f98;border:1px solid #2a3b52;border-radius:4px;padding:2px 5px;margin:0 6px 0 2px}
+.hkbd{margin:0 0 0 2px;color:var(--mu)}
+.sq:focus-within .sq-kbd{display:none}
+html[data-theme="light"] .sq-kbd,html[data-theme="light"] .hkbd{border-color:#d5dde8}
 :where(input:not([type="checkbox"]):not([type="radio"]),select){width:100%;height:var(--ctrl-h);padding:0 10px;background:var(--p2);border:1px solid var(--ln);border-radius:7px;outline:0;box-sizing:border-box;font-size:13px;line-height:1.2}
-.jbox input{width:100%;border:0;border-bottom:1px solid var(--ln);border-radius:0;padding:14px 16px;font-size:15px;height:auto;background:transparent}
 .cnt{color:var(--mu);font-size:11px;line-height:1;font-variant-numeric:tabular-nums;font-feature-settings:"tnum";text-align:center}
 @media(max-width:860px){.ws,.split,.g,.mx{grid-template-columns:1fr}}
 </style>
@@ -608,24 +658,19 @@ html[data-theme="light"] .dev-bulk-badge{background:#d6e4f8;color:#2f5fad}
 <div class="app">
 <header>
   <div class="logo"><b aria-hidden="true"><img src="assets/logo-configurator.png" width="32" height="32" alt="" draggable="false"></b></div>
-  <nav>
-    <button class="nav on" data-a="srvs" onclick="go(this)" data-i18n="Сервера">Сервера</button>
-    <button class="nav" data-a="dev" onclick="go(this)" data-i18n="Устройства">Устройства</button>
-    <button class="nav" data-a="rules" onclick="go(this)" data-i18n="Автоматизация">Автоматизация</button>
-    <button class="nav" data-a="acc" onclick="go(this)" data-i18n="Пользователи">Пользователи</button>
-    <button class="nav" data-a="sys" onclick="go(this)" data-i18n="Опции">Опции</button>
-  </nav>
-  <div class="hr-tools">
-    <div class="hload" id="hload" hidden>
-      <span class="hmet" id="hloadCpu"><span class="hlab" data-i18n="ЦПУ">ЦПУ</span><b>—</b></span>
-      <span class="hmet" id="hloadRam"><span class="hlab" data-i18n="ОЗУ">ОЗУ</span><b>—</b></span>
-      <span class="hmet" id="hloadNet"><span class="hlab" data-i18n="Сеть">Сеть</span><b>—</b></span>
-      <span class="hsrv" id="hloadSrv"></span>
+  <div class="omni" id="omni">
+    <div class="omni-box" id="omniBox">
+      <span class="omni-lead" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="6.8" cy="6.8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="m9.8 9.8 3.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+      <input id="jq" role="combobox" aria-expanded="false" aria-controls="jumpPop" autocomplete="off"
+        data-i18n-placeholder="Что открыть? Объект, раздел, настройка, пользователь…" placeholder="Что открыть? Объект, раздел, настройка, пользователь…"
+        data-i18n-title="Переход по всему приложению: объекты, разделы, срезы, правила, настройки, учётные записи (Ctrl+K)" title="Переход по всему приложению: объекты, разделы, срезы, правила, настройки, учётные записи (Ctrl+K)"
+        oninput="jumpList()" onkeydown="jumpKey(event)" onfocus="openJumpPanel()">
+      <button type="button" class="omni-clear hide" id="omniClear" data-i18n-title="Очистить" title="Очистить" onclick="clearJump(event)">✕</button>
+      <kbd class="hkbd">Ctrl K</kbd>
     </div>
-    <button class="hchip" data-a="log" onclick="go(this)" data-i18n-title="Журнал событий — просмотр и аудит, не настройка" title="Журнал событий — просмотр и аудит, не настройка">
-      <span class="hic" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="3" y="1.5" width="10" height="13" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 5h5M5.5 8h5M5.5 11h3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
-      <span data-i18n="Журнал">Журнал</span>
-    </button>
+    <div class="omni-pop" id="jumpPop" hidden><div class="jlist" id="jlist"></div></div>
+  </div>
+  <div class="hr-tools">
     <div class="umenu" id="umenu">
       <button type="button" class="ubtn" id="ubtn" onclick="toggleUserMenu(event)" aria-haspopup="true" aria-expanded="false">
         <span class="uav" aria-hidden="true">👤</span>
@@ -651,21 +696,36 @@ html[data-theme="light"] .dev-bulk-badge{background:#d6e4f8;color:#2f5fad}
     </div>
   </div>
 </header>
-<div class="ws" id="ws"><aside id="aside"></aside><div class="rsz" id="rsz"></div><main id="main"></main></div>
-<footer>
-  <span id="hint" data-i18n="Сохраняется только выбранный объект">Сохраняется только выбранный объект</span>
-  <div class="sv">
-    <span id="domAct"></span>
-    <button class="btn s" id="cbtn" disabled onclick="dirty=false;upd();toast('Отменено')" data-i18n="Отменить">Отменить</button>
-    <button class="btn pri s" id="sbtn" disabled onclick="dirty=false;upd();toast('Сохранено')" data-i18n="Сохранить">Сохранить</button>
+<div class="app-body">
+  <nav class="rail" id="rail" data-i18n-aria="Разделы" aria-label="Разделы">
+    <button type="button" class="rl on" data-a="hw" onclick="go(this)" data-i18n-aria="Оборудование" aria-label="Оборудование" data-i18n-title="Оборудование: домены, серверы, камеры и службы" title="Оборудование: домены, серверы, камеры и службы">
+      <span class="rl-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.2" y="3.5" width="17.6" height="7" rx="2"/><rect x="3.2" y="13.5" width="17.6" height="7" rx="2"/><path d="M6.6 7h.01M6.6 17h.01" stroke-width="2.6" stroke-linecap="round"/><path d="M10 7h7M10 17h7" stroke-linecap="round" opacity=".5"/></svg></span>
+    </button>
+    <button type="button" class="rl" data-a="rules" onclick="go(this)" data-i18n-aria="Автоматизация" aria-label="Автоматизация" data-i18n-title="Автоматизация: правила «если — то»" title="Автоматизация: правила «если — то»">
+      <span class="rl-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13.6 2.5 5.4 13.3h4.8l-1 8.2 8.4-11.2h-4.9z" stroke-linejoin="round"/></svg></span>
+    </button>
+    <button type="button" class="rl" data-a="acc" onclick="go(this)" data-i18n-aria="Доступ" aria-label="Доступ" data-i18n-title="Доступ: роли, права и учётные записи" title="Доступ: роли, права и учётные записи">
+      <span class="rl-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="15.2" cy="8.8" r="4.3"/><path d="M12.2 11.8 3.6 20.4M6.2 17.8l2.4 2.4M9 15l2.4 2.4" stroke-linecap="round"/></svg></span>
+    </button>
+    <button type="button" class="rl" data-a="sys" onclick="go(this)" data-i18n-aria="Опции" aria-label="Опции" data-i18n-title="Опции: параметры кластера" title="Опции: параметры кластера">
+      <span class="rl-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3.5 7.5h8.2M17.2 7.5H20.5M3.5 16.5h3.3M12.3 16.5H20.5" stroke-linecap="round"/><circle cx="14.5" cy="7.5" r="2.4"/><circle cx="9.5" cy="16.5" r="2.4"/></svg></span>
+    </button>
+    <button type="button" class="rl rl-low" data-a="log" onclick="go(this)" data-i18n-aria="Журнал" aria-label="Журнал" data-i18n-title="Журнал событий — просмотр и аудит, не настройка" title="Журнал событий — просмотр и аудит, не настройка">
+      <span class="rl-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="3" width="14" height="18" rx="2.2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4.5" stroke-linecap="round"/></svg></span>
+    </button>
+  </nav>
+  <div class="pane">
+    <div class="ws" id="ws"><aside id="aside"></aside><div class="rsz" id="rsz"></div><main id="main"></main></div>
+    <footer>
+      <span id="hint" data-i18n="Сохраняется только выбранный объект">Сохраняется только выбранный объект</span>
+      <div class="sv">
+        <span id="domAct"></span>
+        <button class="btn s" id="cbtn" disabled onclick="cancelSel()" data-i18n="Отменить">Отменить</button>
+        <button class="btn pri s" id="sbtn" disabled onclick="saveSel()" data-i18n="Сохранить">Сохранить</button>
+      </div>
+    </footer>
   </div>
-</footer>
 </div>
-<div class="jump" id="jump" onclick="if(event.target===this)closeJump()">
-  <div class="jbox" onclick="event.stopPropagation()">
-    <input id="jq" data-i18n-placeholder="Перейти к объекту…  (камера, датчик, сервер)" placeholder="Перейти к объекту…  (камера, датчик, сервер)" oninput="jumpList()" autofocus>
-    <div class="jlist" id="jlist"></div>
-  </div>
 </div>
 <div class="mask" id="wiz">
   <div class="dr" id="wizDr">
@@ -699,6 +759,7 @@ function applyStaticUi(){
   document.querySelectorAll("[data-i18n]").forEach(el=>{el.textContent=i18n(el.getAttribute("data-i18n"));});
   document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{el.placeholder=i18n(el.getAttribute("data-i18n-placeholder"));});
   document.querySelectorAll("[data-i18n-title]").forEach(el=>{el.title=i18n(el.getAttribute("data-i18n-title"));});
+  document.querySelectorAll("[data-i18n-aria]").forEach(el=>{el.setAttribute("aria-label",i18n(el.getAttribute("data-i18n-aria")));});
   const wn=document.getElementById("wn");if(wn)wn.textContent=i18n("Далее");
   const wb=document.getElementById("wb");if(wb)wb.textContent=i18n("Назад");
 }
@@ -731,6 +792,17 @@ const IC={
   folderOpen:svgIc(`<path d="M1.8 12.2V4.1c0-.6.5-1.1 1.1-1.1h3l1.4 1.6h5.4c.6 0 1.1.5 1.1 1.1v1.1" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/><path d="M3.1 12.9h9.3l1.9-5.4H4.9z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/>`)
 };
 IC.archive=IC.storage;IC.net=IC.storage;IC.norec=IC.unalloc;IC.nofolder=IC.unalloc;
+IC.all=svgIc(`<rect x="2" y="2" width="5" height="5" rx="1.1" fill="currentColor"/><rect x="9" y="2" width="5" height="5" rx="1.1" fill="currentColor" opacity=".55"/><rect x="2" y="9" width="5" height="5" rx="1.1" fill="currentColor" opacity=".55"/><rect x="9" y="9" width="5" height="5" rx="1.1" fill="currentColor"/>`);
+// Иконки целей перехода: разделы, срезы, правила, роли, учётные записи, настройки
+IC.nav_hw=IC.server;
+IC.nav_rules=svgIc(`<path fill="currentColor" d="M9.4 1 3.5 8.9h3.3l-.7 6.1 5.9-8.1H8.8z"/>`);
+IC.nav_acc=svgIc(`<circle cx="10.2" cy="5.8" r="2.9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8.1 7.9 1.9 14.1M4.3 12.6l1.6 1.6M6.2 10.7l1.6 1.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>`);
+IC.nav_sys=svgIc(`<path d="M1.6 5h5.6M11.2 5h3.2M1.6 11h2.4M8 11h6.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9.2" cy="5" r="1.7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="11" r="1.7" fill="none" stroke="currentColor" stroke-width="1.5"/>`);
+IC.nav_log=svgIc(`<rect x="3" y="1.6" width="10" height="12.8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5.6 5h4.8M5.6 8h4.8M5.6 11h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>`);
+IC.role=svgIc(`<circle cx="6.1" cy="5.2" r="2.4" fill="currentColor"/><path fill="currentColor" d="M1.4 14c0-2.5 2.1-4.1 4.7-4.1s4.7 1.6 4.7 4.1z"/><circle cx="12.1" cy="5.8" r="1.7" fill="currentColor" opacity=".55"/><path fill="currentColor" opacity=".55" d="M9.6 14c0-2 1.1-3.3 2.6-3.3s2.4 1.1 2.4 3.3z"/>`);
+IC.user=svgIc(`<circle cx="8" cy="5" r="2.7" fill="currentColor"/><path fill="currentColor" d="M2.5 14.2c0-2.8 2.5-4.6 5.5-4.6s5.5 1.8 5.5 4.6z"/>`);
+IC.opt=svgIc(`<circle cx="8" cy="8" r="2.1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.6v2.1M8 12.3v2.1M1.6 8h2.1M12.3 8h2.1M3.5 3.5l1.5 1.5M11 11l1.5 1.5M12.5 3.5 11 5M5 11l-1.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>`);
+IC.view=svgIc(`<path fill="currentColor" d="M1.8 2.6h12.4v2.2H1.8zm0 4.3h7.8v2.2H1.8zm0 4.3h10.2v2.2H1.8z"/>`);
 const IC_OVERLAY_R="4.65";
 const IC_NOSIG_BADGE=`<svg class="ici-overlay-svg" viewBox="0 0 10 10" aria-hidden="true"><circle cx="5" cy="5" r="${IC_OVERLAY_R}" fill="#f0646a"/><path d="M3.4 3.4 6.6 6.6M6.6 3.4 3.4 6.6" stroke="#fff" stroke-width="1.35" stroke-linecap="round"/></svg>`;
 const IC_RULETMP_BADGE=`<svg class="ici-overlay-svg" viewBox="0 0 10 10" aria-hidden="true"><circle cx="5" cy="5" r="${IC_OVERLAY_R}" fill="#6a7f9a"/><path d="M5 5V2.25" stroke="#fff" stroke-width="1.35" stroke-linecap="round"/><path d="M5 5h2.55" stroke="#fff" stroke-width="1.15" stroke-linecap="round"/></svg>`;
@@ -745,28 +817,35 @@ const LB={...LB_RU};
 const SYS=new Set(["export","email","sms"]);
 const IPSUB={nvr:"NVR / видеорегистратор",io:"I/O (датчики/реле)",sip:"SIP / аудио",mic:"Микрофоны"};
 const CATS={video:{label:"Видео",icon:"◉"},io:{label:"Ввод-вывод",icon:"◇"},integ:{label:"Интеграции",icon:"◎"},svc:{label:"Службы",icon:"⚙"}};
-const TVIEW_RU={cam:"Камеры и видеоустройства",acfa:"ACFA-устройства"};
-const TVIEW_EN={cam:"Cameras and video devices",acfa:"ACFA devices"};
-const TVIEW={...TVIEW_RU};
-const TVIEW_SW_RU={cam:"Камеры",acfa:"ACFA"};
-const TVIEW_SW_EN={cam:"Cameras",acfa:"ACFA"};
-const TVIEW_SW={...TVIEW_SW_RU};
-const TVIEW_IC={cam:"camera",acfa:"acfa"};
-// Раздел «Сервера»: камеры по серверам записи либо службы серверов
-const SVIEW_RU={cam:"Камеры по серверам",sys:"Службы серверов"};
-const SVIEW_EN={cam:"Cameras by server",sys:"Server services"};
-const SVIEW={...SVIEW_RU};
-const SVIEW_SW_RU={cam:"Камеры",sys:"Службы"};
-const SVIEW_SW_EN={cam:"Cameras",sys:"Services"};
-const SVIEW_SW={...SVIEW_SW_RU};
-const SVIEW_IC={cam:"camera",sys:"svcs"};
+// Дерево «Оборудование» одно. Срез (SLICE) — что показываем, группировка (GROUP) — как.
+const SLICE_RU={all:"Всё оборудование домена",cam:"Камеры и видеоустройства",acfa:"ACFA-устройства",sys:"Службы серверов",srv:"Серверы, их архивы и службы"};
+const SLICE_EN={all:"All domain hardware",cam:"Cameras and video devices",acfa:"ACFA devices",sys:"Server services",srv:"Servers with their archives and services"};
+const SLICE={...SLICE_RU};
+const SLICE_SW_RU={all:"Все",cam:"Камеры",acfa:"ACFA",sys:"Службы",srv:"Серверы"};
+const SLICE_SW_EN={all:"All",cam:"Cameras",acfa:"ACFA",sys:"Services",srv:"Servers"};
+const SLICE_SW={...SLICE_SW_RU};
+const SLICE_IC={all:"all",cam:"camera",acfa:"acfa",sys:"svcs",srv:"server"};
+// Группировка осмысленна не для каждого среза: сервер устройства известен только
+// через архив записи, а службы и вовсе живут прямо на сервере
+const SLICE_GROUPS={all:["folder","server"],cam:["folder","server"],acfa:["folder"],sys:["server"],srv:["server"]};
+const GROUP_RU={folder:"По папкам",server:"По серверам"};
+const GROUP_EN={folder:"By folders",server:"By servers"};
+const GROUP_SW={...GROUP_RU};
+const GROUP_HINT_RU={folder:"Домен → папки → объекты",server:"Домен → серверы → архивы и службы"};
+const GROUP_HINT_EN={folder:"Domain → folders → objects",server:"Domain → servers → archives and services"};
+const GROUP_HINT={...GROUP_HINT_RU};
+const GROUP_IC={folder:"folder",server:"server"};
 const TYPE_FILTERS={
-  cam:[["server","Сервер"],["ipsrv","IP-сервер"],["eventsrc","Источник событий"],["camera","Камера"],["mic","Микрофон"],["spk","Динамик"],["channel","Канал"],["sensor","Датчик"],["relay","Реле"],["ptz","PTZ"],["storage","Встроенное хранилище"]],
+  cam:[["ipsrv","IP-сервер"],["eventsrc","Источник событий"],["camera","Камера"],["mic","Микрофон"],["spk","Динамик"],["channel","Канал"],["sensor","Датчик"],["relay","Реле"],["ptz","PTZ"],["storage","Встроенное хранилище"]],
   acfa:[["acfa","ACFA-устройства"],["acfa_sensor","Датчики"],["acfa_lock","Замки"],["acfa_fence","Шлейфы"],["relay","Реле"]],
-  sys:[["email","Email-оповещатели"],["sms","SMS-оповещатели"],["export","Агенты экспорта"],["spk","Динамики сервера"]]
+  sys:[["email","Email-оповещатели"],["sms","SMS-оповещатели"],["export","Агенты экспорта"],["spk","Динамики сервера"]],
+  srv:[]
 };
+// «Все» — объединение типов остальных срезов, без повторов (реле и динамик есть в двух)
+TYPE_FILTERS.all=(()=>{const m=new Map();["cam","acfa","sys"].forEach(k=>TYPE_FILTERS[k].forEach(([id,l])=>{if(!m.has(id))m.set(id,l)}));return[...m]})();
 const FIELD_LABELS={name:"Название",short:"Короткое имя",id:"ID",ip:"IP",vendor:"Производитель",model:"Модель"};
 const SEARCH_FIELDS=[["name","Название"],["short","Короткое имя"],["ip","IP"],["vendor","Производитель"],["model","Модель"],["id","ID"]];
+const SEARCH_FIELD_IDS=SEARCH_FIELDS.map(([id])=>id);
 const TREE_TAGABLE=new Set(["id","ip","vendor","model"]);
 const TREE_TAG_ORDER=["vendor","model","id","ip"];
 const WIZ={
@@ -822,13 +901,21 @@ const BULK_NAME_TEMPLATES=[
 function isDefaultDeviceName(v){return!v||v==="Авто"||v==="По умолчанию"}
 function defaultDevViewMode(){return"standard"}
 let deviceSearchTimer=null,deviceSearchInterval=null;
-let app="srvs",_lastApp=null,sel="d1",tab="gen",dirty=false,rule="r1",role="adm",sys="ntp",tview="cam";
-let detSel=null,sview="cam",selFolder=null,logFilt="all",asideW=360,recent=[],treeQ="",filtPop=false,typesExpanded=false,treeRenameId=null,treeRenameField="name";
+let app="hw",_lastApp=null,sel="d1",tab="gen",dirty=false,rule="r1",role="adm",sys="ntp",slice="all";
+// Дерево — главный инструмент, поэтому панель сразу занимает четверть экрана
+function clampAsideW(px){return Math.max(280,Math.min(Math.round(window.innerWidth*.5),Math.round(px)))}
+let detSel=null,groupBy="server",selFolder=null,logFilt="all",asideW=clampAsideW(window.innerWidth/4),recent=[],treeQ="",filtPop=false,jumpIdx=0,jumpIds=[],jumpItems=[],typesExpanded=false,treeRenameId=null,treeRenameField="name";
+// Группировку запоминаем для каждого среза: вернувшись в «Камеры», получим тот же вид
+const groupOfSlice={all:"server",cam:"folder",acfa:"folder",sys:"server",srv:"server"};
+// Запрос поиска у каждого раздела свой; у «Оборудования» — treeQ
+const sideQ={rules:"",acc:"",sys:""};
 const treeSel=new Set();
 let treeAnchor=null;
 const statusFilts=new Set();
-const STATUS_FILTERS_RU=[["on","Включено"],["off","Выключено"],["nosignal","Нет сигнала"],["license","Лицензия превышена"]];
-const STATUS_FILTERS_EN=[["on","On"],["off","Off"],["nosignal","No signal"],["license","License exceeded"]];
+// Статусы взаимоисключающие: у каждого объекта ровно один (см. primaryStatus)
+const STATUS_FILTERS_RU=[["on","Работает"],["nosignal","Нет сигнала"],["off","Выключено"],["license","Лицензия превышена"]];
+const STATUS_FILTERS_EN=[["on","Working"],["nosignal","No signal"],["off","Off"],["license","License exceeded"]];
+const STATUS_HINTS={on:"Включено и есть сигнал",nosignal:"Включено, но нет сигнала",off:"Выключено вручную или по правилу",license:"Не работает: превышена лицензия"};
 const STATUS_FILTERS=[...STATUS_FILTERS_RU];
 const tblFilt={cams:{},acfa:{}};
 const CAMS_TBL_COLS=[["ip","IP-адрес",112],["port","Порт",48],["vendor","Производитель",108],["model","Модель",108],["name","Название",180],["id","ID",68],["lat","Широта",78],["lon","Долгота",78],["azimuth","Азимут",72]];
@@ -854,10 +941,10 @@ const logCats=logCatsRU.map(c=>({...c}));
 function syncLocalePack(){
   const en=uiLang==="en";
   Object.assign(LB,en?LB_EN:LB_RU);
-  Object.assign(TVIEW,en?TVIEW_EN:TVIEW_RU);
-  Object.assign(TVIEW_SW,en?TVIEW_SW_EN:TVIEW_SW_RU);
-  Object.assign(SVIEW,en?SVIEW_EN:SVIEW_RU);
-  Object.assign(SVIEW_SW,en?SVIEW_SW_EN:SVIEW_SW_RU);
+  Object.assign(SLICE,en?SLICE_EN:SLICE_RU);
+  Object.assign(SLICE_SW,en?SLICE_SW_EN:SLICE_SW_RU);
+  Object.assign(GROUP_SW,en?GROUP_EN:GROUP_RU);
+  Object.assign(GROUP_HINT,en?GROUP_HINT_EN:GROUP_HINT_RU);
   STATUS_FILTERS.length=0;(en?STATUS_FILTERS_EN:STATUS_FILTERS_RU).forEach(x=>STATUS_FILTERS.push(x));
   roles.forEach((r,i)=>{r.n=(en?rolesEN:rolesRU)[i].n;});
   sysOpts.forEach((o,i)=>{o.n=(en?sysOptsEN:sysOptsRU)[i].n;});
@@ -1185,18 +1272,26 @@ const ACFA_NODE_IDS=new Set();
 function markAcfa(list,inside=false){(list||[]).forEach(n=>{const under=inside||n.type==="acfa";if(under)ACFA_NODE_IDS.add(n.id);markAcfa(n.devices,under)})}
 function remakeAcfa(){ACFA_NODE_IDS.clear();markAcfa(devicePool);servers.forEach(s=>markAcfa(s.devices))}
 remakeAcfa();
+// Индекс узлов: сбрасывается перед каждым действием пользователя и перерисовкой,
+// при промахе пересобирается — новые узлы находятся сразу после добавления
+let findIdx=null;
+function invalidateFind(){findIdx=null}
+function buildFindIdx(){findIdx=new Map();walkAll((n,p)=>findIdx.set(n.id,{n,p}))}
 function find(id){
-  let o;walkAll((n,p)=>{if(n.id===id)o={n,p}});
+  if(id==null)return undefined;
+  if(!findIdx)buildFindIdx();
+  let o=findIdx.get(id);
   if(!o){const f=folderById(id);if(f)o={n:f,p:folderParent(id)}}
   if(!o){const a=archById(id);if(a)o={n:a,p:archOwner(a)}}
   if(!o&&id.startsWith("gpu:")){const sv=servers.find(x=>x.id===id.slice(4));if(sv&&serverGpu(sv))o={n:gpuNode(sv),p:sv}}
   if(!o&&id.startsWith("norec:")){const d=domains.find(x=>x.id===id.slice(6));if(d)o={n:norecNode(d.id),p:d}}
   if(!o&&id.startsWith("nofolder:")){const d=domains.find(x=>x.id===id.slice(9));if(d)o={n:nofolderNode(d.id),p:d}}
+  if(!o){buildFindIdx();o=findIdx.get(id)}
   return o;
 }
 function norecId(did){return"norec:"+did}
 function norecNode(did){return{id:norecId(did),type:"norec",name:"Без записи",domainId:did,online:true}}
-function cam(id){let x;walkAll(n=>{if(n.id===id)x=n});return x}
+function cam(id){return find(id)?.n}
 // Сервер устройства — только через архив, на котором ведётся запись (у служб — владелец)
 function srv(id){
   let f=find(id);
@@ -1302,24 +1397,159 @@ function unallocDisplayList(domainId){
   unallocDisplayCache[domainId]=cache.filter(r=>r.added||liveIds.has(r.id));
   return unallocDisplayCache[domainId];
 }
-function addToDomain(serverId,domainId){
-  const prevSel=sel;
+function addToDomain(serverId,domainId){addServersToDomain([serverId],domainId)}
+// Массовое добавление: одна перерисовка и одно уведомление на всю пачку
+function addServersToDomain(ids,domainId){
   const d=domains.find(x=>x.id===domainId)||domains[0];
   unallocDisplayList(d.id);
-  const s=takeServer(serverId);if(!s)return;
-  d.servers.push(s);
+  const added=[];
+  ids.forEach(id=>{
+    const s=takeServer(id);if(!s)return;
+    if(!servers.includes(s))servers.push(s);
+    d.servers.push(s);SERVER_DOMAIN[s.id]=d.id;added.push(s);
+    const row=unallocDisplayCache[d.id].find(x=>x.id===id);
+    if(row){row.added=true;row.name=s.name;row.ip=s.ip||"";row.online=s.online!==false}
+    else unallocDisplayCache[d.id].push(unallocRowFrom(s,true));
+    unallocSel(d.id).delete(id);
+  });
+  if(!added.length){toast("Нечего добавлять");return added}
   open.add(d.id);
-  const row=unallocDisplayCache[d.id]?.find(x=>x.id===serverId);
-  if(row){row.added=true;row.name=s.name;row.ip=s.ip||"";row.online=s.online!==false}
-  else unallocDisplayCache[d.id].push(unallocRowFrom(s,true));
-  if(prevSel===serverId)sel=unallocId(d.id);
+  if(added.some(s=>s.id===sel))sel=unallocId(d.id);
   treeMatchCache.clear();searchMatchCache.clear();
   paint();
   if(document.getElementById("wiz")?.classList.contains("open")&&wizd.mode==="server-list")wd();
+  toast(added.length===1?`Сервер «${added[0].name}» добавлен в «${d.name}»`:`${i18n("Добавлено серверов:")} ${added.length} → «${d.name}»`);
+  return added;
+}
+// Отмеченные в списке нераспределённых серверы — по домену
+const unallocPick={};
+function unallocSel(did){return unallocPick[did]||(unallocPick[did]=new Set())}
+function unallocAvail(did){return unallocDisplayList(did).filter(r=>!r.added&&unallocList(did).some(s=>s.id===r.id))}
+// Перерисовка при отметке не должна сбрасывать прокрутку длинного списка
+function rerenderUnalloc(){
+  const inWiz=document.getElementById("wiz")?.classList.contains("open")&&(wizd.mode==="server-list"||wizd.mode==="server-manual");
+  const root=document.getElementById(inWiz?"wizDr":"main"),q=".unalloc-scroll,.sc,#wbd";
+  const keep=[...(root?.querySelectorAll(q)||[])].map(el=>el.scrollTop);
+  if(inWiz)wd();else gear();
+  [...(root?.querySelectorAll(q)||[])].forEach((el,i)=>{if(keep[i]!=null)el.scrollTop=keep[i]});
+}
+function toggleUnallocPick(did,id,e){
+  e?.stopPropagation();
+  const s=unallocSel(did);if(s.has(id))s.delete(id);else s.add(id);
+  rerenderUnalloc();
+}
+function toggleUnallocAll(did,e){
+  e?.stopPropagation();
+  const s=unallocSel(did),ids=unallocAvail(did).map(r=>r.id),all=ids.length&&ids.every(id=>s.has(id));
+  s.clear();if(!all)ids.forEach(id=>s.add(id));
+  rerenderUnalloc();
+}
+function addPickedServers(did){
+  const ids=unallocAvail(did).map(r=>r.id).filter(id=>unallocSel(did).has(id));
+  if(!ids.length){toast("Отметьте серверы");return}
+  addServersToDomain(ids,did);
+}
+function addAllUnalloc(did){
+  const ids=unallocAvail(did).map(r=>r.id);
+  if(!ids.length){toast("Нечего добавлять");return}
+  addServersToDomain(ids,did);
+}
+// ── Домены: создание, изменение, удаление ──────────────────────────────────
+let _dseq=domains.length;
+function domainNameTaken(name,exceptId){const k=normText(name).trim();return domains.some(d=>d.id!==exceptId&&normText(d.name).trim()===k)}
+function validateDomainName(name,exceptId){
+  const v=String(name||"").trim();
+  if(!v)return"Укажите имя домена";
+  if(domainNameTaken(v,exceptId))return"Домен с таким именем уже есть";
+  return"";
+}
+function nextDomainName(){let i=domains.length+1;while(domainNameTaken(i18n("Домен")+" "+i))i++;return i18n("Домен")+" "+i}
+function showFormErr(id,msg){const el=document.getElementById(id);if(!el)return;el.textContent=msg?i18n(msg):"";el.style.display=msg?"":"none"}
+function createDomain(){
+  closeTreeCtx();
+  askConfirm("Новый домен",`<div class="g"><div><label>${i18n("Имя")}</label><input id="domFormName" value="${escHtml(nextDomainName())}" autocomplete="off"></div>
+    <div><label>${i18n("Серийный номер лицензии")}</label><input id="domFormLic" autocomplete="off"></div></div>
+    <div class="nt err" id="domFormErr" style="display:none;margin:10px 0 0"></div>`,"","Создать",()=>{
+    const nameEl=document.getElementById("domFormName"),name=nameEl.value.trim();
+    const err=validateDomainName(name);
+    if(err){showFormErr("domFormErr",err);nameEl.focus();return false}
+    let id;do{id="d"+(++_dseq)}while(domains.some(x=>x.id===id));
+    domains.push({id,type:"domain",name,license:document.getElementById("domFormLic").value.trim(),online:true,servers:[],unallocServers:[]});
+    open.add(id);treeMatchCache.clear();searchMatchCache.clear();
+    openNode(id,{tab:"gen"});
+    toast(`Домен «${name}» создан`);
+  },{html:true});
+  setTimeout(()=>{const el=document.getElementById("domFormName");el?.focus();el?.select()},30);
+}
+function saveDomainForm(id){
+  const d=domains.find(x=>x.id===id);if(!d)return false;
+  const nameEl=document.getElementById("domName"),licEl=document.getElementById("domLic");
+  const name=nameEl?nameEl.value.trim():d.name;
+  const err=validateDomainName(name,id);
+  if(err){showFormErr("domErr",err);nameEl?.focus();toast(err);return false}
+  d.name=name;
+  if(licEl)d.license=licEl.value.trim();
+  return true;
+}
+function domainStats(did){
+  const d=domains.find(x=>x.id===did);
+  return{
+    servers:d?.servers.length||0,unalloc:d?.unallocServers.length||0,
+    devices:devicePool.filter(x=>DEVICE_DOMAIN[x.id]===did).length,
+    folders:domainFolders(did).length,
+    archives:arch.filter(a=>a.domain===did&&!a.server).length
+  };
+}
+// Удаление ничего не теряет: серверы становятся нераспределёнными в выбранном домене,
+// устройства, папки и сетевые архивы переходят туда же
+function deleteDomain(id){
+  closeTreeCtx();
+  const d=domains.find(x=>x.id===id);if(!d)return;
+  if(domains.length<2){toast("Нельзя удалить единственный домен");return}
+  const st=domainStats(id),others=domains.filter(x=>x.id!==id);
+  const parts=[[st.servers,"серверов"],[st.unalloc,"нераспределённых серверов"],[st.devices,"устройств"],[st.folders,"папок"],[st.archives,"сетевых архивов"]]
+    .filter(([n])=>n).map(([n,l])=>`${n} ${i18n(l)}`).join(", ");
+  const empty=!parts;
+  const html=`<p>${i18n("Будет удалён домен")} «${escHtml(d.name)}».</p>`+(empty?`<p class="sub">${i18n("Домен пуст.")}</p>`:
+    `<p>${i18n("В домене:")} ${parts}.</p>
+    <label style="margin-top:10px">${i18n("Перенести содержимое в домен")}</label>
+    <select id="domMoveTo">${others.map(x=>`<option value="${x.id}">${escHtml(locName(x))}</option>`).join("")}</select>
+    <p class="sub" style="margin:8px 0 0">${i18n("Серверы станут нераспределёнными в выбранном домене — их можно будет добавить обратно. Устройства, папки и сетевые архивы перейдут в него.")}</p>`);
+  askConfirm("Удалить домен?",html,"","Удалить",()=>{
+    const tid=empty?others[0].id:document.getElementById("domMoveTo").value;
+    moveDomainContents(id,tid);
+    domains.splice(domains.findIndex(x=>x.id===id),1);
+    [id,unallocId(id),norecId(id),nofolderId(id)].forEach(x=>open.delete(x));
+    Object.keys(appSel).forEach(k=>{if(appSel[k]&&!find(appSel[k]))appSel[k]=tid});
+    delete unallocPick[id];resetUnallocDisplay();
+    treeMatchCache.clear();searchMatchCache.clear();
+    open.add(tid);if(!empty)open.add(unallocId(tid));
+    openNode(tid,{tab:"gen"});
+    toast(`Домен «${d.name}» удалён`);
+  },{html:true});
+}
+function moveDomainContents(fromId,toId){
+  const from=domains.find(x=>x.id===fromId),to=domains.find(x=>x.id===toId);if(!from||!to)return;
+  const moved=[...from.servers,...from.unallocServers];
+  from.servers.length=0;from.unallocServers.length=0;
+  moved.forEach(s=>{to.unallocServers.push(s);SERVER_DOMAIN[s.id]=toId});
+  Object.keys(DEVICE_DOMAIN).forEach(k=>{if(DEVICE_DOMAIN[k]===fromId)DEVICE_DOMAIN[k]=toId});
+  folders.forEach(f=>{if(f.domain===fromId)f.domain=toId});
+  arch.forEach(a=>{if(a.domain===fromId&&!a.server)a.domain=toId});
+}
+function saveSel(){
+  const n=find(sel)?.n;
+  if(n?.type==="domain"&&!saveDomainForm(n.id))return;
+  setD(false);paint();toast("Сохранено");
+}
+function cancelSel(){setD(false);paint();toast("Отменено")}
+function addDomainRow(){
+  return `<div class="n n-add srv" onclick="event.stopPropagation();createDomain()" title="${i18n("Создать домен")}">
+    <span style="width:11px;flex:none"></span><span class="nm">＋ ${i18n("Домен")}</span></div>`;
 }
 function goAddedServer(serverId){
   document.getElementById("wiz")?.classList.remove("open");
-  openNode(serverId,{app:"dev",view:"cam",tab:"gen"});
+  openNode(serverId,{tab:"gen"});
 }
 function addManualToDomain(domainId){
   const ip=(document.getElementById("newSrvIp")||{}).value?.trim()||"";
@@ -1344,8 +1574,9 @@ function searchServerByIp(ip,port){
   return{ok:true,server:s};
 }
 let ipSearchTry=0;
+let _srvSeq=0;
 function createFakeServer(ip,port){
-  return{id:"s"+Date.now(),type:"server",name:"Сервер — "+ip,ip,port:port||20111,online:true,role:"Узел",disk:0,cpu:5,ram:18,net:2,devices:[]};
+  return{id:"s"+Date.now().toString(36)+"_"+(++_srvSeq),type:"server",name:"Сервер — "+ip,ip,port:port||20111,online:true,role:"Узел",disk:0,cpu:5,ram:18,net:2,devices:[]};
 }
 function registerFakeServer(s,domainId){
   servers.push(s);
@@ -1375,8 +1606,10 @@ function addContext(){
     server=srv(n.id);domain=server?domainOf(server.id):null;
     if(["camera","channel"].includes(n.type)||(n.type==="ipsrv"&&n.subtype!=="nvr")||["acfa","acfa_lock"].includes(n.type))parent=n;
   }
-  return{node:n,domain,server,parent,view:tview};
+  return{node:n,domain,server,parent,view:wizView()};
 }
+// Мастер добавления знает только три вида; «Все» и «Серверы» ведут себя как «Камеры»
+function wizView(){return slice==="acfa"?"acfa":slice==="sys"?"sys":"cam"}
 function isSvc(n){return SYS.has(n.type)||!!n.server}
 function treeKind(n){
   if(n.type==="det"||n.type==="domain"||n.type==="unalloc"||n.type==="folder")return null;
@@ -1385,11 +1618,29 @@ function treeKind(n){
   if(isSvc(n))return"sys";
   return"cam";
 }
+// К какому срезу относится объект; контейнеры дерева (домен, папка, архив) — ни к какому
+function sliceOf(n){return n.type==="server"?"srv":treeKind(n)}
+function inSlice(n){
+  const k=sliceOf(n);
+  if(!k)return false;
+  if(slice==="all")return true;
+  // «Серверы» — срез инфраструктуры: сами серверы и то, что на них запущено
+  if(slice==="srv")return k==="srv"||k==="sys";
+  return k===slice;
+}
+// Срез «Все» и «Серверы» показывают и то, и другое; поэтому решаем по содержимому
+function sliceHasArch(){return slice==="all"||slice==="cam"||slice==="srv"}
+function sliceHasSvc(){return slice==="all"||slice==="sys"||slice==="srv"}
+function sliceHasUnalloc(){return slice==="all"||slice==="sys"||slice==="srv"}
+function sliceHasNorec(){return slice==="all"||slice==="cam"}
+// В срезе «Серверы» архив и видеоускоритель — конечные строки: важен сам состав сервера
+function sliceOpensArch(){return slice!=="srv"}
+function groupsOf(s){return SLICE_GROUPS[s||slice]||["folder"]}
 function matchesType(n){
   if(!typeFilts.size)return true;
   if(n.type==="spk"){
-    if(tview==="sys")return typeFilts.has("spk")&&!!n.server;
-    if(tview==="cam")return typeFilts.has("spk")&&!n.server;
+    if(slice==="sys")return typeFilts.has("spk")&&!!n.server;
+    if(slice==="cam")return typeFilts.has("spk")&&!n.server;
   }
   return typeFilts.has(n.type);
 }
@@ -1473,39 +1724,20 @@ function objectStatusNotesHtml(n){
   if(st.ruleOff)h+=`<div class="nt" role="status">${i18n("Отключена по правилу (временно). Управление — в разделе")} <button type="button" class="lk" onclick="goApp('rules')">${i18n("Автоматизация")}</button>.</div>`;
   return h;
 }
-function effectiveStatusKeys(){
-  if(!statusFilts.size)return[];
-  return[...statusFilts];
+function primaryStatus(n){
+  if(isSignalOnly(n))return hasNoSignal(n)?"nosignal":"on";
+  if(!canToggleEnabled(n))return null;
+  const st=nodeStatus(n);
+  if(st.license)return"license";
+  if(st.off)return"off";
+  if(st.nosignal)return"nosignal";
+  return"on";
 }
-function statusKeyHit(st,k){
-  // «Включено» — всё, кроме выключенного (сигнал, нет сигнала, лицензия)
-  if(k==="on")return !st.off;
-  return !!st[k];
-}
+// Выбранные статусы объединяются (ИЛИ): «Нет сигнала» + «Выключено» — и те, и другие
 function matchesStatus(n){
   if(!statusFilts.size)return true;
-  const keys=effectiveStatusKeys();
-  if(!keys.length)return true;
-
-  const wantNs=keys.includes("nosignal");
-  const wantLic=keys.includes("license");
-
-  // Сервер/домен: «Включено»/«Выключено»/лицензия не прячут; «нет сигнала» — по online
-  if(isSignalOnly(n)){
-    const rest=keys.filter(k=>k!=="on"&&k!=="off"&&k!=="license");
-    if(!rest.length)return !wantLic;
-    const ok=!hasNoSignal(n);
-    if(rest.includes("nosignal"))return!ok;
-    return false;
-  }
-  if(!canToggleEnabled(n))return false;
-  const st=nodeStatus(n);
-  // «Нет сигнала» + «Лицензия превышена» — объединение (и те, и другие)
-  if(wantNs&&wantLic){
-    if(!(st.nosignal||st.license))return false;
-    return keys.filter(k=>k!=="nosignal"&&k!=="license").every(k=>statusKeyHit(st,k));
-  }
-  return keys.every(k=>statusKeyHit(st,k));
+  const k=primaryStatus(n);
+  return!!k&&statusFilts.has(k);
 }
 function treeCountVal(n,shownLen){
   if(n.type==="server")return hasNoSignal(n)?0:(shownLen||serverDeviceCount(n));
@@ -1537,11 +1769,12 @@ function treeRowMeta(n,q,shownLen,expanded){
 }
 function selfInView(n){
   if(n.type==="domain"||n.type==="unalloc"||n.type==="folder")return false;
-  return treeKind(n)===tview&&matchesType(n)&&matchesStatus(n);
+  return inSlice(n)&&matchesType(n)&&matchesStatus(n);
 }
 function filtKey(){return[...typeFilts].sort().join(",")+"|"+[...searchFields].sort().join(",")+"|"+[...statusFilts].sort().join(",")}
+function viewKey(){return slice+"|"+groupBy}
 function hasTreeIn(n){
-  const key=tview+"|"+filtKey()+"|"+n.id;if(treeMatchCache.has(key))return treeMatchCache.get(key);
+  const key=viewKey()+"|"+filtKey()+"|"+n.id;if(treeMatchCache.has(key))return treeMatchCache.get(key);
   if(n.type==="det")return false;
   const hit=selfInView(n)||kids(n).some(hasTreeIn);
   treeMatchCache.set(key,hit);return hit;
@@ -1584,7 +1817,7 @@ function expandTo(id,ctx){
   }
 }
 function pushRecent(id){recent=recent.filter(x=>x!==id);recent.unshift(id);if(recent.length>8)recent.pop()}
-function setFocus(id,keepSel){if(!keepSel){const s=servers.find(x=>x.id===id);sel=s?.devices?.find(d=>treeKind(d)===tview)?.id||id}expandTo(sel);paint()}
+function setFocus(id,keepSel){if(!keepSel){const s=servers.find(x=>x.id===id);sel=s?.devices?.find(d=>inSlice(d))?.id||id}expandTo(sel);paint()}
 function clearGearFilters(){typeFilts.clear();searchFields.clear();statusFilts.clear();treeQ=""}
 // В быстром поиске показываем папку объекта (для доменов/серверов — сам узел)
 function jumpScope(n){
@@ -1592,39 +1825,107 @@ function jumpScope(n){
   if(n.type==="domain"||n.type==="unalloc"||n.type==="server"||n.type==="folder")return n;
   return foldersOfDevice(n.id)[0]||srv(n.id)||null;
 }
-function jumpTo(id){
-  openNode(id,{app:"dev"});
-  closeJump();
+// Переход по ключу цели: объект дерева или любая другая цель индекса
+function jumpTo(key){
+  const t=jumpByKey(key);
+  if(t)runJumpTarget(t);
+}
+// Камера видна в «Серверах», только если её ветка (сервер архива или домен) на связи
+function srvsShowsCam(n){
+  const s=srv(n.id);
+  if(s)return!hasNoSignal(s)&&!hasNoSignal(domainOf(s.id)||{});
+  const d=domains.find(x=>x.id===deviceDomain(n.id));
+  return!!d&&!hasNoSignal(d);
+}
+// Где объект показывается в дереве: пары «срез + группировка» в порядке предпочтения.
+// Пустой объект означает «подходит текущий вид».
+function whereShown(n){
+  if(!n)return[{}];
+  const t=n.type;
+  if(t==="domain")return[{}];
+  if(t==="folder"||t==="nofolder")return[{slice:"all",group:"folder"},{slice:"cam",group:"folder"},{slice:"acfa",group:"folder"}];
+  if(t==="unalloc"||t==="server")return[{slice:"srv",group:"server"},{slice:"all",group:"server"},{slice:"sys",group:"server"}];
+  if(t==="archive"||t==="gpu"||t==="det")return[{slice:"cam",group:"server"},{slice:"all",group:"server"},{slice:"srv",group:"server"}];
+  if(t==="norec")return[{slice:"cam",group:"server"},{slice:"all",group:"server"}];
+  if(isSvc(n))return[{slice:"sys",group:"server"},{slice:"all",group:"server"},{slice:"srv",group:"server"}];
+  const kind=treeKind(n)||"cam";
+  const out=[{slice:kind,group:"folder"},{slice:"all",group:"folder"}];
+  if(t==="camera"&&srvsShowsCam(n))out.push({slice:"cam",group:"server"},{slice:"all",group:"server"});
+  return out;
+}
+// Остаёмся в текущем виде, если объект в нём есть; иначе — первый подходящий
+function homeOf(n){
+  const all=whereShown(n);
+  return all.find(x=>(!x.slice||x.slice===slice)&&(!x.group||x.group===groupBy))||all[0];
+}
+function sliceLabel(s){return i18n(SLICE_SW[s]||"")}
+// Объект, скрытый активными фильтрами, открываем со сброшенными фильтрами — с уведомлением
+function revealThroughFilters(n){
+  if(!hasActiveFilters())return;
+  const q=qval();
+  const inTree=!!sliceOf(n);
+  const ok=inTree?(selfInView(n)&&matchesSearch(n,q))
+    :(n.type==="folder"?(!q||folderNameHit(n,q)):(!q||matchesSearch(n,q)||textHit(locName(n),q)));
+  if(ok)return;
+  clearGearFilters();treeMatchCache.clear();searchMatchCache.clear();
+  toast("Фильтры дерева сброшены, чтобы показать объект");
 }
 function openNode(id,opts={}){
   const f=find(id);if(!f)return;
-  app=opts.app||app||"dev";
+  const home=opts.slice||opts.group?{slice:opts.slice,group:opts.group}:homeOf(f.n);
+  if(app==="hw")appSel.hw=sel;
+  app="hw";
+  setSliceState(home.slice||slice,home.group);
   tab=opts.tab||"gen";
-  if(opts.view)tview=opts.view;
-  else if(f.n.type!=="server"&&f.n.type!=="domain"&&f.n.type!=="unalloc")tview=treeKind(f.n)||tview;
-  clearGearFilters();filtPop=false;expandTo(id);sel=id;pushRecent(id);
-  document.querySelectorAll("header [data-a]").forEach(x=>x.classList.toggle("on",x.dataset.a===app));
+  filtPop=false;
+  revealThroughFilters(f.n);
+  const ctx=openCtxFor(f.n);
+  sel=id;selCtx=ctx;resetTreeSel(id);expandTo(id,ctx);pushRecent(id);
+  if(ctx?.startsWith("f:"))selFolder=ctx.slice(2);
+  if(groupBy==="server"){const own=ipsrvOwnerNode(f.n);if(own)open.add(own.id)}
   paint();
+  scrollSelIntoView();
+}
+// Смена среза с проверкой группировки: не всякий срез умеет обе
+function setSliceState(s,g){
+  if(SLICE_SW[s])slice=s;
+  const allowed=groupsOf(slice);
+  const want=g||groupOfSlice[slice]||allowed[0];
+  groupBy=allowed.includes(want)?want:allowed[0];
+  groupOfSlice[slice]=groupBy;
+}
+// Контекст вхождения строки: объект бывает в дереве несколько раз (папки, архив, GPU)
+function openCtxFor(n){
+  if(groupBy==="folder"){
+    if(!treeKind(n))return null;
+    const root=path(n.id)[0]||n,own=foldersOfDevice(root.id);
+    const pref=selFolder&&own.some(x=>x.id===selFolder)?selFolder:own[0]?.id;
+    return pref?"f:"+pref:"nf:"+deviceDomain(n.id);
+  }
+  if(n.type==="camera")return isRecording(n)&&archById(n.arch)?"arch:"+n.arch:"norec:"+deviceDomain(n.id);
+  if(n.type==="det"){const c=find(n.id)?.p,sid=c?detServerId(c,n):null;return sid?"gpu:"+sid:null}
+  return null;
+}
+function scrollSelIntoView(){
+  requestAnimationFrame(()=>{document.querySelector("#tree .n.on")?.scrollIntoView({block:"nearest"})});
 }
 function goAddServer(domainId){
   const id=unallocId(domainId);
   if(!find(id))return;
-  openNode(id,{app:"dev",view:"cam",tab:"gen"});
+  openNode(id,{tab:"gen"});
 }
 function openFindServerByIp(domainId){
   const did=domainId||addContext().domain?.id||domains[0]?.id;
   if(!did)return;
   const ua=unallocId(did);
   if(!find(ua))return;
-  if(sel!==ua)openNode(ua,{app:"dev",view:"cam",tab:"gen"});
+  if(sel!==ua)openNode(ua,{tab:"gen"});
   openW("manual");
 }
 function nodeDeepLink(id){
   const f=find(id);if(!f)return location.href;
-  const n=f.n;
-  let view=tview;
-  if(n.type!=="domain"&&n.type!=="unalloc"&&n.type!=="server")view=treeKind(n)||tview;
-  const p=new URLSearchParams({node:id,app,view,tab});
+  const home=homeOf(f.n);
+  const p=new URLSearchParams({node:id,slice:home.slice||slice,group:home.group||groupBy,tab});
   return location.pathname+location.search+"#"+p.toString();
 }
 function ctxOpenNewTab(id){
@@ -1636,18 +1937,254 @@ function applyDeepLink(){
   if(!raw)return false;
   const p=new URLSearchParams(raw),id=p.get("node");
   if(!id||!find(id))return false;
-  openNode(id,{app:p.get("app")||"dev",view:p.get("view")||undefined,tab:p.get("tab")||"gen"});
+  const old=legacyLinkView(p.get("app"),p.get("view"));
+  openNode(id,{slice:p.get("slice")||old.slice,group:p.get("group")||old.group,tab:p.get("tab")||"gen"});
   return true;
 }
-function closeJump(){document.getElementById("jump").classList.remove("open")}
-function openJump(){document.getElementById("jump").classList.add("open");setTimeout(()=>document.getElementById("jq").focus(),50);jumpList()}
-function jumpList(){const q=(document.getElementById("jq")||{value:""}).value.toLowerCase(),list=document.getElementById("jlist");if(!list)return;
-  if(!q){list.innerHTML=`<div class="srh">Недавние</div>`+recent.map(id=>{const f=find(id);if(!f)return"";const top=jumpScope(f.n);
-    return `<div class="res" onclick="jumpTo('${id}')"><span>${ic(f.n.type)}</span><div style="flex:1;min-width:0"><div>${f.n.name}</div><div class="pth">${f.n.type==="domain"||f.n.type==="unalloc"?LB[f.n.type]:`${top.name} · ${LB[f.n.type]}`}</div></div></div>`}).join("")||`<div class="sub" style="padding:12px">Начните вводить имя…</div>`;return}
-  const r=[];walkAll(n=>{if(n.type==="det")return;const hay=[n.short,n.name,n.ip,n.vendor,n.model,LB[n.type],n.subtype&&IPSUB[n.subtype]].filter(Boolean).join(" ").toLowerCase();if(hay.includes(q))r.push(n)});
-  list.innerHTML=`<div class="srh">${r.length} результатов</div>`+r.slice(0,40).map(n=>{const top=jumpScope(n),p=path(n.id).slice(0,-1).map(x=>x.name).join(" / ");
-    return `<div class="res" onclick="jumpTo('${n.id}')"><span>${ic(n.type)}</span><div style="flex:1;min-width:0"><div>${n.type!=="server"&&n.short!=null&&n.short!==""?`${n.short}. `:""}${n.name}</div><div class="pth">${n.type==="domain"||n.type==="unalloc"?LB[n.type]:`${top.name}${p?" / "+p:""} · ${LB[n.type]}`}</div></div></div>`}).join("")}
-function searchAll(q){if(q.length<2)return[];const r=[];walkAll(n=>{if(n.type==="det")return;const hay=[n.short,n.name,n.ip,n.vendor,n.model,LB[n.type],n.subtype&&IPSUB[n.subtype]].filter(Boolean).join(" ").toLowerCase();if(hay.includes(q))r.push(n)});return r}
+// Ссылки, выданные до объединения деревьев: app=dev|srvs + view=cam|acfa|sys
+function legacyLinkView(a,v){
+  if(a==="srvs")return{slice:v==="sys"?"sys":"cam",group:"server"};
+  if(a==="dev")return{slice:v==="acfa"?"acfa":"cam",group:"folder"};
+  return{};
+}
+// ── Единая точка навигации ────────────────────────────────────────────────
+// Строка в шапке ведёт куда угодно: объект дерева, раздел, срез, правило,
+// роль, учётная запись, страница опций, отдельная настройка, категория журнала.
+// Новая цель = функция-источник + registerJumpSource; индекс собирается из них.
+const JUMP_LIMIT=40;
+const JUMP_SOURCES=[];
+// list() — все цели источника; match(q) — отфильтрованные (у дерева свой быстрый путь)
+function registerJumpSource(id,list,match){JUMP_SOURCES.push({id,list,match:match||(q=>matchTargets(list(),q))})}
+function jumpItem(o){return{title:"",sub:"",where:"",icon:"opt",keywords:"",node:null,...o}}
+function matchTargets(list,q){return q?list.filter(t=>textHit([t.title,t.sub,t.keywords].join(" "),q)):[]}
+const APP_TITLES={hw:"Оборудование",rules:"Автоматизация",acc:"Доступ",sys:"Опции",log:"Журнал"};
+const APP_SUBS={hw:"Домены, серверы, камеры и службы",rules:"Правила «если — то»",acc:"Роли, права и учётные записи",sys:"Параметры кластера",log:"События, аудит и тревоги"};
+const APP_KEYWORDS={hw:"домены серверы камеры устройства службы архивы",rules:"правила сценарии реакции",acc:"пользователи роли права логины",sys:"настройки параметры",log:"события аудит тревоги"};
+function appTitle(a){return i18n(APP_TITLES[a]||"")}
+function targetKeywords(s){return i18n(s)===s?s:i18n(s)+" "+s}
+function sectionTargets(){
+  return Object.keys(APP_TITLES).map(a=>jumpItem({key:"app:"+a,title:appTitle(a),sub:i18n(APP_SUBS[a]),
+    where:i18n("Раздел"),icon:"nav_"+a,keywords:targetKeywords(APP_KEYWORDS[a]),go:()=>setApp(a)}));
+}
+// Срезы дерева — тоже адрес: «Оборудование · Службы · По серверам»
+function viewTargets(){
+  const out=[];
+  Object.keys(SLICE_SW).forEach(s=>groupsOf(s).forEach(g=>{
+    const multi=groupsOf(s).length>1;
+    out.push(jumpItem({key:`view:${s}:${g}`,title:`${appTitle("hw")} · ${SLICE_SW[s]}${multi?" · "+GROUP_SW[g]:""}`,
+      sub:SLICE[s],where:i18n("Срез"),icon:SLICE_IC[s],keywords:targetKeywords("срез дерево группировка"),
+      go:()=>{setApp("hw");setSlice(s);setGroupBy(g)}}));
+  }));
+  return out;
+}
+function ruleTargets(){
+  return rules.map(r=>jumpItem({key:"rule:"+r.id,title:r.name,sub:`${appTitle("rules")} · ${r.a} → ${r.c}`,
+    where:appTitle("rules"),icon:"nav_rules",keywords:[r.a,r.b,r.c,targetKeywords("правило")].join(" "),
+    go:()=>{setApp("rules");rule=r.id;tab="gen";paint()}}));
+}
+function accessTargets(){
+  const out=[];
+  roles.forEach(r=>{
+    out.push(jumpItem({key:"role:"+r.id,title:r.n,sub:`${appTitle("acc")} · ${r.users.length} ${i18n("учётных записей")}`,
+      where:appTitle("acc"),icon:"role",keywords:[targetKeywords("роль права"),...r.users].join(" "),
+      go:()=>{setApp("acc");role=r.id;tab="gen";paint()}}));
+    r.users.forEach(u=>out.push(jumpItem({key:"user:"+r.id+":"+u,title:u,sub:`${appTitle("acc")} · ${r.n}`,
+      where:i18n("Учётная запись"),icon:"user",keywords:targetKeywords("пользователь логин учётная запись")+" "+r.n,
+      go:()=>{setApp("acc");role=r.id;tab="gen";paint();flashSetting(u)}})));
+  });
+  return out;
+}
+// Отдельные настройки: [страница, подпись в интерфейсе, слова для поиска]
+const OPTION_SETTINGS=[
+  ["ntp","Сервер NTP","время синхронизация pool"],
+  ["ntp","Часовой пояс","время зона"],
+  ["sec","Срок действия пароля, дн","пароль политика безопасность"],
+  ["sec","Двухфакторная аутентификация","2fa безопасность вход"],
+  ["mail","SMTP-сервер","почта email уведомления оповещения"],
+  ["mail","Webhook","интеграция уведомления оповещения"],
+  ["lic","Лицензии на камеры","лимит камеры"],
+  ["lic","Лицензии ACFA","лимит acfa"]];
+function optionTargets(){
+  const out=sysOpts.map(o=>jumpItem({key:"opt:"+o.id,title:`${appTitle("sys")} · ${o.n}`,sub:i18n("Страница настроек"),
+    where:appTitle("sys"),icon:"nav_sys",keywords:targetKeywords("настройки")+" "+o.n,go:()=>openOption(o.id)}));
+  OPTION_SETTINGS.forEach(([pg,label,kw])=>{
+    const page=sysOpts.find(o=>o.id===pg);
+    out.push(jumpItem({key:"set:"+pg+":"+label,title:i18n(label),sub:`${appTitle("sys")} · ${page?.n||""}`,
+      where:i18n("Настройка"),icon:"opt",keywords:targetKeywords(kw),go:()=>openOption(pg,label)}));
+  });
+  return out;
+}
+function openOption(pageId,settingLabel){
+  setApp("sys");sys=pageId;tab="gen";paint();
+  if(settingLabel)flashSetting(settingLabel);
+}
+// Иначе непонятно, зачем открылась страница: подсвечиваем найденную настройку
+function flashSetting(label){
+  const want=normText(i18n(label));
+  if(want.length<2)return;
+  requestAnimationFrame(()=>{
+    const main=document.getElementById("main");if(!main)return;
+    const el=[...main.querySelectorAll("label,.mc span,td,th,.ch")].find(x=>normText(x.textContent).includes(want));
+    const box=el?.closest("div,tr");
+    if(!box)return;
+    box.classList.add("flash");box.scrollIntoView?.({block:"center"});
+    setTimeout(()=>box.classList.remove("flash"),1700);
+  });
+}
+function logTargets(){
+  return logCats.map(c=>jumpItem({key:"log:"+c.id,title:`${appTitle("log")} · ${c.n}`,sub:i18n(APP_SUBS.log),
+    where:appTitle("log"),icon:"nav_log",keywords:targetKeywords("журнал события")+" "+c.n,
+    go:()=>{setApp("log");logFilt=c.id;paint()}}));
+}
+// Закладки выбранного объекта: «Сервер — Склад · Хранилище»
+function tabTargets(){
+  const f=app==="hw"?find(sel):null;
+  const tabs=f?tabsFor(f.n)||[]:[];
+  if(tabs.length<2)return[];
+  return tabs.map(([id,l])=>jumpItem({key:"tab:"+f.n.id+":"+id,title:`${locName(f.n)} · ${i18n(l)}`,
+    sub:i18n("Закладка выбранного объекта"),where:i18n("Закладка"),icon:"view",keywords:targetKeywords("вкладка закладка"),
+    go:()=>openNode(f.n.id,{tab:id})}));
+}
+// Все объекты дерева: те же поля и правила, что у поиска в дереве
+function jumpCandidates(){
+  const out=[],seen=new Set();
+  const add=n=>{if(n&&!seen.has(n.id)){seen.add(n.id);out.push(n)}};
+  walkAll(n=>{if(n.type!=="det")add(n)});
+  flatFolders().forEach(add);arch.forEach(add);
+  return out;
+}
+function nodeTarget(n){
+  return jumpItem({key:n.id,node:n,title:locName(n),where:sliceLabel(homeOf(n).slice||slice),
+    icon:n.type,go:()=>openNode(n.id)});
+}
+function nodeTargets(q){
+  if(!q)return[];
+  return jumpCandidates().filter(n=>hitFieldsIn(n,q,SEARCH_FIELD_IDS).length).map(nodeTarget);
+}
+registerJumpSource("sections",sectionTargets);
+registerJumpSource("views",viewTargets);
+registerJumpSource("options",optionTargets);
+registerJumpSource("access",accessTargets);
+registerJumpSource("rules",ruleTargets);
+registerJumpSource("log",logTargets);
+registerJumpSource("tabs",tabTargets);
+registerJumpSource("nodes",()=>[],nodeTargets);
+function jumpByKey(key){
+  const f=find(key);
+  if(f)return nodeTarget(f.n);
+  for(const s of JUMP_SOURCES){const t=s.list().find(x=>x.key===key);if(t)return t}
+  return null;
+}
+function jumpRank(t,q){
+  const nm=normText(t.title),first=parseQ(q)[0]||[];
+  if(first.some(v=>nm.startsWith(v)))return 0;
+  if(textHit(t.title,q))return 1;
+  return 2;
+}
+// Поле поиска видно всегда; Ctrl+K только ставит в него курсор
+function omniEls(){return{inp:document.getElementById("jq"),pop:document.getElementById("jumpPop"),box:document.getElementById("omniBox")}}
+function openJump(){
+  const{inp}=omniEls();
+  if(inp){inp.focus();inp.select()}
+  openJumpPanel();
+}
+function openJumpPanel(){
+  const{inp,pop,box}=omniEls();
+  if(!pop)return;
+  pop.hidden=false;box?.classList.add("focus");inp?.setAttribute("aria-expanded","true");
+  document.addEventListener("mousedown",onOmniOutside);
+  jumpList();
+}
+function closeJump(){
+  const{inp,pop,box}=omniEls();
+  if(pop)pop.hidden=true;
+  box?.classList.remove("focus");inp?.setAttribute("aria-expanded","false");
+  document.removeEventListener("mousedown",onOmniOutside);
+}
+function jumpPanelOpen(){return document.getElementById("jumpPop")?.hidden===false}
+function onOmniOutside(e){if(!e.target.closest?.("#omni"))closeJump()}
+function clearJump(e){
+  if(e)e.stopPropagation();
+  const{inp}=omniEls();
+  if(inp){inp.value="";inp.focus()}
+  jumpList();
+}
+function syncOmniClear(raw){document.getElementById("omniClear")?.classList.toggle("hide",!raw.trim())}
+function jumpPathText(n){
+  const top=jumpScope(n);
+  if(n.type==="domain"||n.type==="unalloc"||!top)return LB[n.type]||"";
+  const p=path(n.id).slice(0,-1).map(x=>locName(x)).join(" / ");
+  return `${top===n?"":locName(top)}${p&&top!==n?" / ":""}${p} · ${LB[n.type]||""}`.replace(/^ · /,"");
+}
+function jumpRowHtml(t,i,q){
+  const n=t.node;
+  const short=n&&n.type!=="server"&&n.short!=null&&n.short!==""?`${hlText(String(n.short),q)}. `:"";
+  const hits=n&&q?hitFieldsIn(n,q,SEARCH_FIELD_IDS).filter(f=>f!=="name"&&f!=="short"):[];
+  const extra=hits.map(f=>`<span class="tag hit">${escHtml(i18n(FIELD_LABELS[f]))}: ${hlText(fieldText(n,f),q)}</span>`).join(" ");
+  return `<div class="res ${i===jumpIdx?"on":""}" data-i="${i}" onmousemove="jumpHover(${i})" onclick="jumpPick(${i})"><span>${ic(t.icon)}</span>
+    <div style="flex:1;min-width:0"><div>${short}${hlText(t.title,q)} ${extra}</div><div class="pth">${escHtml(n?jumpPathText(n):t.sub)}</div></div>
+    <span class="res-where">${escHtml(t.where)}</span></div>`;
+}
+function jumpList(){
+  const raw=(document.getElementById("jq")||{value:""}).value,q=normText(raw).trim(),list=document.getElementById("jlist");
+  syncOmniClear(raw);
+  if(!list)return;
+  jumpIdx=0;
+  let head;
+  if(!q){
+    // Пустой запрос: недавнее, дополненное разделами — переход всегда в один клик
+    const seen=new Set();
+    jumpItems=[];
+    [...recent.map(jumpByKey).filter(Boolean),...sectionTargets()].forEach(t=>{
+      if(seen.has(t.key))return;seen.add(t.key);jumpItems.push(t);
+    });
+    head=i18n(recent.length?"Недавнее и разделы":"Разделы");
+  }else{
+    const hits=[];
+    JUMP_SOURCES.forEach((s,si)=>s.match(q).forEach((t,i)=>hits.push({t,si,i,r:jumpRank(t,q)})));
+    hits.sort((a,b)=>a.r-b.r||a.si-b.si||a.i-b.i);
+    jumpItems=hits.map(x=>x.t);
+    head=`${i18n("Найдено:")} ${jumpItems.length}${jumpItems.length>JUMP_LIMIT?` · ${i18n("показаны первые")} ${JUMP_LIMIT}`:""}`;
+    if(!jumpItems.length){jumpIds=[];list.innerHTML=`<div class="sub" style="padding:12px">${i18n("Ничего не найдено")}</div>`;return}
+  }
+  jumpItems=jumpItems.slice(0,JUMP_LIMIT);
+  jumpIds=jumpItems.map(t=>t.key);
+  list.innerHTML=`<div class="srh">${head} <span class="srh-keys">↑↓ Enter</span></div>`+jumpItems.map((t,i)=>jumpRowHtml(t,i,q)).join("");
+}
+function jumpHover(i){if(i===jumpIdx)return;jumpIdx=i;jumpMark()}
+function jumpMark(){
+  document.querySelectorAll("#jlist .res").forEach(el=>el.classList.toggle("on",+el.dataset.i===jumpIdx));
+  document.querySelector(`#jlist .res[data-i="${jumpIdx}"]`)?.scrollIntoView({block:"nearest"});
+}
+function jumpPick(i){
+  const t=jumpItems[i];if(!t)return;
+  runJumpTarget(t);
+}
+function runJumpTarget(t){
+  pushRecent(t.key);
+  const{inp}=omniEls();
+  if(inp){inp.value="";inp.blur()}
+  syncOmniClear("");
+  closeJump();
+  t.go();
+}
+function jumpKey(e){
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){
+    e.preventDefault();
+    if(!jumpPanelOpen()){openJumpPanel();return}
+    if(!jumpItems.length)return;
+    jumpIdx=(jumpIdx+(e.key==="ArrowDown"?1:-1)+jumpItems.length)%jumpItems.length;jumpMark();
+  }else if(e.key==="Enter"){
+    e.preventDefault();jumpPick(jumpIdx);
+  }else if(e.key==="Escape"){
+    e.preventDefault();
+    const{inp}=omniEls();
+    // Первый Esc — очистить запрос, второй — закрыть список (и не гасить его раньше времени)
+    if(inp?.value){e.stopPropagation();inp.value="";jumpList();return}
+    if(inp)inp.blur();
+    closeJump();
+  }
+}
 function toast(msg){const o=document.getElementById("tt");if(o)o.remove();const e=document.createElement("div");e.id="tt";e.textContent=i18n(msg);
   e.style.cssText="position:fixed;left:50%;bottom:58px;transform:translateX(-50%);background:#1d2a3d;border:1px solid #3b506e;padding:12px 16px;border-radius:8px;z-index:60;max-width:min(420px,calc(100vw - 32px));box-shadow:0 12px 40px #000a;text-align:center";document.body.appendChild(e);setTimeout(()=>e.remove(),2000)}
 let confirmOkCb=null;
@@ -1689,24 +2226,27 @@ function askAddWithoutCredentials(onContinue,bulk=false){
     onContinue();
   },{html:true});
 }
+// Обработчик может вернуть false (ошибка в форме диалога) — тогда диалог остаётся открытым
 function runConfirmOk(){
   const cb=confirmOkCb;
-  closeConfirm();
-  if(cb)cb();
+  if(!cb){closeConfirm();return}
+  const r=cb();
+  if(r===false)return;
+  if(confirmOkCb===cb)closeConfirm();
 }
 function setD(v){dirty=v;document.getElementById("sbtn").disabled=!v;document.getElementById("cbtn").disabled=!v;
   document.getElementById("hint").textContent=v?i18n("Несохранённые изменения выбранного объекта"):i18n("Сохраняется только выбранный объект")}
-const appSel={dev:null,srvs:"d1"};
+const appSel={hw:"d1"};
 function setApp(a){
-  if(app==="dev"||app==="srvs")appSel[app]=sel;
-  if(a==="dev"&&tview!=="cam"&&tview!=="acfa")tview="cam";
-  if((a==="dev"||a==="srvs")&&appSel[a]&&find(appSel[a]))sel=appSel[a];
-  else if(a==="dev")sel=domains[0]?.id||sel;
-  else if(a==="srvs")sel=domains[0]?.id||sel;
+  if(app==="hw")appSel.hw=sel;
+  if(a==="hw")sel=appSel.hw&&find(appSel.hw)?appSel.hw:(domains[0]?.id||sel);
   app=a;
-  document.querySelectorAll("header [data-a]").forEach(x=>x.classList.toggle("on",x.dataset.a===a));
   closeUserMenu();
   paint();
+}
+// Активный раздел в ленте: app меняют и setApp, и переход по ссылке/поиску
+function syncNavActive(){
+  document.querySelectorAll("#rail [data-a]").forEach(x=>x.classList.toggle("on",x.dataset.a===app));
 }
 function go(el){setApp(el.dataset.a)}
 function goApp(a){setApp(a)}
@@ -1727,57 +2267,69 @@ function setTheme(v){
   document.documentElement.dataset.theme=v==="light"?"light":"dark";
   const sel=document.getElementById("themeSel");if(sel)sel.value=v==="light"?"light":"dark";
 }
-function contextServer(){
-  const f=find(sel);if(!f)return null;
-  if(f.n.type==="domain"||f.n.type==="unalloc")return null;
-  const s=f.n.type==="server"?f.n:srv(sel);
-  if(!s||s.type!=="server"||isUnallocated(s.id))return null;
-  return s;
+// Загрузка ЦПУ, ОЗУ и сети — свойство конкретного сервера, а не всего интерфейса:
+// метрики живут на странице сервера (вкладка «Общие»), см. serverLoadTilesHtml
+function serverLoad(s){
+  const off=!s||s.online===false;
+  return{cpu:off?"—":(s.cpu??8)+"%",ram:off?"—":(s.ram??s.cpu??8)+"%",net:off?"—":(s.net??0)+"%"};
 }
-const HEADER_LOAD_POLL_MS=3000;
-let headerLoadTimer=null;
-function stopHeaderLoadPoll(){
-  if(headerLoadTimer){clearInterval(headerLoadTimer);headerLoadTimer=null}
+function serverLoadTilesHtml(s){
+  const l=serverLoad(s);
+  return`<div class="mc"><span>${i18n("ЦПУ")}</span><b>${l.cpu}</b></div>
+    <div class="mc"><span>${i18n("ОЗУ")}</span><b>${l.ram}</b></div>
+    <div class="mc"><span>${i18n("Сеть")}</span><b>${l.net}</b></div>`;
 }
-function startHeaderLoadPoll(){
-  if(headerLoadTimer)return;
-  headerLoadTimer=setInterval(()=>{
-    if(!contextServer()){stopHeaderLoadPoll();syncHeaderLoad();return}
-    syncHeaderLoad();
-  },HEADER_LOAD_POLL_MS);
-}
-function syncHeaderLoad(){
-  const el=document.getElementById("hload"),sn=document.getElementById("hloadSrv");
-  const cpuEl=document.getElementById("hloadCpu"),ramEl=document.getElementById("hloadRam"),netEl=document.getElementById("hloadNet");
-  if(!el||!cpuEl||!ramEl||!netEl)return;
-  const setMet=(node,value,cls)=>{
-    const b=node.querySelector("b");
-    if(b)b.textContent=value;
-    node.className="hmet"+(cls?" "+cls:"");
-  };
-  const s=contextServer();
-  if(!s){
-    stopHeaderLoadPoll();
-    setMet(cpuEl,"—");setMet(ramEl,"—");setMet(netEl,"—");
-    if(sn)sn.textContent="";
-    el.className="hload";
-    el.hidden=true;
-    return;
+// ── Поиск: одни правила для дерева, «Серверов», списков и быстрого перехода ──
+// Без учёта регистра и ё/е; слова запроса — в любом порядке и в любых полях;
+// запрос, набранный в другой раскладке («gfhrjdrf» → «парковка»), тоже находится.
+const LAYOUT_EN="`qwertyuiop[]asdfghjkl;'zxcvbnm,.";
+const LAYOUT_RU="ёйцукенгшщзхъфывапролджэячсмитьбю";
+function normText(s){return String(s??"").toLowerCase().replace(/ё/g,"е")}
+function swapLayout(s){
+  let o="",ch=false;
+  for(const c of s){
+    let i=LAYOUT_EN.indexOf(c);
+    if(i>=0){o+=LAYOUT_RU[i];ch=true;continue}
+    i=LAYOUT_RU.indexOf(c);
+    if(i>=0){o+=LAYOUT_EN[i];ch=true;continue}
+    o+=c;
   }
-  el.hidden=false;
-  startHeaderLoadPoll();
-  const offline=s.online===false;
-  const cpu=s.cpu??8,ram=s.ram??s.cpu??8,net=s.net??0;
-  setMet(cpuEl,offline?"—":cpu+"%");
-  setMet(ramEl,offline?"—":ram+"%");
-  setMet(netEl,offline?"—":net+"%");
-  if(sn)sn.textContent=locName(s)||"—";
-  el.className="hload";
+  return ch?o:null;
 }
-function qval(){return app==="dev"?treeQ.trim().toLowerCase():(document.getElementById("q")||{value:""}).value.toLowerCase()}
+const _qCache=new Map();
+function parseQ(q){
+  q=normText(q).trim();
+  if(!q)return[];
+  let r=_qCache.get(q);if(r)return r;
+  r=q.split(/\s+/).filter(Boolean).map(t=>{
+    const vs=[t],alt=t.length>=2?swapLayout(t):null;
+    if(alt){const a=normText(alt);if(a!==t)vs.push(a)}
+    return vs;
+  });
+  if(_qCache.size>300)_qCache.clear();
+  _qCache.set(q,r);return r;
+}
+function textHit(text,q){
+  const toks=parseQ(q);if(!toks.length)return true;
+  const s=normText(text);
+  return toks.every(vs=>vs.some(v=>s.includes(v)));
+}
+// Поля, где нашлось хоть одно слово; пусто — если какое-то слово не нашлось нигде
+function hitFieldsIn(n,q,fields){
+  const toks=parseQ(q);if(!toks.length)return[];
+  const texts=fields.map(f=>[f,normText(fieldText(n,f))]).filter(([,v])=>v);
+  const hit=new Set();
+  for(const vs of toks){
+    let any=false;
+    for(const[f,v]of texts)if(vs.some(x=>v.includes(x))){hit.add(f);any=true}
+    if(!any)return[];
+  }
+  return fields.filter(f=>hit.has(f));
+}
+function qval(){return normText(app==="hw"?treeQ:(sideQ[app]||"")).trim().replace(/\s+/g," ")}
 function escHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
 function fieldText(n,fieldId){
-  if(fieldId==="name")return n.name||"";
+  if(fieldId==="name")return locName(n);
   if(fieldId==="short")return n.short!=null?String(n.short):"";
   if(fieldId==="id")return deviceIdentifierValue(n);
   if(fieldId==="ip")return n.ip||"";
@@ -1785,23 +2337,34 @@ function fieldText(n,fieldId){
   if(fieldId==="model")return n.model||"";
   return"";
 }
-function searchScopeFields(){return searchFields.size?[...searchFields]:SEARCH_FIELDS.map(([id])=>id)}
-function searchHitFields(n,q){
-  if(!q)return[];
-  return searchScopeFields().filter(f=>{const v=fieldText(n,f);return v&&v.toLowerCase().includes(q)});
-}
+// «Искать в» есть только в «Устройствах»; в остальных разделах — все поля
+function searchScopeFields(){return app==="hw"&&searchFields.size?[...searchFields]:SEARCH_FIELD_IDS}
+function searchHitFields(n,q){return q?hitFieldsIn(n,q,searchScopeFields()):[]}
 function matchesSearch(n,q){return!q||searchHitFields(n,q).length>0}
+// Узлы без полей (папки, архивы, GPU, «Без записи»): ищем по имени, если имя в области поиска
+function nameInScope(){return searchScopeFields().includes("name")}
+function folderNameHit(f,q){return!!q&&nameInScope()&&textHit(locName(f),q)}
 function hlText(text,q){
   const s=String(text??"");
-  if(!q||!s)return escHtml(s);
-  const i=s.toLowerCase().indexOf(q);
-  if(i<0)return escHtml(s);
-  return escHtml(s.slice(0,i))+`<mark>${escHtml(s.slice(i,i+q.length))}</mark>`+escHtml(s.slice(i+q.length));
+  const toks=parseQ(q);
+  if(!toks.length||!s)return escHtml(s);
+  const low=normText(s);
+  if(low.length!==s.length)return escHtml(s);
+  const marks=[];
+  toks.forEach(vs=>vs.forEach(v=>{let i=low.indexOf(v);while(v&&i>=0){marks.push([i,i+v.length]);i=low.indexOf(v,i+v.length)}}));
+  if(!marks.length)return escHtml(s);
+  marks.sort((a,b)=>a[0]-b[0]);
+  const merged=[];
+  marks.forEach(m=>{const l=merged[merged.length-1];if(l&&m[0]<=l[1])l[1]=Math.max(l[1],m[1]);else merged.push([...m])});
+  let out="",pos=0;
+  merged.forEach(([a,b])=>{out+=escHtml(s.slice(pos,a))+`<mark>${escHtml(s.slice(a,b))}</mark>`;pos=b});
+  return out+escHtml(s.slice(pos));
 }
 function displayNameHtml(n,q){
-  const qName=q&&(!searchFields.size||searchFields.has("name")||searchFields.has("short"))?q:"";
+  const scope=searchScopeFields();
+  const qName=q&&scope.includes("name")?q:"",qShort=q&&scope.includes("short")?q:"";
   const nm=locName(n);
-  if(n.type!=="server"&&n.short!=null&&n.short!=="")return `${hlText(String(n.short),qName)}. ${hlText(nm,qName)}`;
+  if(n.type!=="server"&&n.short!=null&&n.short!=="")return `${hlText(String(n.short),qShort)}. ${hlText(nm,qName)}`;
   return hlText(nm,qName);
 }
 // Один и тот же объект попадает в дерево несколько раз (разные папки,
@@ -1812,7 +2375,7 @@ function treeRowPick(id,ctx){return ` data-pick="${id}"`+(ctx?` data-ctx="${ctx}
 function sameCtx(ctx){return(selCtx||"")===(ctx||"")}
 function rowOn(id,ctx){return sel===id&&sameCtx(ctx)?"on":""}
 function canMultiPick(n){
-  return n&&n.type!=="domain"&&n.type!=="server"&&n.type!=="unalloc"&&n.type!=="det"&&n.type!=="folder"&&treeKind(n)===tview;
+  return n&&n.type!=="domain"&&n.type!=="server"&&n.type!=="unalloc"&&n.type!=="det"&&n.type!=="folder"&&inSlice(n);
 }
 function treeRowHi(id,ctx){
   const on=sel===id&&sameCtx(ctx),mark=treeSel.has(id);
@@ -1850,15 +2413,15 @@ function treeNameCell(n,q){
   return displayNameHtml(n,q);
 }
 function treeAttrTags(n,q){
-  if(!treeTags.size)return"";
-  const inner=TREE_TAG_ORDER.filter(f=>treeTags.has(f)).map(f=>{
-    if(f==="id"&&!showTreeIdTag(n))return"";
+  // Поле, по которому нашёлся объект, показываем всегда — иначе непонятно, почему строка в выдаче
+  const hits=q?searchHitFields(n,q):[];
+  const inner=TREE_TAG_ORDER.filter(f=>treeTags.has(f)||hits.includes(f)).map(f=>{
+    if(f==="id"&&!showTreeIdTag(n)&&!hits.includes(f))return"";
     const val=fieldText(n,f);if(!val)return"";
-    // IP не режем — иначе «съедается» слева; остальное можно укоротить
-    const trunc=f!=="ip"&&val.length>16;const shown=trunc?val.slice(0,14):val;
-    const inScope=!searchFields.size||searchFields.has(f);
-    const hit=!!q&&inScope&&val.toLowerCase().includes(q);
-    const body=hit?hlText(shown,q)+(trunc?"…":""):escHtml(shown)+(trunc?"…":"");
+    const hit=hits.includes(f);
+    // IP не режем — иначе «съедается» слева; остальное можно укоротить (кроме найденного)
+    const trunc=f!=="ip"&&!hit&&val.length>16;const shown=trunc?val.slice(0,14):val;
+    const body=hit?hlText(shown,q):escHtml(shown)+(trunc?"…":"");
     return`<span class="tag${f==="ip"?" tag-ip":""}${hit?" hit":""}" title="${escHtml(FIELD_LABELS[f])}: ${escHtml(val)}">${body}</span>`;
   }).join("");
   return`<span class="n-tags">${inner}</span>`;
@@ -1878,8 +2441,10 @@ function commitTreeRename(id,val){
     return;
   }
   const name=String(val||"").trim();
-  if(!name){toast("Укажите имя");requestAnimationFrame(()=>{const el=document.querySelector(".nm-inp");if(el)el.focus()});return}
+  const err=!name?"Укажите имя":f?.n.type==="domain"?validateDomainName(name,id):"";
+  if(err){toast(err);requestAnimationFrame(()=>{const el=document.querySelector(".nm-inp");if(el)el.focus()});return}
   if(f)f.n.name=name;
+  if(f?.n.type==="domain"){treeMatchCache.clear();searchMatchCache.clear()}
   treeRenameId=null;treeRenameField="name";renderTree();
   if(sel===id)gear();
 }
@@ -1889,40 +2454,99 @@ function cancelTreeRename(){
 }
 function hasMenuFilters(){return!!typeFilts.size||!!searchFields.size||!!statusFilts.size}
 function hasActiveFilters(){return!!typeFilts.size||!!searchFields.size||!!statusFilts.size||!!treeQ.trim()}
+// Фильтры, которые сужают дерево (тип/статус) — вместе с запросом раскрывают ветки
+function treeFiltOn(){return!!typeFilts.size||!!statusFilts.size}
+// Считаем то, что показывает дерево: уникальные объекты текущего среза
+// и папки, найденные по имени. Объект из нескольких папок считается один раз.
+function sliceNodes(){
+  const out=[];
+  walk(n=>{if(n.type!=="det"&&sliceOf(n))out.push(n)},devicePool,null);
+  if(sliceHasSvc())domains.forEach(d=>d.servers.forEach(s=>walk(n=>{if(n.type!=="det"&&sliceOf(n))out.push(n)},s.devices,s)));
+  if(slice==="all"||slice==="srv")domains.forEach(d=>{out.push(...d.servers,...d.unallocServers)});
+  return out;
+}
 function countFiltered(){
   const q=qval();let n=0;
-  walkAll(node=>{if(node.type==="det"||node.type==="domain"||node.type==="unalloc")return;if(selfInView(node)&&matchesSearch(node,q))n++});
+  sliceNodes().forEach(node=>{if(selfInView(node)&&matchesSearch(node,q))n++});
+  if(q&&!treeFiltOn()&&groupBy==="folder")walkFolders(f=>{if(folderNameHit(f,q))n++});
   return n;
 }
+function filtHintText(){return hasActiveFilters()?`${i18n("Найдено:")} ${countFiltered()}`:""}
 function filterTags(){
   const tags=[];
-  [...typeFilts].forEach(id=>{const lab=(TYPE_FILTERS[tview].find(x=>x[0]===id)||[])[1]||id;tags.push({id:"type:"+id,label:i18n(lab)})});
+  [...typeFilts].forEach(id=>{const lab=(sliceTypes().find(x=>x[0]===id)||[])[1]||id;tags.push({id:"type:"+id,label:i18n(lab)})});
   [...searchFields].forEach(id=>tags.push({id:"field:"+id,label:i18n(FIELD_LABELS[id]||id)}));
   [...statusFilts].forEach(id=>{const lab=(STATUS_FILTERS.find(x=>x[0]===id)||[])[1]||id;tags.push({id:"st:"+id,label:i18n(lab)})});
   return tags;
 }
 function tagsHtml(){return filterTags().map(tag=>`<span class="ftag"><span title="${tag.label}">${tag.label}</span><button type="button" onclick="event.stopPropagation();clearFilterTag('${tag.id}')" title="${i18n("Снять")}">✕</button></span>`).join("")}
-function syncSelection(){
-  const KEEP=["domain","unalloc","server","folder","archive","norec","nofolder","gpu","det"];
-  const f=find(sel);if(!f||(!KEEP.includes(f.n.type)&&!selfInView(f.n))){const hit=firstMatching();if(hit){sel=hit.id;tab="gen"}}
+// Выбранный объект фильтры не меняют: если он скрыт, инспектор об этом сообщает
+function selHiddenByFilters(){
+  if(app!=="hw"||!hasActiveFilters())return false;
+  const n=find(sel)?.n;if(!n)return false;
+  if(n.type==="folder")return groupBy==="folder"&&!!qval()&&!folderNameHit(n,qval())&&!folderHasTreeIn(n);
+  if(!sliceOf(n))return false;
+  return!(selfInView(n)&&matchesSearch(n,qval()));
+}
+function hiddenSelNoteHtml(){
+  if(!selHiddenByFilters())return"";
+  return`<div class="nt" role="status">${i18n("Объект скрыт текущими фильтрами дерева.")} <button type="button" class="lk" onclick="resetAllFilters()">${i18n("Сбросить фильтры")}</button></div>`;
 }
 function applyFiltersFromState(){
-  treeMatchCache.clear();searchMatchCache.clear();syncSelection();updateFiltChrome();renderTree();gear();
+  treeMatchCache.clear();searchMatchCache.clear();updateFiltChrome();renderTree();gear();
 }
 function updateFiltChrome(){
   const btn=document.getElementById("filtBtn"),tags=document.getElementById("filtTags"),hint=document.getElementById("filtHint"),clr=document.getElementById("sqClear");
   if(btn){btn.classList.toggle("on",filtPop);btn.classList.toggle("hot",hasMenuFilters())}
   if(clr)clr.classList.toggle("hide",!treeQ.trim());
   if(tags)tags.innerHTML=tagsHtml();
-  if(hint)hint.textContent=hasActiveFilters()?`${i18n("Найдено:")} ${countFiltered()}`:"";
+  if(hint)hint.textContent=filtHintText();
 }
-function setTreeQ(v){treeQ=v;searchMatchCache.clear();updateFiltChrome();renderTree()}
+let treeQTimer=null;
+function setTreeQ(v){
+  treeQ=v;
+  const clr=document.getElementById("sqClear");if(clr)clr.classList.toggle("hide",!treeQ.trim());
+  clearTimeout(treeQTimer);
+  treeQTimer=setTimeout(()=>{treeQTimer=null;searchMatchCache.clear();invalidateFind();updateFiltChrome();renderTree();gear()},80);
+}
 function clearTreeQ(e){
-  e.stopPropagation();
+  if(e)e.stopPropagation();
+  clearTimeout(treeQTimer);treeQTimer=null;
   treeQ="";
   const inp=document.getElementById("q");
   if(inp){inp.value="";inp.focus()}
-  searchMatchCache.clear();updateFiltChrome();renderTree();
+  searchMatchCache.clear();updateFiltChrome();renderTree();gear();
+}
+// Поиск в остальных разделах: свой запрос у каждого, без фильтров
+function setSideQ(v){
+  sideQ[app]=v;
+  const clr=document.getElementById("sqClear");if(clr)clr.classList.toggle("hide",!v.trim());
+  renderTree();
+}
+function clearSideQ(e){
+  if(e)e.stopPropagation();
+  sideQ[app]="";
+  const inp=document.getElementById("q");
+  if(inp){inp.value="";inp.focus()}
+  const clr=document.getElementById("sqClear");if(clr)clr.classList.add("hide");
+  renderTree();
+}
+function clearAnyQ(){if(app==="hw")clearTreeQ();else clearSideQ()}
+// Enter в поиске — открыть первый найденный объект
+function searchKey(e){
+  if(e.key==="Enter"){
+    e.preventDefault();
+    if(treeQTimer){clearTimeout(treeQTimer);treeQTimer=null;searchMatchCache.clear();updateFiltChrome();renderTree()}
+    const row=document.querySelector("#tree .n.qhit")||document.querySelector("#tree .n[data-pick]:not(.n-add)")||document.querySelector("#tree .n:not(.n-add)");
+    if(!row)return;
+    if(row.dataset.pick)pick(row.dataset.pick,{ctx:row.dataset.ctx});else row.click();
+    scrollSelIntoView();
+  }else if(e.key==="Escape"){
+    e.preventDefault();e.stopPropagation();
+    if(e.target.value)clearAnyQ();else e.target.blur();
+  }else if(e.key==="ArrowDown"){
+    e.preventDefault();e.target.blur();treeMove(1,true);
+  }
 }
 function clearFilterTag(id){
   if(id.startsWith("type:"))typeFilts.delete(id.slice(5));
@@ -1932,8 +2556,8 @@ function clearFilterTag(id){
   if(filtPop)refreshFiltPop(true);
 }
 function firstMatching(){
-  let hit;walkAll(n=>{if(!hit&&n.type!=="det"&&selfInView(n))hit=n});
-  return hit;
+  const q=qval();
+  return sliceNodes().find(n=>selfInView(n)&&matchesSearch(n,q));
 }
 function placeFiltPop(){
   const btn=document.getElementById("filtBtn"),pop=document.getElementById("filtPop");
@@ -1957,8 +2581,21 @@ function toggleFiltPop(e){
   if(e)e.stopPropagation();
   filtPop=!filtPop;if(!filtPop)typesExpanded=false;aside();
 }
-function visibleTypes(){
-  const all=TYPE_FILTERS[tview];
+// Сколько объектов даст каждый вариант при остальных активных условиях (запрос, другая группа)
+function facetCounts(){
+  const q=qval(),types=new Map(),sts=new Map();
+  sliceNodes().forEach(n=>{
+    if(!inSlice(n)||!matchesSearch(n,q))return;
+    if(matchesStatus(n))types.set(n.type,(types.get(n.type)||0)+1);
+    if(matchesType(n)){const s=primaryStatus(n);if(s)sts.set(s,(sts.get(s)||0)+1)}
+  });
+  return{types,sts};
+}
+function sliceTypes(){return TYPE_FILTERS[slice]||[]}
+// Типы, которых нет в текущей выдаче, не показываем (кроме уже выбранных)
+function availableTypes(fc){return sliceTypes().filter(([id])=>typeFilts.has(id)||(fc.types.get(id)||0)>0)}
+function visibleTypes(fc){
+  const all=availableTypes(fc);
   if(typesExpanded||all.length<=TYPE_PREVIEW)return all;
   const shown=all.slice(0,TYPE_PREVIEW),ids=new Set(shown.map(x=>x[0]));
   all.forEach(t=>{if(typeFilts.has(t[0])&&!ids.has(t[0])){shown.push(t);ids.add(t[0])}});
@@ -1980,27 +2617,10 @@ function refreshFiltPop(keepScroll){
     placeFiltPop();
   });
 }
-function statusFiltAllowed(id){
-  if(typeFilts.has("server"))return id==="nosignal";
-  if(statusFilts.has("off")&&(id==="nosignal"||id==="license"))return false;
-  return true;
-}
-function pruneStatusFilts(){
-  [...statusFilts].forEach(id=>{if(!statusFiltAllowed(id))statusFilts.delete(id)});
-}
+// Внутри группы — ИЛИ, между группами (тип, статус, запрос) — И
 function toggleTypeFilt(id,e){
   if(e)e.stopPropagation();
-  if(typeFilts.has(id))typeFilts.delete(id);
-  else{
-    if(id==="server"){
-      typeFilts.clear();
-      statusFilts.delete("on");
-      statusFilts.delete("off");
-      statusFilts.delete("license");
-    }else typeFilts.delete("server");
-    typeFilts.add(id);
-  }
-  pruneStatusFilts();
+  if(typeFilts.has(id))typeFilts.delete(id);else typeFilts.add(id);
   applyFiltersFromState();refreshFiltPop(true);
 }
 function toggleSearchField(id,e){
@@ -2015,27 +2635,7 @@ function toggleTreeTag(id,e){
 }
 function toggleStatusFilt(id,e){
   if(e)e.stopPropagation();
-  if(statusFilts.has(id))statusFilts.delete(id);
-  else{
-    if(!statusFiltAllowed(id))return;
-    if(id==="on"){
-      statusFilts.delete("off");
-      typeFilts.delete("server");
-    }
-    if(id==="off"){
-      statusFilts.delete("on");
-      statusFilts.delete("nosignal");
-      statusFilts.delete("license");
-      typeFilts.delete("server");
-    }
-    if(id==="nosignal")statusFilts.delete("off");
-    if(id==="license"){
-      statusFilts.delete("off");
-      typeFilts.delete("server");
-    }
-    statusFilts.add(id);
-    pruneStatusFilts();
-  }
+  if(statusFilts.has(id))statusFilts.delete(id);else statusFilts.add(id);
   applyFiltersFromState();refreshFiltPop(true);
 }
 function resetAllFilters(){
@@ -2057,7 +2657,7 @@ function objectTitle(n){
 function crumbsHtml(id){
   let parts=path(id);
   const f=find(id);
-  if(app==="dev"&&f){
+  if(groupBy==="folder"&&f){
     if(f.n.type==="folder"){
       const d=domains.find(x=>x.id===folderDomain(id));
       if(d)parts=[d,...parts];
@@ -2069,12 +2669,12 @@ function crumbsHtml(id){
       if(d)parts=[d,...(cur?[]:[nofolderNode(d.id)]),...parts];
     }
   }
-  if(app==="srvs"&&f&&f.n.type==="det"){
+  if(groupBy==="server"&&f&&f.n.type==="det"){
     const cam=f.p,sid=cam?detServerId(cam,f.n):null;
     const gs=sid?servers.find(x=>x.id===sid):null;
     if(gs)parts=[domainOf(gs.id),gs,...(serverGpu(gs)?[gpuNode(gs)]:[]),cam,f.n].filter(Boolean);
   }
-  if(app==="srvs"&&f&&f.n.type==="camera"){
+  if(groupBy==="server"&&f&&f.n.type==="camera"){
     const sv=srv(id),a=arch.find(x=>x.id===f.n.arch);
     const d=sv?domainOf(sv.id):domains.find(x=>x.id===deviceDomain(id));
     if(sv&&a)parts=[d,sv,a,...parts].filter(Boolean);
@@ -2093,27 +2693,32 @@ function treeCntHtml(n){
   return n?`<span class="n-tail n-tail-cnt"><span class="cnt">${n}</span></span>`:"";
 }
 function filtPopHtml(){
-  const allTypes=TYPE_FILTERS[tview],types=visibleTypes();
-  const hidden=Math.max(0,allTypes.length-TYPE_PREVIEW);
-  const more=allTypes.length>TYPE_PREVIEW;
+  if(!filtPop)return`<div class="filt-pop" id="filtPop"></div>`;
+  const fc=facetCounts(),allTypes=availableTypes(fc),types=visibleTypes(fc);
+  const hidden=Math.max(0,allTypes.length-types.length);
+  const more=hidden>0;
+  const cnt=v=>`<span class="stchip-n">${v||0}</span>`;
   return`<div class="filt-pop ${filtPop?"open":""}" id="filtPop" onclick="event.stopPropagation()">
       <div class="filt-sec fields chips">
-        <div class="sec">${i18n("Искать в")}</div>
+        <div class="sec" title="${i18n("Ничего не выбрано — поиск во всех полях")}">${i18n("Искать в")}</div>
         <div class="filt-status">
-          ${SEARCH_FIELDS.map(([id,l])=>{
-            const on=searchFields.has(id),tagOn=treeTags.has(id);
-            const eyeIcon=tagOn
-              ?`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>`
-              :`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 5c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/></svg>`;
-            const eye=TREE_TAGABLE.has(id)?`<button type="button" class="stchip-eye ${tagOn?"on":""}" title="${tagOn?i18n("Скрыть в дереве"):i18n("Показывать в дереве")}" aria-pressed="${tagOn}" onclick="toggleTreeTag('${id}',event)">${eyeIcon}</button>`:"";
-            return`<span class="stchip ${on?"on":""} ${eye?"has-eye":""}"><button type="button" class="stchip-lab" aria-pressed="${on}" onclick="toggleSearchField('${id}',event)">${i18n(l)}</button>${eye}</span>`;
+          ${SEARCH_FIELDS.map(([id,l])=>{const on=searchFields.has(id);
+            return`<button type="button" class="stchip ${on?"on":""}" aria-pressed="${on}" onclick="toggleSearchField('${id}',event)"><span class="stchip-lab">${i18n(l)}</span></button>`;
+          }).join("")}
+        </div>
+      </div>
+      <div class="filt-sec fields chips">
+        <div class="sec" title="${i18n("Какие поля показывать справа от имени в дереве")}">${i18n("Показывать в дереве")}</div>
+        <div class="filt-status">
+          ${TREE_TAG_ORDER.map(id=>{const on=treeTags.has(id);
+            return`<button type="button" class="stchip ${on?"on":""}" aria-pressed="${on}" onclick="toggleTreeTag('${id}',event)"><span class="stchip-lab">${i18n(FIELD_LABELS[id])}</span></button>`;
           }).join("")}
         </div>
       </div>
       <div class="filt-sec types chips ${typesExpanded?"expanded":""}">
-        <div class="sec">${i18n("Фильтр по типу")}</div>
+        <div class="sec">${i18n("Тип")}</div>
         <div class="filt-status" id="filtTypes">
-          ${types.map(([id,l])=>{const on=typeFilts.has(id);return`<button type="button" class="stchip has-ic ${on?"on":""}" aria-pressed="${on}" onclick="toggleTypeFilt('${id}',event)"><span class="stchip-ic">${ic(id)}</span><span class="stchip-lab">${i18n(l)}</span></button>`}).join("")}
+          ${types.map(([id,l])=>{const on=typeFilts.has(id);return`<button type="button" class="stchip has-ic ${on?"on":""}" aria-pressed="${on}" onclick="toggleTypeFilt('${id}',event)"><span class="stchip-ic">${ic(id)}</span><span class="stchip-lab">${i18n(l)}</span>${cnt(fc.types.get(id))}</button>`}).join("")||`<span class="sub" style="margin:0">${i18n("Нет объектов")}</span>`}
         </div>
         ${more&&!typesExpanded?`<button type="button" class="filt-more" onclick="toggleTypesMore(event)">${i18n("Показать все")} (${hidden}) <span class="chev">▾</span></button>`:""}
       </div>
@@ -2121,8 +2726,8 @@ function filtPopHtml(){
         <div class="sec">${i18n("Статус")}</div>
         <div class="filt-status">
           ${STATUS_FILTERS.map(([id,l])=>{
-            const on=statusFilts.has(id),ok=statusFiltAllowed(id);
-            return`<button type="button" class="stchip ${on?"on on-"+id:""}" aria-pressed="${on}" ${ok?"":"disabled"} onclick="toggleStatusFilt('${id}',event)"><span class="stchip-lab">${i18n(l)}</span></button>`;
+            const on=statusFilts.has(id),n=fc.sts.get(id)||0;
+            return`<button type="button" class="stchip ${on?"on on-"+id:""}" aria-pressed="${on}" ${!n&&!on?"disabled":""} title="${i18n(STATUS_HINTS[id])}" onclick="toggleStatusFilt('${id}',event)"><span class="stchip-lab">${i18n(l)}</span>${cnt(n)}</button>`;
           }).join("")}
         </div>
       </div>
@@ -2137,48 +2742,82 @@ function filtPopHtml(){
 function aside(){
   document.removeEventListener("mousedown",onFiltOutside);
   window.removeEventListener("resize",placeFiltPop);
-  const gearScope=app==="dev"?`<div class="view-sw" role="tablist" aria-label="${i18n("Раздел дерева")}">${Object.entries(TVIEW_SW).map(([id,l])=>`<button type="button" class="fchip fchip-${id} ${tview===id?"on":""}" role="tab" aria-selected="${tview===id?"true":"false"}" title="${TVIEW[id]}" onclick="setView('${id}')">${ic(TVIEW_IC[id])}<span>${l}</span></button>`).join("")}</div>`:"";
-  const gearBody=app==="dev"?`<div class="gear-body"><div class="gear-tree-head"><div class="sq-wrap">
+  const gearScope=app==="hw"?`<div class="view-sw" role="tablist" aria-label="${i18n("Срез дерева")}">${Object.entries(SLICE_SW).map(([id,l])=>`<button type="button" class="fchip fchip-${id} ${slice===id?"on":""}" role="tab" aria-selected="${slice===id?"true":"false"}" title="${SLICE[id]}" onclick="setSlice('${id}')">${ic(SLICE_IC[id])}<span>${l}</span></button>`).join("")}</div>`:"";
+  const gearBody=app==="hw"?`<div class="gear-body"><div class="gear-tree-head">${groupSwHtml()}<div class="sq-wrap">
       <div class="sq">
         <span class="sq-lead" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="6.8" cy="6.8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="m9.8 9.8 3.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-        <input id="q" placeholder="${i18n("По имени, IP, производителю…")}" title="${i18n("Поиск по названию, короткому имени, ID, IP, производителю и модели")}" value="${treeQ.replace(/"/g,"&quot;")}" oninput="setTreeQ(this.value)" autocomplete="off">
+        <input id="q" placeholder="${i18n("По имени, IP, производителю…")}" title="${i18n("Поиск по названию, короткому имени, ID, IP, производителю и модели. / — перейти к поиску, Enter — открыть первый, ↓ — к дереву, Esc — очистить")}" value="${escHtml(treeQ)}" oninput="setTreeQ(this.value)" onkeydown="searchKey(event)" autocomplete="off">
         <button type="button" class="sq-clear ${treeQ.trim()?"":"hide"}" id="sqClear" title="${i18n("Очистить")}" onclick="clearTreeQ(event)">✕</button>
+        <kbd class="sq-kbd" title="${i18n("Перейти к поиску")}">/</kbd>
         <button type="button" class="sq-menu ${filtPop?"on":""} ${hasMenuFilters()?"hot":""}" id="filtBtn" title="${i18n("Фильтры поиска")}" onclick="toggleFiltPop(event)"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 3.5H14L9.5 9.5V13.5H6.5V9.5L2 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
       <div class="filt-tags" id="filtTags">${tagsHtml()}</div>
-      <div class="filt-hint" id="filtHint">${hasActiveFilters()?`${i18n("Найдено:")} ${countFiltered()}`:""}</div>
+      <div class="filt-hint" id="filtHint">${filtHintText()}</div>
       ${filtPopHtml()}
     </div></div><div class="tree" id="tree"></div></div>`:"";
-  const srvScope=app==="srvs"?`<div class="view-sw" role="tablist" aria-label="${i18n("Раздел дерева")}">${Object.entries(SVIEW_SW).map(([id,l])=>`<button type="button" class="fchip fchip-${id} ${sview===id?"on":""}" role="tab" aria-selected="${sview===id?"true":"false"}" title="${SVIEW[id]}" onclick="setSrvView('${id}')">${ic(SVIEW_IC[id])}<span>${l}</span></button>`).join("")}</div>`:"";
-  const gearHead=app!=="dev"?`<div class="srch"><input id="q" placeholder="${i18n("Поиск…")}" value="${(document.getElementById("q")||{}).value||""}" oninput="renderTree()"></div>`:"";
-  document.getElementById("aside").innerHTML=app==="dev"
+  // Журнал — четыре категории, искать в них нечего
+  const sq=sideQ[app]||"";
+  const gearHead=app!=="hw"&&app!=="log"?`<div class="sq-wrap"><div class="sq">
+      <span class="sq-lead" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="6.8" cy="6.8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="m9.8 9.8 3.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+      <input id="q" placeholder="${i18n("Поиск по названию…")}" title="${i18n("/ — перейти к поиску, Enter — открыть первый, ↓ — к дереву, Esc — очистить")}" value="${escHtml(sq)}" oninput="setSideQ(this.value)" onkeydown="searchKey(event)" autocomplete="off">
+      <button type="button" class="sq-clear ${sq.trim()?"":"hide"}" id="sqClear" title="${i18n("Очистить")}" onclick="clearSideQ(event)">✕</button>
+      <kbd class="sq-kbd" title="${i18n("Перейти к поиску")}">/</kbd>
+    </div></div>`:"";
+  const headBox=gearHead||asideAdd()?`<div class="box">${gearHead}${asideAdd()}</div>`:"";
+  document.getElementById("aside").innerHTML=app==="hw"
     ?`${gearScope}${gearBody}`
-    :`${srvScope}<div class="box">${gearHead}${asideAdd()}</div><div class="tree" id="tree"></div>`;
+    :`${headBox}<div class="tree" id="tree"></div>`;
   renderTree();document.getElementById("ws").style.setProperty("--aw",asideW+"px");
   const treeEl=document.getElementById("tree");
   if(treeEl&&!treeEl._ctxScroll){treeEl._ctxScroll=true;treeEl.addEventListener("scroll",closeTreeCtx,{passive:true})}
   bindTreeDbl();
-  if(app==="dev"&&filtPop){placeFiltPop();document.addEventListener("mousedown",onFiltOutside);window.addEventListener("resize",placeFiltPop)}
+  _lastApp=app+"|"+viewKey();
+  if(app==="hw"&&filtPop){placeFiltPop();document.addEventListener("mousedown",onFiltOutside);window.addEventListener("resize",placeFiltPop)}
 }
-function renderTree(){const treeEl=document.getElementById("tree");if(!treeEl)return;
-  const fn={dev:treeDev,srvs:treeServers,rules:treeRules,acc:treeRoles,sys:treeOpts,log:treeLog}[app];
+// Переключатель группировки показываем только там, где выбор есть:
+// у ACFA (только папки), у Служб и Серверов (только серверы) он лишь отвлекал
+function groupSwHtml(){
+  const gs=groupsOf();
+  if(gs.length<2)return"";
+  return`<div class="grp-sw" role="group" aria-label="${i18n("Группировка")}">${gs.map(g=>
+    `<button type="button" class="grp-b ${groupBy===g?"on":""}" aria-pressed="${groupBy===g}" title="${i18n(GROUP_HINT[g])}" onclick="setGroupBy('${g}')">${ic(GROUP_IC[g])}<span>${i18n(GROUP_SW[g])}</span></button>`).join("")}</div>`;
+}
+function renderTree(){invalidateFind();const treeEl=document.getElementById("tree");if(!treeEl)return;
+  const fn={hw:treeHw,rules:treeRules,acc:treeRoles,sys:treeOpts,log:treeLog}[app];
   treeEl.innerHTML=fn?fn():"";
   if(treeRenameId)requestAnimationFrame(()=>{const el=treeEl.querySelector(".nm-inp");if(el){el.focus();el.select()}});
 }
-function setView(v){
-  tview=v;clearGearFilters();filtPop=false;typesExpanded=false;tab="gen";treeMatchCache.clear();searchMatchCache.clear();
+// Запрос, поля поиска и статусы общие для всех срезов; типы у срезов разные
+function setSlice(v){
+  if(!SLICE_SW[v])return;
+  const same=slice===v;
+  setSliceState(v);
+  if(!same)typeFilts.clear();
+  filtPop=false;typesExpanded=false;tab="gen";treeMatchCache.clear();searchMatchCache.clear();
   treeSel.clear();treeAnchor=null;
-  const f=find(sel);if(!f||(f.n.type!=="folder"&&treeKind(f.n)!==v)){const hit=firstMatching();if(hit)sel=hit.id}
+  keepSelInView();
   aside();gear();
 }
-function setSrvView(v){
-  if(sview===v)return;
-  sview=v;tab="gen";
-  const f=find(sel);
-  // Узел, которого нет в новом режиме, заменяем его родителем
-  const bad=v==="cam"?isSvc(f?.n||{}):["archive","camera","norec"].includes(f?.n?.type);
-  if(f&&bad)sel=f.p?.id||domains[0].id;
+function setGroupBy(g){
+  if(groupBy===g||!groupsOf().includes(g))return;
+  groupBy=g;groupOfSlice[slice]=g;tab="gen";
+  treeMatchCache.clear();searchMatchCache.clear();
+  treeSel.clear();treeAnchor=null;
+  keepSelInView();
+  selCtx=openCtxFor(find(sel)?.n||{});
+  expandTo(sel,selCtx);
   aside();gear();
+}
+// Объекта может не быть в новом виде: поднимаемся к ближайшему видимому предку
+function keepSelInView(){
+  const f=find(sel);
+  if(!f){sel=domains[0]?.id||sel;return}
+  const n=f.n;
+  if(n.type==="domain"||n.type==="folder"&&groupBy==="folder")return;
+  const ok=whereShown(n).some(x=>(!x.slice||x.slice===slice)&&(!x.group||x.group===groupBy));
+  if(ok)return;
+  const chain=path(n.id),up=chain.slice(0,-1).reverse().find(p=>whereShown(p).some(x=>(!x.slice||x.slice===slice)&&(!x.group||x.group===groupBy)));
+  sel=up?.id||deviceDomain(n.id)||SERVER_DOMAIN[chain[0]?.id]||domains[0]?.id||sel;
 }
 function goTab(tabId){tab=tabId;gear()}
 function domainServersHtml(n){
@@ -2255,7 +2894,7 @@ function ipsrvObjTreeHtml(root){
 
 function vis(n,q){
   if(n.type==="det")return false;
-  const key=tview+"|"+filtKey()+"|"+q+"|"+n.id;if(searchMatchCache.has(key))return searchMatchCache.get(key);
+  const key=viewKey()+"|"+filtKey()+"|"+q+"|"+n.id;if(searchMatchCache.has(key))return searchMatchCache.get(key);
   const hit=selfInView(n)&&matchesSearch(n,q)||kids(n).some(k=>vis(k,q));
   searchMatchCache.set(key,hit);return hit;
 }
@@ -2267,7 +2906,8 @@ function treeNodeHasKids(n){
   if(n.type==="folder")return!!(n.folders||[]).length||!!(n.items||[]).length;
   if(n.type==="unalloc")return true;
   if(n.type==="domain")return !hasNoSignal(n);
-  if(n.type==="server")return !isUnallocated(n.id)&&!hasNoSignal(n)&&!!(n.devices||[]).length;
+  if(n.type==="server")return !isUnallocated(n.id)&&!hasNoSignal(n)&&
+    ((sliceHasSvc()&&!!(n.devices||[]).length)||(sliceHasArch()&&(!!serverArchives(n.id).length||!!serverGpu(n))));
   return treeKids(n).length>0;
 }
 function treeChevron(id,kind,hasKids,op){
@@ -2284,7 +2924,9 @@ function bindTreeDbl(){
   const treeEl=document.getElementById("tree");
   if(!treeEl||treeEl._dblBound)return;
   treeEl._dblBound=true;
-  let treePickTimer=null;
+  // Выбор — сразу по клику; второй клик по той же строке раскрывает/сворачивает её.
+  // Двойной клик сам не ловим: после первого клика строка перерисована.
+  let lastClick={id:null,t:0};
   treeEl.addEventListener("mousedown",e=>{
     if(!(e.shiftKey||e.ctrlKey||e.metaKey))return;
     if(e.target.closest(".tw"))return;
@@ -2295,7 +2937,7 @@ function bindTreeDbl(){
     const id=row.dataset.pick,f=find(id);
     if(!f||!canMultiPick(f.n))return;
     e.preventDefault();
-    clearTimeout(treePickTimer);treePickTimer=null;
+    lastClick={id:null,t:0};
     pick(id,{range:e.shiftKey,additive:!e.shiftKey&&(e.ctrlKey||e.metaKey),ctx:row.dataset.ctx});
   });
   treeEl.addEventListener("click",e=>{
@@ -2305,37 +2947,30 @@ function bindTreeDbl(){
     if(e.shiftKey||e.ctrlKey||e.metaKey)return;
     const row=e.target.closest(".n[data-pick]");
     if(!row)return;
-    const id=row.dataset.pick,ctx=row.dataset.ctx;
-    clearTimeout(treePickTimer);
-    treePickTimer=setTimeout(()=>{treePickTimer=null;pick(id,{ctx});},250);
+    const id=row.dataset.pick,ctx=row.dataset.ctx||"",now=Date.now();
+    if(lastClick.id===id+"|"+ctx&&now-lastClick.t<400){
+      lastClick={id:null,t:0};
+      if(row.dataset.tid)treeDblToggle(row.dataset.tid,row.dataset.tkind||"node",e);
+      return;
+    }
+    lastClick={id:id+"|"+ctx,t:now};
+    pick(id,{ctx:ctx||undefined});
   });
-  treeEl.addEventListener("dblclick",e=>{
-    if(e.target.closest(".tw"))return;
-    if(e.target.closest(".n-add"))return;
-    if(e.target.closest(".nm-inp"))return;
-    clearTimeout(treePickTimer);
-    treePickTimer=null;
-    const row=e.target.closest(".n[data-pick]");
-    if(!row||row.classList.contains("n-add"))return;
-    if(row.dataset.tid){
-      e.preventDefault();
-      treeDblToggle(row.dataset.tid,row.dataset.tkind||"node",e);
-    }else pick(row.dataset.pick,{ctx:row.dataset.ctx});
-  });
+  treeEl.addEventListener("dblclick",e=>{e.preventDefault()});
 }
 function addTreeLabel(n){
   if(!n||n.type==="domain"||n.type==="unalloc")return i18n("Добавить сервер");
   if(n.type==="server")return i18n("Добавить службу");
-  if(n.type==="folder")return tview==="acfa"?i18n("Добавить ACFA"):i18n("Добавить устройство");
-  if(tview==="acfa"||n.type==="acfa"||ACFA_NODE_IDS.has(n.id))return i18n("Добавить ACFA");
-  if(tview==="sys"||isSvc(n))return i18n("Добавить службу");
+  if(n.type==="folder")return slice==="acfa"?i18n("Добавить ACFA"):i18n("Добавить устройство");
+  if(slice==="acfa"||n.type==="acfa"||ACFA_NODE_IDS.has(n.id))return i18n("Добавить ACFA");
+  if(slice==="sys"||isSvc(n))return i18n("Добавить службу");
   return i18n("Добавить устройство");
 }
 function canInspectorAdd(n){
   if(!n||n.type==="unalloc"||n.type==="det")return false;
   if(n.type==="domain")return true;
   if(n.type==="server")return !isUnallocated(n.id);
-  return app==="dev";
+  return app==="hw"&&groupBy==="folder";
 }
 function inspectorAddBtn(n){
   if(!canInspectorAdd(n))return"";
@@ -2346,7 +2981,7 @@ function canWizardAdd(n){return n&&(n.type==="domain"||n.type==="server")}
 function canTreeCtx(n){
   if(!n||n.type==="det")return false;
   if(n.type==="domain"||n.type==="server"||n.type==="unalloc"||n.type==="folder")return true;
-  return treeKind(n)===tview;
+  return inSlice(n);
 }
 function canTreeCtxAdd(n){
   if(n.type==="domain")return true;
@@ -2514,7 +3149,7 @@ function ctxRename(id,field){
   treeRenameId=id;treeRenameField=field==="short"?"short":"name";sel=id;tab="gen";setD(false);expandTo(id);renderTree();gear();
 }
 function canRenameShort(n){
-  return n&&n.type!=="domain"&&n.type!=="server"&&n.type!=="unalloc"&&n.type!=="det"&&n.type!=="folder"&&treeKind(n)===tview;
+  return n&&n.type!=="domain"&&n.type!=="server"&&n.type!=="unalloc"&&n.type!=="det"&&n.type!=="folder"&&inSlice(n);
 }
 function treeCtxAttr(id){return ` oncontextmenu="treeCtx(event,'${id}')"`;}
 function addTreeRow(level,n){
@@ -2546,7 +3181,14 @@ function openTreeCtx(n,xy){
     }
     const addItems=[];
     if(n.type==="unalloc"){
-      addItems.push(tctxItem(i18n("Добавить в домен"),`closeTreeCtx();openW('server')`,tctxPlusIcon()));
+      const nAv=unallocAvail(n.domainId).length;
+      addItems.push(tctxItem(i18n("Выбрать и добавить в домен…"),`closeTreeCtx();openW('server')`,tctxPlusIcon()));
+      if(nAv)addItems.push(tctxItem(`${i18n("Добавить все в домен")} (${nAv})`,`closeTreeCtx();addAllUnalloc('${n.domainId}')`,tctxPlusIcon()));
+      addItems.push(tctxItem(i18n("Найти по IP-адресам…"),`closeTreeCtx();openFindServerByIp('${n.domainId}')`,tctxPlusIcon()));
+    }else if(n.type==="domain"){
+      addItems.push(tctxItem(i18n("Добавить серверы…"),`closeTreeCtx();openW('server')`,tctxPlusIcon()));
+      addItems.push(tctxItem(i18n("Найти по IP-адресам…"),`closeTreeCtx();openFindServerByIp('${n.id}')`,tctxPlusIcon()));
+      addItems.push(tctxItem(i18n("Новый домен"),`createDomain()`,tctxPlusIcon()));
     }else if(canTreeCtxAdd(n)){
       const lb=addTreeLabel(n);
       const act=n.type==="domain"?`closeTreeCtx();openW('server')`:(n.type==="server"?`closeTreeCtx();openW('svc')`:"closeTreeCtx();openW()");
@@ -2558,7 +3200,7 @@ function openTreeCtx(n,xy){
       const did=unallocDomainOf(n.id);
       if(did)rest.push(tctxItem(i18n("Добавить в домен"),`closeTreeCtx();addToDomain('${n.id}','${did}')`));
     }else if(n.type!=="unalloc"){
-      const canRename=n.type==="domain"||n.type==="server"||n.type==="folder"||(n.type!=="unalloc"&&n.type!=="det"&&treeKind(n)===tview);
+      const canRename=n.type==="domain"||n.type==="server"||n.type==="folder"||(n.type!=="unalloc"&&n.type!=="det"&&inSlice(n));
       if(canRename)rest.push(tctxItem(i18n("Переименовать"),`ctxRename('${n.id}')`));
       if(canRenameShort(n))rest.push(tctxItem(i18n("Изменить короткое имя"),`ctxRename('${n.id}','short')`));
       if(n.type==="server"&&!isUnallocated(n.id)&&domainOf(n.id)){
@@ -2568,6 +3210,7 @@ function openTreeCtx(n,xy){
         rest.push(tctxItem(i18n("Убрать все объекты"),`clearFolder('${n.id}')`));
         rest.push(tctxItem(i18n("Удалить папку"),`deleteFolder('${n.id}')`));
       }
+      if(n.type==="domain")rest.push(tctxItem(i18n("Удалить домен…"),`deleteDomain('${n.id}')`));
     }
     if(n.type==="unalloc")rest.push(tctxItem(i18n("Обновить"),`refreshUnalloc('${n.domainId}')`));
     if(canTreeCtxDelete(n))rest.push(tctxItem(i18n("Удалить"),`deleteTreeNode('${n.id}')`));
@@ -2596,7 +3239,7 @@ function openTreeCtx(n,xy){
 }
 function treeCtx(e,id){
   e.preventDefault();e.stopPropagation();
-  if(app!=="dev")return;
+  if(app!=="hw")return;
   const f=find(id);if(!f)return;
   const n=f.n;
   if(!canTreeCtx(n))return;
@@ -2607,87 +3250,119 @@ function treeCtx(e,id){
   }
   openTreeCtx(n,xy);
 }
-function nrow(n,l,ctx){
+// force — предок найден по запросу: показываем его содержимое целиком (тип и статус действуют)
+function nrow(n,l,ctx,force){
   const q=qval();
-  if(n.type==="det"||treeKind(n)!==tview)return"";
-  if(q&&!vis(n,q))return"";
+  if(n.type==="det"||!inSlice(n))return"";
+  if(q&&!force&&!vis(n,q))return"";
   if(!selfInView(n)&&!kids(n).some(hasTreeIn))return"";
-  const k=treeKids(n),hasKids=k.length>0,op=open.has(n.id)||(!!q&&hasKids),pad=8+l*14;
-  const shown=k.filter(d=>hasTreeIn(d)&&(!q||vis(d,q)));
+  const selfQ=!!q&&selfInView(n)&&matchesSearch(n,q);
+  const childForce=!!force||selfQ;
+  const k=treeKids(n);
+  const shown=childForce||!q?k:k.filter(d=>vis(d,q));
+  const hasKids=shown.length>0,pad=8+l*14;
+  // Раскрываем ветку, если внутри есть найденное (по запросу или по типу/статусу)
+  const auto=hasKids&&(q&&!childForce?true:treeFiltOn());
+  const op=hasKids&&(open.has(n.id)||auto);
   const st=nodeStatus(n);
   const childOff=canToggleEnabled(n)&&st.off;
-  let h=`<div class="n ${treeRowHi(n.id,ctx)} ${childOff?"off":""}${treeRenameId===n.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(n.id,ctx)}${treeCtxAttr(n.id)}${treeExpandMeta(n.id,"node",hasKids)}>
+  const hit=(q||treeFiltOn())&&selfInView(n)&&matchesSearch(n,q);
+  let h=`<div class="n ${treeRowHi(n.id,ctx)} ${childOff?"off":""}${hit?" qhit":""}${treeRenameId===n.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(n.id,ctx)}${treeCtxAttr(n.id)}${treeExpandMeta(n.id,"node",hasKids)}>
     ${treeChevron(n.id,"node",hasKids,op)}
     ${treeIconHtml(n)}<span class="nm">${treeNameCell(n,q)}</span>${treeRowMeta(n,q,shown.length,op)}</div>`;
-  if(op)h+=shown.map(x=>nrow(x,l+1,ctx)).join("");
+  if(op)h+=shown.map(x=>nrow(x,l+1,ctx,childForce)).join("");
   return h}
-function svcrow(n,l){
+function svcrow(n,l,force){
   const q=qval(),pad=8+l*14;
-  if(q&&!matchesSearch(n,q))return"";
-  return `<div class="n ${sel===n.id?"on":""}${treeRenameId===n.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(n.id)}${treeCtxAttr(n.id)}>
+  if(!selfInView(n))return"";
+  const hit=!!q&&matchesSearch(n,q);
+  if(q&&!force&&!hit)return"";
+  return `<div class="n ${sel===n.id?"on":""}${hit?" qhit":""}${treeRenameId===n.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(n.id)}${treeCtxAttr(n.id)}>
     <span class="tw"></span>${treeIconHtml(n)}<span class="nm">${treeNameCell(n,q)}</span><span class="n-meta">${treeStatusSlot(n)}</span></div>`;
 }
-function srow(s,l=1,bare=false){
+// Где в «Серверах» лежит выбранный объект — его ветку показываем даже без сигнала
+let srvBr={sid:null,did:null};
+function srvsSelBranch(){
+  const f=find(sel);if(!f)return{sid:null,did:null};
+  const n=f.n;let sid=null,did=null;
+  if(n.type==="server")sid=n.id;
+  else if(n.type==="domain")did=n.id;
+  else if(n.type==="archive"){sid=n.server||null;did=archDomainId(n)}
+  else if(n.type==="gpu")sid=n.serverId;
+  else if(n.type==="norec"||n.type==="unalloc")did=n.domainId;
+  else if(n.type==="det")sid=f.p?detServerId(f.p,n):null;
+  else if(isSvc(n))sid=f.p?.type==="server"?f.p.id:null;
+  else sid=srv(n.id)?.id||null;
+  if(sid&&!did)did=domainOf(sid)?.id||unallocDomainOf(sid);
+  if(!sid&&!did)did=deviceDomain(n.id);
+  return{sid,did};
+}
+function srow(s,l=1,bare=false,force=false){
   const q=qval(),pad=8+l*14;
+  const srvHit=!!q&&matchesSearch(s,q);
   if(bare){
-    if(q&&!matchesSearch(s,q))return"";
+    if(!matchesType(s)||!matchesStatus(s))return"";
+    if(q&&!force&&!srvHit)return"";
     // Нераспределённые ещё не подключены к домену — всегда серым
-    let h=`<div class="n srv ${sel===s.id?"on":""} off${treeRenameId===s.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(s.id)}${treeCtxAttr(s.id)}>
+    let h=`<div class="n srv ${sel===s.id?"on":""} off${srvHit?" qhit":""}${treeRenameId===s.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(s.id)}${treeCtxAttr(s.id)}>
       <span style="width:11px;flex:none"></span>
       ${treeIconHtml(s)}<span class="nm">${treeNameCell(s,q)}</span></div>`;
     return h;
   }
-  const offline=hasNoSignal(s);
-  const srvHit=!q||matchesSearch(s,q);
-  const camMode=sview==="cam";
-  // Нет сигнала — дочерние в дереве не показываем
-  const archs=offline?[]:serverArchives(s.id);
-  const devs=offline?[]:(s.devices||[]).filter(d=>d.type!=="det");
-  const gpu=offline?null:serverGpu(s);
-  const kidsHtml=camMode?archs.map(a=>arow(a,l+1)).filter(Boolean).join("")+(gpu?gpurow(s,l+1):"")
-    :devs.filter(d=>!q||matchesSearch(d,q)).map(d=>svcrow(d,l+1)).join("");
-  if(!srvHit&&!kidsHtml)return"";
-  const cnt=camMode?archs.reduce((n,a)=>n+archCameras(a.id).length,0):devs.length;
-  const hasKids=!offline&&(camMode?(!!archs.length||!!gpu||true):!!devs.length);
-  const op=hasKids&&(open.has(s.id)||!!q);
-  let h=`<div class="n srv ${sel===s.id?"on":""}${treeRenameId===s.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(s.id)}${treeCtxAttr(s.id)}${treeExpandMeta(s.id,"srv",hasKids)}>
+  const childForce=!!force||srvHit;
+  const arcMode=sliceHasArch(),svcMode=sliceHasSvc();
+  // Нет сигнала — дочерние не показываем; кроме поиска и ветки выбранного объекта
+  const hideKids=hasNoSignal(s)&&!q&&srvBr.sid!==s.id;
+  const archs=hideKids||!arcMode?[]:serverArchives(s.id);
+  const devs=hideKids||!svcMode?[]:(s.devices||[]).filter(d=>d.type!=="det");
+  const gpu=hideKids||!arcMode?null:serverGpu(s);
+  const kidsHtml=archs.map(a=>arow(a,l+1,childForce)).filter(Boolean).join("")
+    +(gpu?gpurow(s,l+1,childForce):"")
+    +devs.map(d=>svcrow(d,l+1,childForce)).join("");
+  if(!kidsHtml&&!selfInView(s)&&hideEmptyBranch(q,srvHit,false))return"";
+  if(q&&!childForce&&!kidsHtml&&!srvHit)return"";
+  const cnt=arcMode&&!svcMode?archs.reduce((n,a)=>n+archCameras(a.id).length,0):devs.length+archs.length;
+  const hasKids=!hideKids&&!!kidsHtml;
+  const op=hasKids&&(open.has(s.id)||qAutoOpen(q,srvHit,force,!!kidsHtml)||(treeFiltOn()&&!q));
+  let h=`<div class="n srv ${sel===s.id?"on":""}${srvHit?" qhit":""}${treeRenameId===s.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(s.id)}${treeCtxAttr(s.id)}${treeExpandMeta(s.id,"srv",hasKids)}>
     ${treeChevron(s.id,"srv",hasKids,op)}
     ${treeIconHtml(s)}<span class="nm">${treeNameCell(s,q)}</span>${treeRowMeta(s,q,cnt,op)}</div>`;
   if(op){
     h+=kidsHtml;
-    h+=camMode?addArchRow(l+1,s):addTreeRow(l+1,s);
+    if(!hasActiveFilters())h+=arcMode?addArchRow(l+1,s):addTreeRow(l+1,s);
   }
   return h}
+// Домен в группировке «по серверам»: серверы, сетевые архивы, камеры без записи
+// и нераспределённые серверы — набор зависит от среза
 function drow(d){
   const q=qval();
-  const offline=hasNoSignal(d);
-  const selfHit=!q||matchesSearch(d,q);
-  const netHtml=offline||sview!=="cam"?"":domainArchives(d.id).map(a=>arow(a,1)).filter(Boolean).join("")+addArchRow(1,d);
-  const childHtml=(offline?"":d.servers.map(s=>srow(s,1)).filter(Boolean).join(""))+netHtml;
-  const uaHtml=offline?"":(sview==="cam"?norow(d,1):urow(1,d));
-  if(!selfHit&&!childHtml&&!uaHtml)return"";
-  const hasKids=!offline;
-  const op=!offline&&(open.has(d.id)||!!(q&&(selfHit||childHtml||uaHtml)));
-  let h=`<div class="n srv ${sel===d.id?"on":""}${treeRenameId===d.id?" renaming":""}"${treeRowPick(d.id)}${treeCtxAttr(d.id)}${treeExpandMeta(d.id,"dom",hasKids)}>
+  const hideKids=hasNoSignal(d)&&!q&&srvBr.did!==d.id;
+  const qHit=!!q&&matchesSearch(d,q);
+  const srvHtml=hideKids?"":d.servers.map(s=>srow(s,1,false,qHit)).filter(Boolean).join("");
+  const netHtml=hideKids||!sliceHasArch()?"":domainArchives(d.id).map(a=>arow(a,1,qHit)).filter(Boolean).join("");
+  const norecHtml=hideKids||!sliceHasNorec()?"":norow(d,1,qHit);
+  const uaHtml=hideKids||!sliceHasUnalloc()?"":urow(1,d,qHit);
+  const kids=srvHtml+netHtml+norecHtml+uaHtml;
+  if(!kids&&(q?!qHit:treeFiltOn()))return"";
+  const hasKids=!hideKids;
+  const op=hasKids&&(open.has(d.id)||!!q||treeFiltOn());
+  let h=`<div class="n srv ${sel===d.id?"on":""}${qHit?" qhit":""}${treeRenameId===d.id?" renaming":""}"${treeRowPick(d.id)}${treeCtxAttr(d.id)}${treeExpandMeta(d.id,"dom",hasKids)}>
     ${treeChevron(d.id,"dom",hasKids,op)}
     ${treeIconHtml(d)}<span class="nm">${treeNameCell(d,q)}</span>${treeRowMeta(d,q,domainServerCount(d),op)}</div>`;
-  if(op){
-    if(childHtml)h+=childHtml;
-    h+=uaHtml;
-  }
+  if(op)h+=srvHtml+netHtml+(sliceHasArch()&&!hasActiveFilters()?addArchRow(1,d):"")+norecHtml+uaHtml;
   return h}
-function urow(l,domain){
+function urow(l,domain,force){
   const q=qval(),pad=8+l*14,ua=unallocNode(domain),list=domain.unallocServers;
-  const selfHit=!q||matchesSearch(ua,q);
-  const childHtml=list.map(s=>srow(s,l+1,true)).filter(Boolean).join("");
-  if(!selfHit&&!childHtml&&q)return"";
-  const op=open.has(ua.id)||!!(q&&(selfHit||childHtml));
-  let h=`<div class="n srv ${sel===ua.id?"on":""}" style="padding-left:${pad}px" data-pick="${ua.id}"${treeCtxAttr(ua.id)}${treeExpandMeta(ua.id,"dom",true)}>
+  const selfHit=!!q&&matchesSearch(ua,q),childForce=!!force||selfHit;
+  const childHtml=list.map(s=>srow(s,l+1,true,childForce)).filter(Boolean).join("");
+  if(hideEmptyBranch(q,selfHit,!!childHtml))return"";
+  const op=open.has(ua.id)||qAutoOpen(q,selfHit,force,!!childHtml)||(treeFiltOn()&&!q&&!!childHtml);
+  let h=`<div class="n srv ${sel===ua.id?"on":""}${selfHit?" qhit":""}" style="padding-left:${pad}px" data-pick="${ua.id}"${treeCtxAttr(ua.id)}${treeExpandMeta(ua.id,"dom",true)}>
     ${treeChevron(ua.id,"dom",true,op)}
     ${ic("unalloc")}<span class="nm">${displayNameHtml(ua,q)}</span>${treeCntHtml(list.length)}</div>`;
   if(op){
     h+=childHtml;
-    h+=addManualSrvRow(l+1,domain.id);
+    if(!hasActiveFilters())h+=addManualSrvRow(l+1,domain.id);
   }
   return h}
 // ── Дерево «Устройства»: папки физического расположения ────────────────────
@@ -2704,44 +3379,50 @@ function folderCount(f){
   return n;
 }
 function folderHasTreeIn(f){
-  if(!(f.items||[]).length&&!(f.folders||[]).length)return true;// пустая папка видна всегда
+  // Пустая папка видна, пока дерево не сужено типом/статусом
+  if(!(f.items||[]).length&&!(f.folders||[]).length)return!treeFiltOn();
   if(folderDeviceNodes(f).some(hasTreeIn))return true;
   return(f.folders||[]).some(folderHasTreeIn);
 }
-function frow(f,l){
+function frow(f,l,force){
   const q=qval(),pad=8+l*14;
-  const selfHit=!q||locName(f).toLowerCase().includes(q);
-  // Ветки, пустые для текущего вида (Камеры/ACFA), не показываем;
+  const selfHit=folderNameHit(f,q);
+  const childForce=!!force||selfHit;
+  // Ветки, пустые для текущего вида и фильтров, не показываем;
   // папка остаётся видимой, если её имя нашли поиском
-  if(!folderHasTreeIn(f)&&!(q&&selfHit))return"";
-  const subs=(f.folders||[]).map(x=>frow(x,l+1)).filter(Boolean).join("");
-  const devs=folderDeviceNodes(f).filter(d=>hasTreeIn(d)&&(!q||vis(d,q)));
-  if(!selfHit&&!subs&&!devs.length)return"";
+  if(!folderHasTreeIn(f)&&!selfHit)return"";
+  const subs=(f.folders||[]).map(x=>frow(x,l+1,childForce)).filter(Boolean).join("");
+  const devs=folderDeviceNodes(f).filter(d=>hasTreeIn(d)&&(childForce||!q||vis(d,q)));
+  if(q&&!childForce&&!subs&&!devs.length)return"";
   const hasKids=!!subs||!!devs.length;
-  const op=hasKids&&(open.has(f.id)||(!!q&&(!!subs||!!devs.length)));
-  let h=`<div class="n srv fld ${sel===f.id?"on":""}${treeRenameId===f.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(f.id)}${treeCtxAttr(f.id)}${treeExpandMeta(f.id,"dom",hasKids)}>
+  // Найденную папку раскрываем; вложенные в неё — нет, пока внутри нет своих совпадений
+  const auto=q?(selfHit||!force):treeFiltOn();
+  const op=hasKids&&(open.has(f.id)||auto);
+  let h=`<div class="n srv fld ${sel===f.id?"on":""}${selfHit?" qhit":""}${treeRenameId===f.id?" renaming":""}" style="padding-left:${pad}px"${treeRowPick(f.id)}${treeCtxAttr(f.id)}${treeExpandMeta(f.id,"dom",hasKids)}>
     ${treeChevron(f.id,"dom",hasKids,op)}
-    ${ic(op?"folderOpen":"folder")}<span class="nm">${treeNameCell(f,q)}</span>${treeCntHtml(folderCount(f))}</div>`;
+    ${ic(op?"folderOpen":"folder")}<span class="nm">${hlText(locName(f),selfHit?q:"")}</span>${treeCntHtml(folderCount(f))}</div>`;
   if(op){
     h+=subs;
-    h+=devs.map(d=>nrow(d,l+1,"f:"+f.id)).join("");
+    h+=devs.map(d=>nrow(d,l+1,"f:"+f.id,childForce)).join("");
     h+=addTreeRow(l+1,f);
   }
   return h;
 }
 // Устройства без папки — свои у каждого домена
-function nfrow(d,l){
+function nfrow(d,l,force){
   const q=qval(),pad=8+l*14,node=nofolderNode(d.id);
-  const devs=unfolderedDevices(d.id).filter(x=>hasTreeIn(x)&&(!q||vis(x,q)));
-  const selfHit=!q||locName(node).toLowerCase().includes(q);
-  if(!devs.length&&!selfHit)return"";
+  const selfHit=folderNameHit(node,q);
+  const childForce=!!force||selfHit;
   const all=unfolderedDevices(d.id).filter(hasTreeIn);
-  const hasKids=!!all.length;
-  const op=hasKids&&(open.has(node.id)||(!!q&&!!devs.length));
-  let h=`<div class="n srv fld ${sel===node.id?"on":""}" style="padding-left:${pad}px"${treeRowPick(node.id)}${treeExpandMeta(node.id,"dom",hasKids)}>
+  const devs=childForce||!q?all:all.filter(x=>vis(x,q));
+  if(!devs.length&&!selfHit&&(q||treeFiltOn()))return"";
+  const hasKids=!!devs.length;
+  const auto=q?(selfHit||!force):treeFiltOn();
+  const op=hasKids&&(open.has(node.id)||auto);
+  let h=`<div class="n srv fld ${sel===node.id?"on":""}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(node.id)}${treeExpandMeta(node.id,"dom",hasKids)}>
     ${treeChevron(node.id,"dom",hasKids,op)}
-    ${ic("unalloc")}<span class="nm">${locName(node)}</span>${treeCntHtml(all.length)}</div>`;
-  if(op)h+=devs.map(x=>nrow(x,l+1,"nf:"+d.id)).join("");
+    ${ic("unalloc")}<span class="nm">${hlText(locName(node),selfHit?q:"")}</span>${treeCntHtml(all.length)}</div>`;
+  if(op)h+=devs.map(x=>nrow(x,l+1,"nf:"+d.id,childForce)).join("");
   return h;
 }
 function domainDeviceCount(did){
@@ -2751,13 +3432,13 @@ function domainDeviceCount(did){
 }
 function dfrow(d){
   const q=qval();
-  const selfHit=!q||matchesSearch(d,q);
-  const kidsHtml=domainFolders(d.id).map(f=>frow(f,1)).filter(Boolean).join("")+nfrow(d,1);
-  if(!selfHit&&!kidsHtml)return"";
+  const qHit=!!q&&matchesSearch(d,q);
+  const kidsHtml=domainFolders(d.id).map(f=>frow(f,1,qHit)).filter(Boolean).join("")+nfrow(d,1,qHit);
+  if(!kidsHtml&&(q?!qHit:treeFiltOn()))return"";
   // У домена всегда есть «Без папки» и строка создания папки
   const hasKids=true;
-  const op=open.has(d.id)||!!q;
-  let h=`<div class="n srv ${sel===d.id?"on":""}${treeRenameId===d.id?" renaming":""}"${treeRowPick(d.id)}${treeCtxAttr(d.id)}${treeExpandMeta(d.id,"dom",hasKids)}>
+  const op=open.has(d.id)||!!q||treeFiltOn();
+  let h=`<div class="n srv ${sel===d.id?"on":""}${qHit?" qhit":""}${treeRenameId===d.id?" renaming":""}"${treeRowPick(d.id)}${treeCtxAttr(d.id)}${treeExpandMeta(d.id,"dom",hasKids)}>
     ${treeChevron(d.id,"dom",hasKids,op)}
     ${treeIconHtml(d)}<span class="nm">${treeNameCell(d,q)}</span>${treeCntHtml(domainDeviceCount(d.id))}</div>`;
   if(op){h+=kidsHtml;h+=addFolderRow(1,d.id)}
@@ -2768,16 +3449,30 @@ function addFolderRow(level,domainId){
   return `<div class="n n-add" style="padding-left:${pad}px" onclick="event.stopPropagation();addSubfolder(null,'${domainId}')" title="${i18n("Добавить папку")}">
     <span style="width:11px;flex:none"></span><span class="nm">＋ ${i18n("Папка")}</span></div>`;
 }
-function treeDev(){return domains.map(d=>dfrow(d)).join("")}
+// ── Дерево «Оборудование» ─────────────────────────────────────────────────
+// Одно дерево: корень — домены, срез решает что показать, группировка — как.
+function treeHw(){
+  srvBr=srvsSelBranch();
+  const h=domains.map(d=>groupBy==="server"?drow(d):dfrow(d)).join("");
+  if(!hasActiveFilters())return h+addDomainRow();
+  return h||`<div class="n n-empty">${i18n("Ничего не найдено")} · <button type="button" class="lk-add" onclick="resetAllFilters()">${i18n("Сбросить фильтры")}</button></div>`;
+}
 // ── Дерево «Сервера» ──────────────────────────────────────────────────────
 // Режим «Камеры»: домен → сервер → архив → камеры, которые на него пишутся.
 // Режим «Службы»: домен → сервер → службы сервера.
-function scamrow(n,l,ctx){
+// Правила те же, что в «Устройствах»: найденный по имени контейнер (домен, сервер, архив,
+// GPU, NVR, «Без записи») раскрывается и показывает всё содержимое — force у потомков
+function scamrow(n,l,ctx,force){
   const q=qval(),pad=8+l*14;
-  if(q&&!matchesSearch(n,q))return"";
-  return `<div class="n ${rowOn(n.id,ctx)}" style="padding-left:${pad}px"${treeRowPick(n.id,ctx)}>
+  if(!selfInView(n))return"";
+  const hit=!!q&&matchesSearch(n,q);
+  if(q&&!force&&!hit)return"";
+  return `<div class="n ${rowOn(n.id,ctx)}${hit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(n.id,ctx)}>
     <span class="tw"></span>${treeIconHtml(n)}<span class="nm">${displayNameHtml(n,q)}</span>${treeRowMeta(n,q,0,false)}</div>`;
 }
+// Раскрывать ли контейнер при поиске: найден сам или (не под найденным предком) есть совпадения внутри
+function qAutoOpen(q,selfHit,force,anyInside){return!!q&&(selfHit||(!force&&anyInside))}
+function srvDetHit(d,q){return!!q&&nameInScope()&&textHit(locName(d),q)}
 // Камеры регистратора показываем под ним: репликация встроенного архива
 // настраивается на NVR сразу для всех его камер
 function groupCamsByIpsrv(cams){
@@ -2790,51 +3485,61 @@ function groupCamsByIpsrv(cams){
   });
   return{groups,loose};
 }
-function nvrrow(owner,cams,l,ctx){
+// Ветка без видимого содержимого при активном поиске или фильтре только мешает
+function hideEmptyBranch(q,selfHit,anyInside){return!anyInside&&(q?!selfHit:treeFiltOn())}
+function nvrrow(owner,cams,l,ctx,force){
   const q=qval(),pad=8+l*14;
-  const vis=cams.filter(c=>!q||matchesSearch(c,q));
-  const selfHit=!q||matchesSearch(owner,q);
-  if(!selfHit&&!vis.length)return"";
-  const op=open.has(owner.id)||!!q;
+  const selfHit=!!q&&matchesSearch(owner,q),childForce=!!force||selfHit;
+  const vis=cams.filter(c=>selfInView(c)&&(childForce||!q||matchesSearch(c,q)));
+  if(hideEmptyBranch(q,selfHit&&selfInView(owner),vis.length))return"";
+  const op=open.has(owner.id)||qAutoOpen(q,selfHit,force,!!vis.length)||(treeFiltOn()&&!q&&!!vis.length);
   const edge=edgeStorage(owner);
-  let h=`<div class="n srv ${rowOn(owner.id,ctx)}" style="padding-left:${pad}px"${treeRowPick(owner.id,ctx)}${treeExpandMeta(owner.id,"srv",true)}>
+  let h=`<div class="n srv ${rowOn(owner.id,ctx)}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(owner.id,ctx)}${treeExpandMeta(owner.id,"srv",true)}>
     ${treeChevron(owner.id,"srv",true,op)}
     ${treeIconHtml(owner)}<span class="nm">${displayNameHtml(owner,q)}</span>${edge?`<span class="n-tail"><span class="cnt" title="${i18n("Встроенное хранилище")}">${ic("storage")}</span></span>`:""}${treeCntHtml(cams.length)}</div>`;
-  if(op)h+=(q?vis:cams).map(c=>scamrow(c,l+1,ctx)).join("");
+  if(op)h+=vis.map(c=>scamrow(c,l+1,ctx,true)).join("");
   return h;
 }
-function gdetrow(d,l,ctx){
+function gdetrow(d,l,ctx,force){
   const q=qval(),pad=8+l*14;
-  const hit=!q||locName(d).toLowerCase().includes(q);
-  if(!hit)return"";
-  return `<div class="n ${rowOn(d.id,ctx)}" style="padding-left:${pad}px"${treeRowPick(d.id,ctx)}>
-    <span class="tw"></span>${ic("det")}<span class="nm">${hlText(locName(d),q)}</span><span class="n-meta"><span class="n-tail"><span class="cnt">${escHtml(i18n(d.kind||DET_TYPES[0]))}</span></span>${treeStatusSlot(d)}</span></div>`;
+  const hit=srvDetHit(d,q);
+  if(q&&!force&&!hit)return"";
+  return `<div class="n ${rowOn(d.id,ctx)}${hit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(d.id,ctx)}>
+    <span class="tw"></span>${ic("det")}<span class="nm">${hlText(locName(d),hit?q:"")}</span><span class="n-meta"><span class="n-tail"><span class="cnt">${escHtml(i18n(d.kind||DET_TYPES[0]))}</span></span>${treeStatusSlot(d)}</span></div>`;
 }
-function gcamrow(cam,dets,l,ctx){
+function gcamrow(cam,dets,l,ctx,force){
   const q=qval(),pad=8+l*14;
-  const vis=dets.filter(d=>!q||locName(d).toLowerCase().includes(q));
-  const selfHit=!q||matchesSearch(cam,q);
-  if(!selfHit&&!vis.length)return"";
+  if(!selfInView(cam))return"";
+  const selfHit=!!q&&matchesSearch(cam,q),childForce=!!force||selfHit;
+  const vis=childForce||!q?dets:dets.filter(d=>srvDetHit(d,q));
+  if(q&&!childForce&&!vis.length)return"";
   const hasKids=!!dets.length;
-  const op=hasKids&&(open.has(cam.id)||!!q);
-  let h=`<div class="n ${rowOn(cam.id,ctx)}" style="padding-left:${pad}px"${treeRowPick(cam.id,ctx)}${treeExpandMeta(cam.id,"node",hasKids)}>
+  // Камера — не контейнер: по своему имени не раскрывается, только ради найденных детекторов
+  const op=hasKids&&(open.has(cam.id)||(!!q&&!childForce&&!!vis.length));
+  let h=`<div class="n ${rowOn(cam.id,ctx)}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(cam.id,ctx)}${treeExpandMeta(cam.id,"node",hasKids)}>
     ${treeChevron(cam.id,"node",hasKids,op)}
     ${treeIconHtml(cam)}<span class="nm">${displayNameHtml(cam,q)}</span>${treeCntHtml(dets.length)}</div>`;
-  if(op)h+=(selfHit?dets:vis).map(d=>gdetrow(d,l+1,ctx)).join("");
+  if(op)h+=vis.map(d=>gdetrow(d,l+1,ctx,true)).join("");
   return h;
 }
-function gpurow(sv,l){
+function gpurow(sv,l,force){
   const q=qval(),pad=8+l*14,node=gpuNode(sv),ctx="gpu:"+sv.id;
   const list=gpuCameras(sv.id);
-  const vis=list.filter(x=>!q||matchesSearch(x.cam,q));
-  const selfHit=!q||locName(node).toLowerCase().includes(q)||"gpu".includes(q);
-  if(!selfHit&&!vis.length)return"";
-  const hasKids=!!list.length;
-  const op=hasKids&&(open.has(node.id)||!!q);
-  let h=`<div class="n srv gpu ${sel===node.id?"on":""}" style="padding-left:${pad}px"${treeRowPick(node.id)}${treeExpandMeta(node.id,"srv",hasKids)}>
+  const selfHit=folderNameHit(node,q)||(!!q&&nameInScope()&&textHit("gpu",q));
+  const childForce=!!force||selfHit;
+  if(!sliceOpensArch()){
+    if(q&&!selfHit)return"";
+    return `<div class="n srv gpu ${sel===node.id?"on":""}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(node.id)}>
+      <span class="tw"></span>${ic("gpu")}<span class="nm">${hlText(locName(node),selfHit?q:"")}</span>${treeCntHtml(list.length)}</div>`;
+  }
+  const vis=list.filter(x=>selfInView(x.cam)&&(childForce||!q||matchesSearch(x.cam,q)||x.dets.some(d=>srvDetHit(d,q))));
+  if(hideEmptyBranch(q,selfHit,vis.length))return"";
+  const hasKids=!!vis.length;
+  const op=hasKids&&(open.has(node.id)||qAutoOpen(q,selfHit,force,!!vis.length)||(treeFiltOn()&&!q));
+  let h=`<div class="n srv gpu ${sel===node.id?"on":""}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(node.id)}${treeExpandMeta(node.id,"srv",hasKids)}>
     ${treeChevron(node.id,"srv",hasKids,op)}
     ${ic("gpu")}<span class="nm">${hlText(locName(node),selfHit?q:"")}</span>${treeCntHtml(list.length)}</div>`;
-  if(op)h+=(q?vis:list).map(x=>gcamrow(x.cam,x.dets,l+1,ctx)).join("");
+  if(op)h+=vis.map(x=>gcamrow(x.cam,x.dets,l+1,ctx,childForce)).join("");
   return h;
 }
 function addArchRow(level,owner){
@@ -2843,48 +3548,61 @@ function addArchRow(level,owner){
   return `<div class="n n-add" style="padding-left:${pad}px" onclick="event.stopPropagation();addArchive('${owner.id}')" title="${lb}">
     <span style="width:11px;flex:none"></span><span class="nm">＋ ${lb}</span></div>`;
 }
-function arow(a,l){
+function arow(a,l,force){
   const q=qval(),pad=8+l*14;
-  const cams=archCameras(a.id),vis=cams.filter(c=>!q||matchesSearch(c,q));
-  const selfHit=!q||locName(a).toLowerCase().includes(q);
-  if(!selfHit&&!vis.length)return"";
-  const hasKids=!!cams.length;
-  const op=hasKids&&(open.has(a.id)||!!q);
-  let h=`<div class="n srv ${sel===a.id?"on":""}" style="padding-left:${pad}px"${treeRowPick(a.id)}${treeExpandMeta(a.id,"srv",hasKids)}>
+  const selfHit=folderNameHit(a,q),childForce=!!force||selfHit;
+  const cams=archCameras(a.id),ctx="arch:"+a.id;
+  // В срезе «Серверы» архив — конечная строка: показываем состав сервера, а не камеры
+  if(!sliceOpensArch()){
+    if(q&&!selfHit)return"";
+    return `<div class="n srv ${sel===a.id?"on":""}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(a.id)}>
+      <span class="tw"></span>${ic("storage")}<span class="nm">${hlText(locName(a),selfHit?q:"")}</span>${treeCntHtml(cams.length)}</div>`;
+  }
+  const {groups,loose}=groupCamsByIpsrv(cams);
+  const build=()=>groups.map(g=>nvrrow(g.owner,g.cams,l+1,ctx,childForce)).filter(Boolean).join("")
+    +loose.map(c=>scamrow(c,l+1,ctx,childForce)).join("");
+  // Пока дерево не сужено, свёрнутую ветку не строим — это заметно на больших архивах
+  const filtering=!!q||treeFiltOn();
+  const inner=filtering?build():null;
+  if(filtering&&hideEmptyBranch(q,selfHit,!!inner))return"";
+  const hasKids=filtering?!!inner:!!cams.length;
+  const op=hasKids&&(open.has(a.id)||qAutoOpen(q,selfHit,force,!!inner)||(treeFiltOn()&&!q));
+  let h=`<div class="n srv ${sel===a.id?"on":""}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(a.id)}${treeExpandMeta(a.id,"srv",hasKids)}>
     ${treeChevron(a.id,"srv",hasKids,op)}
     ${ic("storage")}<span class="nm">${hlText(locName(a),selfHit?q:"")}</span>${treeCntHtml(cams.length)}</div>`;
-  if(op){
-    const{groups,loose}=groupCamsByIpsrv(cams),ctx="arch:"+a.id;
-    h+=groups.map(g=>nvrrow(g.owner,g.cams,l+1,ctx)).filter(Boolean).join("");
-    h+=loose.filter(c=>!q||matchesSearch(c,q)).map(c=>scamrow(c,l+1,ctx)).join("");
-  }
+  if(op)h+=inner??build();
   return h;
 }
 // Камеры, для которых запись не настроена: сервера у них нет вовсе
-function norow(d,l){
-  const q=qval(),cams=unrecordedCameras(d.id),vis=cams.filter(c=>!q||matchesSearch(c,q));
+function norow(d,l,force){
+  const q=qval(),cams=unrecordedCameras(d.id);
   const n=norecNode(d.id),pad=8+l*14;
-  const selfHit=!q||locName(n).toLowerCase().includes(q);
-  if(!selfHit&&!vis.length)return"";
-  const hasKids=!!cams.length;
-  const op=hasKids&&(open.has(n.id)||(!!q&&!!vis.length));
-  let h=`<div class="n srv norec ${sel===n.id?"on":""}" style="padding-left:${pad}px"${treeRowPick(n.id)}${treeExpandMeta(n.id,"dom",hasKids)}>
+  const selfHit=folderNameHit(n,q),childForce=!!force||selfHit;
+  const vis=cams.filter(c=>selfInView(c)&&(childForce||!q||matchesSearch(c,q)));
+  if(hideEmptyBranch(q,selfHit,vis.length))return"";
+  const hasKids=!!vis.length;
+  const op=hasKids&&(open.has(n.id)||qAutoOpen(q,selfHit,force,!!vis.length)||(treeFiltOn()&&!q));
+  let h=`<div class="n srv norec ${sel===n.id?"on":""}${selfHit?" qhit":""}" style="padding-left:${pad}px"${treeRowPick(n.id)}${treeExpandMeta(n.id,"dom",hasKids)}>
     ${treeChevron(n.id,"dom",hasKids,op)}
-    ${ic("unalloc")}<span class="nm">${locName(n)}</span>${treeCntHtml(cams.length)}</div>`;
-  if(op)h+=vis.map(c=>scamrow(c,l+1,"norec:"+d.id)).join("");
+    ${ic("unalloc")}<span class="nm">${hlText(locName(n),selfHit?q:"")}</span>${treeCntHtml(cams.length)}</div>`;
+  if(op)h+=vis.map(c=>scamrow(c,l+1,"norec:"+d.id,true)).join("");
   return h;
 }
-function treeServers(){return domains.map(d=>drow(d)).join("")}
-function treeRules(){const q=qval();return rules.filter(r=>!q||r.name.toLowerCase().includes(q)).map(r=>
-  `<div class="n ${rule===r.id?"on":""}" onclick="rule='${r.id}';tab='gen';paint()"><span>${r.on?"●":"○"}</span><span class="nm">${r.name}</span></div>`).join("")}
-function treeRoles(){const q=qval();return roles.filter(r=>!q||r.n.toLowerCase().includes(q)).map(r=>{
-  const op=open.has(r.id),on=role===r.id;
-  let h=`<div class="n srv ${on?"on":""}" onclick="role='${r.id}';tab='gen';paint()"><span style="width:11px" onclick="event.stopPropagation();open.has('${r.id}')?open.delete('${r.id}'):open.add('${r.id}');renderTree()">${op?"▾":"▸"}</span>
-    <span>👤</span><span class="nm">${r.n}</span>${treeCntHtml(r.users.length)}</div>`;
-  if(op)h+=r.users.map(u=>`<div class="n" style="padding-left:22px;opacity:.7"><span class="nm">${u}</span></div>`).join("");
-  return h}).join("")}
-function treeOpts(){const q=qval();return sysOpts.filter(o=>!q||o.n.toLowerCase().includes(q)).map(o=>
-  `<div class="n ${sys===o.id?"on":""}" onclick="sys='${o.id}';tab='gen';paint()"><span>${o.i}</span><span class="nm">${o.n}</span></div>`).join("")}
+function treeEmptyHtml(){return qval()?`<div class="n n-empty">${i18n("Ничего не найдено")}</div>`:""}
+function treeRules(){const q=qval();return rules.filter(r=>textHit(r.name,q)).map(r=>
+  `<div class="n ${rule===r.id?"on":""}${q?" qhit":""}" onclick="rule='${r.id}';tab='gen';paint()"><span>${r.on?"●":"○"}</span><span class="nm">${hlText(r.name,q)}</span></div>`).join("")||treeEmptyHtml()}
+// Роль находится и по своему имени, и по логинам пользователей
+function treeRoles(){const q=qval();return roles.map(r=>{
+  const roleHit=!!q&&textHit(r.n,q);
+  const users=q&&!roleHit?r.users.filter(u=>textHit(u,q)):r.users;
+  if(q&&!roleHit&&!users.length)return"";
+  const op=open.has(r.id)||(!!q&&!roleHit),on=role===r.id;
+  let h=`<div class="n srv ${on?"on":""}${roleHit?" qhit":""}" onclick="role='${r.id}';tab='gen';paint()"><span style="width:11px" onclick="event.stopPropagation();open.has('${r.id}')?open.delete('${r.id}'):open.add('${r.id}');renderTree()">${op?"▾":"▸"}</span>
+    <span>👤</span><span class="nm">${hlText(r.n,roleHit?q:"")}</span>${treeCntHtml(r.users.length)}</div>`;
+  if(op)h+=users.map(u=>{const uh=!!q&&textHit(u,q);return`<div class="n${uh?" qhit":""}" style="padding-left:22px;opacity:.7" onclick="role='${r.id}';tab='gen';paint()"><span class="nm">${hlText(u,uh?q:"")}</span></div>`}).join("");
+  return h}).join("")||treeEmptyHtml()}
+function treeOpts(){const q=qval();return sysOpts.filter(o=>textHit(o.n,q)).map(o=>
+  `<div class="n ${sys===o.id?"on":""}${q?" qhit":""}" onclick="sys='${o.id}';tab='gen';paint()"><span>${o.i}</span><span class="nm">${hlText(o.n,q)}</span></div>`).join("")||treeEmptyHtml()}
 function treeLog(){return logCats.map(c=>`<div class="n ${logFilt===c.id?"on":""}" onclick="logFilt='${c.id}';paint()"><span>≡</span><span class="nm">${c.n}</span></div>`).join("")}
 
 function tabsFor(n){
@@ -2907,18 +3625,19 @@ function tabsFor(n){
   return[["gen","Основные"]];
 }
 function gear(){
+  invalidateFind();
   const f=find(sel);if(!f){document.getElementById("main").innerHTML=`<div class='sc'>${i18n("Выберите объект в дереве")}</div>`;syncDomAct();return}
   const n=f.n,tabs=tabsFor(n);
   if(tabs.length&&!tabs.some(([id])=>id===tab))tab=tabs[0][0];
   const tabsH=tabs.map(([id,x])=>`<button class="tab ${tab===id?"on":""}" onclick="tab='${id}';gear()">${i18n(x)}</button>`).join("");
   const addBtn=inspectorAddBtn(n);
   const scClass=n.type==="unalloc"?"sc sc-unalloc":"sc";
-  document.getElementById("main").innerHTML=mainHd(crumbsHtml(sel),objectTitle(n),"",tabsH,addBtn)+`<div class="${scClass}">${objectStatusNotesHtml(n)}${form(n)}</div>`;
+  document.getElementById("main").innerHTML=mainHd(crumbsHtml(sel),objectTitle(n),"",tabsH,addBtn)+`<div class="${scClass}">${hiddenSelNoteHtml()}${objectStatusNotesHtml(n)}${form(n)}</div>`;
   syncDomAct();
 }
 function syncDomAct(){
   const el=document.getElementById("domAct");if(!el)return;
-  if(app!=="dev"){el.innerHTML="";return}
+  if(app!=="hw"){el.innerHTML="";return}
   const f=find(sel);
   if(f?.n.type==="server"&&domainOf(f.n.id)){
     el.innerHTML=`<button type="button" class="btn s" onclick="excludeFromDomain('${f.n.id}')">${i18n("Исключить из домена")}</button>`;
@@ -2950,7 +3669,7 @@ function toggleTblOpen(id,e){e.stopPropagation();if(tblOpen.has(id))tblOpen.dele
   const tn=tableNode();if(tn){const wrap=document.getElementById("camsTbl");if(wrap)wrap.outerHTML=camsTableHtml(tn);else gear()}else gear()
 }
 function matchTbl(row,filt,fields){
-  return fields.every(f=>{const q=(filt[f]||"").trim().toLowerCase();if(!q)return true;return String(row[f]??"").toLowerCase().includes(q)});
+  return fields.every(f=>textHit(String(row[f]??""),filt[f]||""));
 }
 function camTableLabel(short,name){
   const s=String(short??"").trim(),n=String(name??"").trim();
@@ -3025,7 +3744,7 @@ function stopCamsColResize(){
 }
 function matchCamTblRow(r,filt){
   const cols=[["ip","ip"],["port","port"],["vendor","vendor"],["model","model"],["id","devId"],["lat","lat"],["lon","lon"],["azimuth","azimuth"]];
-  if(!cols.every(([fk,rk])=>{const q=(filt[fk]||"").trim().toLowerCase();return!q||String(r[rk]??"").toLowerCase().includes(q)}))return false;
+  if(!cols.every(([fk,rk])=>textHit(String(r[rk]??""),filt[fk]||"")))return false;
   const nameQ=(filt.name||"").trim().toLowerCase();
   if(nameQ&&!String(r.label??"").toLowerCase().includes(nameQ)&&!String(r.name??"").toLowerCase().includes(nameQ)&&!String(r.short??"").toLowerCase().includes(nameQ))return false;
   return true;
@@ -3178,35 +3897,46 @@ function acfaTableHtml(server){
 }
 function unallocIpBtn(domainId,wizard){
   const click=wizard?"event.stopPropagation();wizGoIp(true)":`event.stopPropagation();openFindServerByIp('${domainId}')`;
-  return `<button type="button" class="btn pri unalloc-ip" onclick="${click}">${ic("search")}<span>Найти по IP-адресу</span></button>`;
+  return `<button type="button" class="btn pri unalloc-ip" onclick="${click}">${ic("search")}<span>${i18n("Найти по IP-адресам")}</span></button>`;
 }
 function unallocIpFoot(domainId,wizard){
   return `<div class="unalloc-foot">
-    <p class="sub unalloc-hint">Если нужного сервера нет в списке — найдите его по IP-адресу.</p>
+    <p class="sub unalloc-hint">${i18n("Нужных серверов нет в списке — найдите их по списку IP-адресов, диапазону или подсети.")}</p>
     ${unallocIpBtn(domainId,wizard)}
   </div>`;
 }
+// Строка целиком переключает отметку: так пачку серверов отмечают без прицеливания в чекбокс
 function unallocServersHtml(domainId,wizard){
   const list=unallocDisplayList(domainId);
   if(!list.length){
     return `<div class="unalloc-empty">
-      <div class="unalloc-empty-msg">Серверы в сети не найдены</div>
-      <p class="sub" style="margin:0;max-width:320px">Найдите сервер по IP-адресу и добавьте его в домен.</p>
+      <div class="unalloc-empty-msg">${i18n("Серверы в сети не найдены")}</div>
+      <p class="sub" style="margin:0;max-width:320px">${i18n("Найдите серверы по IP-адресам и добавьте их в домен.")}</p>
       ${unallocIpBtn(domainId,wizard)}
     </div>`;
   }
+  const pickSet=unallocSel(domainId),avail=unallocAvail(domainId),availIds=new Set(avail.map(r=>r.id));
+  [...pickSet].forEach(id=>{if(!availIds.has(id))pickSet.delete(id)});
+  const nPick=pickSet.size,all=!!avail.length&&nPick===avail.length;
   const rows=list.map(r=>{
     const addAct=wizard?`wizAddToDomain('${r.id}')`:`addToDomain('${r.id}','${domainId}')`;
-    const rowClick=wizard?"":` onclick="pick('${r.id}')"`;
-    const btn=r.added
-      ?`<span class="unalloc-added"><span class="unalloc-added-st">Добавлен</span><button type="button" class="btn s" onclick="event.stopPropagation();goAddedServer('${r.id}')">Перейти</button></span>`
-      :`<button type="button" class="btn pri s" onclick="event.stopPropagation();${addAct}">${i18n("Добавить в домен")}</button>`;
-    return `<div class="it"${rowClick}>
-    <span>${ic("server")}</span>
-    <span style="flex:1;min-width:0">${r.name}<small>${r.ip||""}</small></span>
-    ${btn}
+    if(r.added)return `<div class="it unalloc-row done">
+    <span class="unalloc-chk-slot"></span><span>${ic("server")}</span>
+    <span style="flex:1;min-width:0">${escHtml(r.name)}<small>${escHtml(r.ip||"")}</small></span>
+    <span class="unalloc-added"><span class="unalloc-added-st">${i18n("Добавлен")}</span><button type="button" class="btn s" onclick="event.stopPropagation();goAddedServer('${r.id}')">${i18n("Перейти")}</button></span>
+  </div>`;
+    const on=pickSet.has(r.id);
+    return `<div class="it unalloc-row${on?" picked":""}" onclick="toggleUnallocPick('${domainId}','${r.id}',event)">
+    <span class="unalloc-chk-slot"><input type="checkbox" ${on?"checked":""} onclick="toggleUnallocPick('${domainId}','${r.id}',event)" aria-label="${i18n("Отметить")}"></span><span>${ic("server")}</span>
+    <span style="flex:1;min-width:0">${escHtml(r.name)}<small>${escHtml(r.ip||"")}</small></span>
+    <button type="button" class="btn s" onclick="event.stopPropagation();${addAct}">${i18n("Добавить")}</button>
   </div>`}).join("");
-  return `<div class="unalloc-scroll">${rows}</div>${unallocIpFoot(domainId,wizard)}`;
+  const bar=avail.length?`<div class="unalloc-bulk">
+    <div class="unalloc-all" onclick="toggleUnallocAll('${domainId}',event)"><input type="checkbox" ${all?"checked":""} onclick="toggleUnallocAll('${domainId}',event)">${i18n("Выбрать все")} <span class="sub">${nPick?`${nPick} / `:""}${avail.length}</span></div>
+    <button type="button" class="btn pri s" ${nPick?"":"disabled"} onclick="addPickedServers('${domainId}')">${i18n("Добавить выбранные")}${nPick?` (${nPick})`:""}</button>
+    <button type="button" class="btn s" onclick="addAllUnalloc('${domainId}')">${i18n("Добавить все")} (${avail.length})</button>
+  </div>`:`<p class="sub" style="margin:0 0 8px">${i18n("Все найденные серверы уже добавлены.")}</p>`;
+  return `${bar}<div class="unalloc-scroll">${rows}</div>${unallocIpFoot(domainId,wizard)}`;
 }
 function deviceFolderNote(id){
   const fs=foldersOfDevice(id);
@@ -3239,7 +3969,7 @@ function deviceFoldersCardHtml(n){
   const rows=fs.map(f=>{
     const direct=f.items.includes(n.id);
     const act=direct?`<button type="button" class="btn s" onclick="event.stopPropagation();removeDeviceFromFolder('${f.id}','${n.id}')">${i18n("Убрать")}</button>`:"";
-    return `<div class="it" onclick="goApp('dev');pick('${f.id}')"><span>${ic("folder")}</span><span>${escHtml(folderPathName(f.id))}<small>${direct?i18n("объект добавлен в эту папку"):i18n("через родительское устройство")}</small></span>${act}</div>`;
+    return `<div class="it" onclick="openNode('${f.id}')"><span>${ic("folder")}</span><span>${escHtml(folderPathName(f.id))}<small>${direct?i18n("объект добавлен в эту папку"):i18n("через родительское устройство")}</small></span>${act}</div>`;
   }).join("")||`<p class='sub'>${i18n("Не входит ни в одну папку")}</p>`;
   const sv=srv(n.id);
   return card("Расположение",rows+
@@ -3262,7 +3992,7 @@ function archCamsTableHtml(a){
   const cams=archCameras(a.id);
   if(!cams.length)return`<p class='sub'>${i18n("На этот архив пока ничего не пишется")}</p>`;
   return`<table><tr><th>${i18n("Камера")}</th><th>${i18n("Папки")}</th><th>${i18n("Режим")}</th></tr>
-    ${cams.map(c=>`<tr onclick="goApp('dev');pick('${c.id}')" style="cursor:pointer"><td>${escHtml(locName(c))}</td><td>${escHtml(deviceFolderNote(c.id))}</td><td>${i18n(recordModeLabel(c.rec))}</td></tr>`).join("")}</table>`;
+    ${cams.map(c=>`<tr onclick="openNode('${c.id}')" style="cursor:pointer"><td>${escHtml(locName(c))}</td><td>${escHtml(deviceFolderNote(c.id))}</td><td>${i18n(recordModeLabel(c.rec))}</td></tr>`).join("")}</table>`;
 }
 const DET_TYPES=["Движение","Пересечение линии","Оставленный предмет","Исчезновение предмета","Скопление людей"];
 function camDetectors(n){return(n.devices||[]).filter(d=>d.type==="det")}
@@ -3323,7 +4053,7 @@ function detServerNoteHtml(cam,d){
   const sid=detServerId(cam,d),sv=sid?servers.find(x=>x.id===sid):null;
   if(!sv)return`<p class="sub">${i18n("Сервер не определён: у камеры не настроена запись, назначьте сервер детектора вручную.")}</p>`;
   const g=serverGpu(sv);
-  return`<p class="sub">${i18n("Считается на сервере")} <b>${escHtml(locName(sv))}</b>${g?` · <button class="lk" onclick="goApp('srvs');setSrvView('cam');pick('${gpuId(sv.id)}')">${escHtml(g.model)} →</button>`:` · ${i18n("без видеоускорителя, расчёт на ЦПУ")}`}</p>`;
+  return`<p class="sub">${i18n("Считается на сервере")} <b>${escHtml(locName(sv))}</b>${g?` · <button class="lk" onclick="openNode('${gpuId(sv.id)}')">${escHtml(g.model)} →</button>`:` · ${i18n("без видеоускорителя, расчёт на ЦПУ")}`}</p>`;
 }
 function camDetectorsHtml(n){
   const dets=camDetectors(n);
@@ -3366,7 +4096,7 @@ function form(n){
         <div class="mc"><span>${i18n("Детекторов")}</span><b>${dets}</b></div>
       </div>
       <p class="sub" style="margin-top:10px">${i18n("Сервер:")} <b>${escHtml(sv?locName(sv):"—")}</b>. ${i18n("На видеоускорителе считаются детекторы камер, назначенных этому серверу. Сервер детектора задаётся в карточке камеры, вкладка «Детекторы».")}</p>`)+
-      card("Камеры с детекторами на этом сервере",list.map(x=>`<div class="it" onclick="goApp('dev');pick('${x.cam.id}');goTab('det')"><span>${ic("camera")}</span><span>${escHtml(locName(x.cam))}<small>${x.dets.map(d=>escHtml(locName(d))).join(", ")}</small></span><span class="sub">${x.dets.length}</span></div>`).join("")||`<p class='sub'>${i18n("Детекторы на этот сервер не назначены")}</p>`,
+      card("Камеры с детекторами на этом сервере",list.map(x=>`<div class="it" onclick="openNode('${x.cam.id}',{tab:'det'})"><span>${ic("camera")}</span><span>${escHtml(locName(x.cam))}<small>${x.dets.map(d=>escHtml(locName(d))).join(", ")}</small></span><span class="sub">${x.dets.length}</span></div>`).join("")||`<p class='sub'>${i18n("Детекторы на этот сервер не назначены")}</p>`,
         `<span class="sub" style="font-weight:400">${list.length}</span>`);
   }
   if(n.type==="nofolder"){
@@ -3377,14 +4107,14 @@ function form(n){
   }
   if(n.type==="norec"){
     const cams=unrecordedCameras(n.domainId);
-    return card("Камеры без записи",cams.map(c=>`<div class="it" onclick="goApp('dev');pick('${c.id}')"><span>${ic("camera")}</span><span>${escHtml(locName(c))}<small>${escHtml(deviceFolderNote(c.id))}</small></span>${bdg(c)}</div>`).join("")||`<p class='sub'>${i18n("Все камеры пишутся")}</p>`,
+    return card("Камеры без записи",cams.map(c=>`<div class="it" onclick="openNode('${c.id}')"><span>${ic("camera")}</span><span>${escHtml(locName(c))}<small>${escHtml(deviceFolderNote(c.id))}</small></span>${bdg(c)}</div>`).join("")||`<p class='sub'>${i18n("Все камеры пишутся")}</p>`,
       `<span class="sub" style="font-weight:400">${cams.length}</span>`)+
       `<p class="sub">${i18n("Эти камеры работают, но архив им не назначен, поэтому сервера у них нет. Назначить архив — на камере, вкладка «Архив».")}</p>`;
   }
   if(n.type==="folder"){
     if(tab==="tbl"){
       const tn=tableNode();
-      return tview==="acfa"?card("ACFA-устройства",acfaTableHtml(tn),`<button class="btn s" onclick="openW()">＋</button>`)
+      return slice==="acfa"?card("ACFA-устройства",acfaTableHtml(tn),`<button class="btn s" onclick="openW()">＋</button>`)
         :card(camsCardTitle(tn),camsTableHtml(tn),camsCardHeadActions());
     }
     return folderCardHtml(n);
@@ -3394,18 +4124,33 @@ function form(n){
       `<button type="button" class="ch-act" title="Обновить список" onclick="refreshUnalloc('${n.domainId}')"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13.2 8a5.2 5.2 0 1 1-1.3-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12.2 2.4v3.2h-3.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Обновить</button>`);
   }
   if(n.type==="domain"){
-    if(tab==="lic")return card("Лицензии",`<div class="g">${fld("Серийный номер лицензии",n.license||"")}</div>
+    if(tab==="lic")return card("Лицензии",`<div class="g"><div><label>${i18n("Серийный номер лицензии")}</label><input id="domLic" value="${escHtml(n.license||"")}" oninput="setD(true)" autocomplete="off"></div></div>
       <p class="sub">Лицензии выдаются на домен (кластер) и расходуются устройствами независимо от того, на каком сервере ведётся запись.</p>
       ${n.servers.map(s=>`<div class="it" onclick="pick('${s.id}')"><span>${ic("server")}</span><span>${s.name}<small>${s.ip||""} · Не ограничено</small></span></div>`).join("")||"<p class='sub'>Нет серверов</p>"}`);
-    if(tab==="srvs")return card("Серверы домена",domainServersHtml(n),`<span class="sub" style="font-weight:400">${n.servers.length}</span>`)+
+    if(tab==="srvs")return card("Серверы домена",domainServersHtml(n),`<span class="sub" style="font-weight:400">${n.servers.length}</span>
+        <button type="button" class="btn s" onclick="openW('server')">＋ ${i18n("Серверы")}</button>`)+
       card("Сетевые архивы домена",domainArchives(n.id).map(a=>`<div class="it" onclick="pick('${a.id}')"><span>${ic("storage")}</span><span>${escHtml(locName(a))}<small>${escHtml(a.disk)} · ${a.size} · ${archCameras(a.id).length} ${i18n("камер")}</small></span></div>`).join("")||`<p class='sub'>${i18n("Сетевых архивов нет")}</p>`,
         `<button type="button" class="btn s" onclick="addArchive('${n.id}')">＋ ${i18n("Сетевой архив")}</button>`);
     const hw=n.servers.reduce((a,s)=>a+(s.devices||[]).length,0);// службы серверов домена
+    const st=domainStats(n.id),ua=unallocAvail(n.id).length;
     return card("Домен",`${bdg(n)}
-      <div class="g" style="margin-top:10px">${fld("Имя",locName(n))}${fld("Серийный номер лицензии",n.license||"")}</div>
+      <div class="g" style="margin-top:10px">
+        <div><label>${i18n("Имя")}</label><input id="domName" value="${escHtml(n.name)}" oninput="setD(true);showFormErr('domErr',validateDomainName(this.value,'${n.id}'))" autocomplete="off"></div>
+        <div><label>${i18n("Серийный номер лицензии")}</label><input id="domLic" value="${escHtml(n.license||"")}" oninput="setD(true)" autocomplete="off"></div>
+      </div>
+      <div class="nt err" id="domErr" style="display:none;margin:10px 0 0"></div>
       <div class="mx" style="margin-top:10px">
-        <button type="button" class="mc" onclick="goTab('srvs')"><span>${i18n("Серверов")}</span><b>${n.servers.length}</b></button>
+        <button type="button" class="mc" onclick="goTab('srvs')"><span>${i18n("Серверов")}</span><b>${st.servers}</b></button>
+        <button type="button" class="mc" onclick="pick('${unallocId(n.id)}')"><span>${i18n("Нераспределённых")}</span><b>${ua}</b></button>
         <button type="button" class="mc" onclick="goTab('srvs')"><span>${i18n("Служб на серверах")}</span><b>${hw}</b></button>
+        <div class="mc"><span>${i18n("Устройств")}</span><b>${st.devices}</b></div>
+        <div class="mc"><span>${i18n("Папок")}</span><b>${st.folders}</b></div>
+      </div>`)+
+      card("Действия",`<div class="dom-acts">
+        <button type="button" class="btn pri s" onclick="openW('server')">＋ ${i18n("Добавить серверы")}${ua?` (${ua})`:""}</button>
+        <button type="button" class="btn s" onclick="openFindServerByIp('${n.id}')">${i18n("Найти по IP-адресам")}</button>
+        <button type="button" class="btn s" onclick="createDomain()">＋ ${i18n("Новый домен")}</button>
+        <button type="button" class="btn s danger" onclick="deleteDomain('${n.id}')" ${domains.length<2?`disabled title="${i18n("Нельзя удалить единственный домен")}"`:""}>${i18n("Удалить домен…")}</button>
       </div>`);
   }
   if(n.type==="server"){
@@ -3422,13 +4167,13 @@ function form(n){
       <p class="sub">Камеры наследуют политику тома. Исключения — на камере, вкладка «Архив».</p>`)+
       card("Архивы сервера",on.map(a=>`<div class="it" onclick="pick('${a.id}')"><span>${ic("storage")}</span><span>${escHtml(locName(a))}<small>${a.disk} · ${a.size} · ${a.days} дн. · ${archCameras(a.id).length} ${i18n("камер")}</small></span></div>`).join("")||`<p class='sub'>${i18n("Нет архивов")}</p>`,
         `<button type="button" class="btn s" onclick="addArchive('${n.id}')">＋ ${i18n("Архив")}</button>`)+
-      card("Камеры, которые пишутся на этот сервер",recCams.map(c=>`<div class="it" onclick="goApp('dev');pick('${c.id}')"><span>${ic("camera")}</span><span>${escHtml(locName(c))}<small>${escHtml(deviceFolderNote(c.id))}</small></span></div>`).join("")||`<p class='sub'>${i18n("Запись не настроена")}</p>`);
+      card("Камеры, которые пишутся на этот сервер",recCams.map(c=>`<div class="it" onclick="openNode('${c.id}')"><span>${ic("camera")}</span><span>${escHtml(locName(c))}<small>${escHtml(deviceFolderNote(c.id))}</small></span></div>`).join("")||`<p class='sub'>${i18n("Запись не настроена")}</p>`);
     }
     if(tab==="net")return card("Сеть",`<div class="g">${fld("IP",n.ip)}${fld("Маска","255.255.255.0")}${fld("Шлюз","10.20.1.1")}${fld("DNS","8.8.8.8")}</div>`);
     if(tab==="svc"){const svcs=(n.devices||[]).filter(d=>isSvc(d));
       return card("Службы сервера",svcs.map(d=>`<div class="it" onclick="pick('${d.id}')"><span>${ic(d.type)}</span><span>${d.name}<small>${LB[d.type]}</small></span>${bdg(d)}</div>`).join("")||"<p class='sub'>Нет служб</p>",
         `<button class="btn s" onclick="openW('svc')">＋</button>`)+
-        `<p class="sub">Email, SMS, агент экспорта и динамик. В дереве — вкладка «Службы».</p>`}
+        `<p class="sub">${i18n("Email, SMS, агент экспорта и динамик. В дереве — срез «Службы».")}</p>`}
     const svc=(n.devices||[]).filter(d=>isSvc(d)).length;
     const recCams=[];walkAll(x=>{if(x.type==="camera"&&srv(x.id)?.id===n.id)recCams.push(x)});
     return card("Общие",`${bdg(n)}${n.online===false?` <span class="sub">${i18n("нет связи")}</span>`:` <span class="sub">${i18n("ведёт запись и службы")}</span>`}
@@ -3437,11 +4182,12 @@ function form(n){
         <button type="button" class="mc" onclick="goTab('svc')"><span>${i18n("Службы сервера")}</span><b>${svc}</b></button>
         <button type="button" class="mc" onclick="goTab('disk')"><span>${i18n("Камер пишется")}</span><b>${recCams.length}</b></button>
         ${serverGpu(n)?`<button type="button" class="mc" onclick="pick('${gpuId(n.id)}')"><span>${i18n("Видеоускоритель")}</span><b>${escHtml(serverGpu(n).model)}</b></button>`:`<div class="mc"><span>${i18n("Видеоускоритель")}</span><b>${i18n("нет")}</b></div>`}
+        ${serverLoadTilesHtml(n)}
         <div class="mc"><span>${i18n("Диск")}</span><b>${n.disk||0}%</b></div>
         <div class="mc"><span>${i18n("Ошибки")}</span><b>0</b></div>
       </div>
       <p class="sub" style="margin-top:10px">${i18n("Домен:")} <b>${locName(domainOf(n.id)||{name:"—"})}</b></p>
-      <p class="sub">${i18n("Устройства не привязаны к серверу — они в разделе")} <button class="lk" onclick="goApp('dev')">${i18n("Устройства")}</button>. ${i18n("Сервер появляется у камеры только через архив, на котором ведётся запись.")}</p>`)}
+      <p class="sub">${i18n("Устройства не привязаны к серверу — они в срезе")} <button class="lk" onclick="setSlice('cam');setGroupBy('folder')">${i18n("Камеры по папкам")}</button>. ${i18n("Сервер появляется у камеры только через архив, на котором ведётся запись.")}</p>`)}
   if(n.type==="ipsrv"){
     if(tab==="rec")return nvrRecCardHtml(n);
     if(tab==="kids")return card("Дочерние объекты",childList(n),`<button class="btn s" onclick="openW()">＋</button>`)+
@@ -3499,7 +4245,7 @@ function form(n){
       <p class="sub">${noRec?i18n("Назначьте архив, чтобы включить запись. Сервер определится архивом автоматически.")
         :`${i18n("Архив размещён на сервере")} <b>${escHtml(as?locName(as):"—")}</b>. ${i18n("Это единственная связь камеры с сервером: без записи камера серверу не принадлежит.")}`}</p>
       ${ipsrvOwnerNode(n)?`<p class="sub">${i18n("Камера входит в регистратор")} <button class="lk" onclick="pick('${ipsrvOwnerNode(n).id}');goTab('rec')">${escHtml(locName(ipsrvOwnerNode(n)))}</button> — ${i18n("там режим задаётся сразу для всех его камер.")}</p>`:""}
-      ${as?`<p class="sub"><button class="lk" onclick="goApp('srvs');setSrvView('cam');pick('${a.id}')">${i18n("Показать архив в разделе «Сервера» →")}</button></p>`:""}`)
+      ${as?`<p class="sub"><button class="lk" onclick="openNode('${a.id}')">${i18n("Показать архив в срезе «Камеры» по серверам →")}</button></p>`:""}`)
       +(n.rec==="motion"?camRecDetsHtml(n):"");
     }
     const ips=ipsrvOwnerNode(n);
@@ -3513,7 +4259,7 @@ function form(n){
     return detZoneCardHtml(cam,n)+card("Параметры",`<div class="g">${fld("Имя",locName(n))}${sl("Тип",DET_TYPES,n.kind||DET_TYPES[0])}${fld("Чувствительность",n.sens||"12")}${cam?detServerSelectHtml(cam,n):""}</div>
       <div class="ln ln-sw"><div>${i18n("Включён")}</div><div class="sw ${n.online!==false?"on":""}" onclick="this.classList.toggle('on');setD(true)"></div></div>
       ${cam?detServerNoteHtml(cam,n):""}`)+
-      (cam?card("Камера",`<div class="it" onclick="goApp('dev');pick('${cam.id}');goTab('det')"><span>${ic("camera")}</span><span>${escHtml(locName(cam))}<small>${i18n(recordModeLabel(cam.rec))}</small></span></div>`):"");
+      (cam?card("Камера",`<div class="it" onclick="openNode('${cam.id}');goTab('det')"><span>${ic("camera")}</span><span>${escHtml(locName(cam))}<small>${i18n(recordModeLabel(cam.rec))}</small></span></div>`):"");
   }
   if(n.type==="acfa_lock"||n.type==="acfa_sensor"||n.type==="acfa_fence")
     return card(LB[n.type],`${bdg(n)}${enabledToggleHtml(n)}<div class="g" style="margin-top:10px">${fld("Имя",n.name)}</div>`)+card("Дочерние",childList(n));
@@ -3533,14 +4279,14 @@ function rulesUI(){const r=rules.find(x=>x.id===rule)||rules[0];
       ${card("Логика",`<div class="flow"><div class="chip"><small>ЕСЛИ</small><br>${r.a}</div><span>→</span><div class="chip"><small>И</small><br>${r.b}</div><span>→</span><div class="chip"><small>ТО</small><br>${r.c}</div></div>
         <button class="btn s" style="margin-top:10px">Условие</button> <button class="btn s">Действие</button>`)}</div>`}
 function accUI(){const r=roles.find(x=>x.id===role)||roles[0];
-  document.getElementById("main").innerHTML=mainHd("Пользователи",`👤 ${r.n}`,`${r.users.length} учётных записей`)+
+  document.getElementById("main").innerHTML=mainHd("Доступ",`${ic("role")} ${r.n}`,`${r.users.length} учётных записей`)+
     `<div class="sc">${card("Права роли",["Конфигуратор","Архив","PTZ","Экспорт"].map(x=>`<div class="ln"><div>${x}</div><div class="sw ${x!=="Экспорт"?"on":""}" onclick="this.classList.toggle('on');setD(true)"></div></div>`).join(""))}
       ${card("Учётные записи",`<table><tr><th>Логин</th><th>Роль</th></tr>${r.users.map(u=>`<tr><td>${u}</td><td>${r.n}</td></tr>`).join("")}</table>`)}</div>`}
 function sysUI(){const o=sysOpts.find(x=>x.id===sys)||sysOpts[0];
-  const body={ntp:card("NTP",`<div class="g">${fld("Сервер","pool.ntp.org")}${sl("Пояс",["Europe/Moscow","UTC"])}</div>`),
-    sec:card("Политика",`<div class="g">${fld("Срок пароля, дн","90")}${sl("2FA",["Нет","Обязательно админам"])}</div>`),
-    mail:card("Каналы",`<div class="g">${fld("SMTP","smtp.local")}${fld("Webhook","https://…")}</div><p class="sub">Глобальные настройки. Оповещатели сервера — в разделе «Сервера», вкладка «Службы».</p>`),
-    lic:card("Лицензии",`<div class="mx"><div class="mc"><span>Камеры</span><b>48/64</b></div><div class="mc"><span>ACFA</span><b>3/10</b></div></div>`)}[o.id];
+  const body={ntp:card("Время",`<div class="g">${fld("Сервер NTP","pool.ntp.org")}${sl("Часовой пояс",["Europe/Moscow","UTC"])}</div>`),
+    sec:card("Политика",`<div class="g">${fld("Срок действия пароля, дн","90")}${sl("Двухфакторная аутентификация",["Нет","Обязательно админам"])}</div>`),
+    mail:card("Каналы",`<div class="g">${fld("SMTP-сервер","smtp.local")}${fld("Webhook","https://…")}</div><p class="sub">${i18n("Глобальные настройки. Оповещатели конкретного сервера — в срезе «Службы».")}</p>`),
+    lic:card("Лицензии",`<div class="mx"><div class="mc"><span>${i18n("Лицензии на камеры")}</span><b>48/64</b></div><div class="mc"><span>${i18n("Лицензии ACFA")}</span><b>3/10</b></div></div>`)}[o.id];
   document.getElementById("main").innerHTML=mainHd("Опции",`${o.i} ${o.n}`,"Параметры кластера")+`<div class="sc">${body}</div>`}
 function logUI(){const cat=logCats.find(x=>x.id===logFilt)||logCats[0];
   const rows={all:[["21:56","Аудит","Вход root"],["21:40","Тревога","ACFA · Датчик 0"],["21:12","Инфо","POS Retalix: ОТМЕНА"]],
@@ -3601,7 +4347,7 @@ function abortDeviceSearch(){
 function deviceArchiveWarning(){
   return arch.length?"":`<div class="archive-warning"><span>В системе не создано ни одного архива. Камеры можно добавить, но запись будет недоступна.</span><button type="button" class="lk" onclick="goDeviceArchives()">Перейти к архивам</button></div>`;
 }
-function goDeviceArchives(){closeWizard();goApp("srvs");setSrvView("cam")}
+function goDeviceArchives(){closeWizard();goApp("hw");setSlice("cam");setGroupBy("server")}
 function setDeviceTab(tab){
   wizd.deviceTab=tab;
   if(tab==="search")wizd.deviceStep=1;
@@ -3658,7 +4404,7 @@ function deviceTemplates(){
   return out;
 }
 function deviceFilterMatch(r,q){
-  if([r.ip,r.vendor,r.model,r.name,r.mac].some(v=>String(v||"").toLowerCase().includes(q)))return true;
+  if(textHit([r.ip,r.vendor,r.model,r.name,r.mac].filter(Boolean).join(" "),q))return true;
   if(!r.mac)return false;
   const mq=q.replace(/[^a-f0-9]/gi,"");
   if(mq.length<2)return false;
@@ -3798,7 +4544,7 @@ function deviceAddParamsHtml(){
   const modeOpen=!!wizd.modePop;
   const modes=deviceAddModes();
   const q=(wizd.tplFilter||"").trim().toLowerCase();
-  const filtered=templates.filter(t=>!q||templateCameraLabel(t).toLowerCase().includes(q));
+  const filtered=templates.filter(t=>textHit(templateCameraLabel(t),q));
   const tip=`<p>Это не поля в таблице ниже (IP, логин, архив), а <b>профиль при добавлении</b>: прошивка, параметры видеопотоков, буферизация и блок «Прочее».</p>${modes.map(m=>`<p><b>${escHtml(m.label)}.</b> ${escHtml(m.hint)}</p>`).join("")}`;
   const modeOpts=modes.filter(m=>m.id!=="template").map(m=>`<button type="button" class="dev-mode-opt base ${wizd.devMode===m.id?"on":""}" onclick="setDeviceMode('${m.id}')">${escHtml(m.label)}</button>`).join("");
   const camOpts=filtered.map(t=>`<button type="button" class="dev-mode-opt ${wizd.devMode==="template"&&t.id===wizd.templateId?"on":""}" onclick="setDeviceTemplate('${t.id}')">${escHtml(templateCameraLabel(t))}</button>`).join("");
@@ -4190,7 +4936,7 @@ function addFoundDevice(id,bulk=false,opts={}){
   if(!bulk){paint();renderDeviceWizard()}
   return true;
 }
-function goAddedDevice(id){closeWizard();openNode(id,{app:"dev",view:"cam",tab:"gen"})}
+function goAddedDevice(id){closeWizard();openNode(id,{tab:"gen"})}
 function selectableDeviceResults(){
   return visibleDeviceResults().filter(r=>!r.added&&r.status!=="bad");
 }
@@ -4774,8 +5520,8 @@ function chooseAdd(mode,cat,type){
   wd();
 }
 function wizBack(){
-  if(wizd.mode==="server-manual"&&wizd.ipPhase==="found"){
-    wizd.ipPhase="search";wizd.foundServerId=null;wizd.searchMsg=null;wd();return;
+  if(wizd.mode==="server-manual"&&wizd.ipPhase==="results"){
+    wizd.ipPhase="search";wizd.ipResults=null;wizd.searchMsg=null;wd();return;
   }
   if(wizd.mode==="server-manual"){
     if(wizd.fromServerList||wizd.serverOnly){
@@ -4785,20 +5531,133 @@ function wizBack(){
   }
   if(ws>1){ws--;wd()}
 }
-function runIpSearch(){
-  const ip=(document.getElementById("wizIp")||{}).value?.trim()||wizd.searchIp||"";
-  const port=+(document.getElementById("wizPort")||{}).value||wizd.searchPort||20111;
-  wizd.searchIp=ip;wizd.searchPort=port;
-  const r=searchServerByIp(ip,port);
-  if(!r.ok){
-    ipSearchTry++;
-    if(ipSearchTry%2===0){
-      const fake=registerFakeServer(createFakeServer(ip,port),wizd.domain||domains[0]?.id);
-      wizd.ipPhase="found";wizd.foundServerId=fake.id;wizd.searchMsg=null;wd();return;
+// ── Массовый поиск серверов по IP: список, диапазоны, подсети ──────────────
+const IP_LIMIT=1024;
+function ipToInt(s){
+  const p=String(s).split(".");if(p.length!==4)return null;
+  let n=0;for(const x of p){if(!/^\d{1,3}$/.test(x)||+x>255)return null;n=n*256+ +x}
+  return n;
+}
+function intToIp(n){return[n>>>24&255,n>>>16&255,n>>>8&255,n&255].join(".")}
+// 10.0.0.5 · 10.0.0.5:20112 · 10.0.0.20-40 · 10.0.0.20-10.0.1.10 · 10.0.1.0/24
+function parseIpList(text,defPort){
+  const items=[],bad=[],seen=new Set();let over=false;
+  const push=(ip,port)=>{const k=ip+":"+port;if(seen.has(k))return;if(items.length>=IP_LIMIT){over=true;return}seen.add(k);items.push({ip,port})};
+  for(const raw of String(text||"").split(/[\s,;]+/).filter(Boolean)){
+    if(over)break;
+    let tok=raw,port=defPort,m;
+    if((m=tok.match(/^(.*\d):(\d{1,5})$/))){tok=m[1];port=+m[2];if(port<1||port>65535){bad.push(raw);continue}}
+    if((m=tok.match(/^([\d.]+)\/(\d{1,2})$/))){
+      const base=ipToInt(m[1]),bits=+m[2];
+      if(base==null||bits<16||bits>32){bad.push(raw);continue}
+      const size=2**(32-bits),start=Math.floor(base/size)*size;
+      // Адрес сети и широковещательный не опрашиваем
+      const from=size>2?start+1:start,to=size>2?start+size-2:start+size-1;
+      for(let i=from;i<=to&&!over;i++)push(intToIp(i),port);
+      continue;
     }
-    wizd.ipPhase="search";wizd.foundServerId=null;wizd.searchMsg=r.msg;toast(r.msg);wd();return;
+    if((m=tok.match(/^([\d.]+)-([\d.]+)$/))){
+      const a=ipToInt(m[1]),short=!m[2].includes(".");
+      const b=a==null?null:short?(+m[2]<=255?Math.floor(a/256)*256+ +m[2]:null):ipToInt(m[2]);
+      if(a==null||b==null||b<a){bad.push(raw);continue}
+      for(let i=a;i<=b&&!over;i++)push(intToIp(i),port);
+      continue;
+    }
+    const n=ipToInt(tok);
+    if(n==null){bad.push(raw);continue}
+    push(intToIp(n),port);
   }
-  wizd.ipPhase="found";wizd.foundServerId=r.server.id;wizd.searchMsg=null;wd();
+  return{items,bad,over};
+}
+function knownServers(){return[...new Set([...servers,...domains.flatMap(d=>[...d.servers,...d.unallocServers])])]}
+// Прототип: часть адресов «не отвечает», чтобы был виден смешанный результат
+function probeServer(ip,port){
+  const s=knownServers().find(x=>x.ip===ip&&(x.port||20111)===port);
+  if(s){
+    const dom=domainOf(s.id);
+    if(dom)return{st:"taken",server:s,dom};
+    return{st:"unalloc",server:s,dom:domains.find(d=>d.id===unallocDomainOf(s.id))};
+  }
+  const o=ip.split(".").map(Number);
+  return(o[3]*7+o[2]*3+port)%5===0?{st:"missing"}:{st:"new"};
+}
+function ipCountHint(){
+  const el=document.getElementById("wizIpsCnt");if(!el)return;
+  const{items,bad,over}=parseIpList(document.getElementById("wizIps")?.value,+document.getElementById("wizPort")?.value||20111);
+  el.textContent=items.length||bad.length?`${i18n("Адресов:")} ${items.length}${over?"+":""}${bad.length?` · ${i18n("не распознано:")} ${bad.length}`:""}`:"";
+  el.classList.toggle("err",!!bad.length||over);
+}
+function runIpSearch(){
+  const ta=document.getElementById("wizIps"),portEl=document.getElementById("wizPort");
+  const text=ta?ta.value:wizd.ipText||"";
+  const port=portEl?+portEl.value:wizd.searchPort||20111;
+  wizd.ipText=text;wizd.searchPort=port;
+  if(!(port>=1&&port<=65535)){wizd.searchMsg=i18n("Порт должен быть от 1 до 65535");wd();return}
+  const{items,bad,over}=parseIpList(text,port);
+  if(!items.length){
+    wizd.searchMsg=bad.length?`${i18n("Не распознано:")} ${bad.slice(0,5).join(", ")}${bad.length>5?"…":""}`:i18n("Укажите хотя бы один IP-адрес");
+    wd();return;
+  }
+  wizd.ipResults=items.map(({ip,port})=>{
+    const r=probeServer(ip,port);
+    return{ip,port,st:r.st,serverId:r.server?.id||null,name:r.server?.name||"",domName:r.dom?.name||"",checked:r.st==="new"||r.st==="unalloc"};
+  });
+  wizd.ipBad=bad;wizd.ipOver=over;wizd.searchMsg=null;wizd.ipPhase="results";
+  ws=2;wd();
+}
+function ipResAddable(r){return r.st==="new"||r.st==="unalloc"}
+function toggleIpRes(i,e){
+  e?.stopPropagation();
+  const r=wizd.ipResults?.[i];if(!r||!ipResAddable(r))return;
+  r.checked=!r.checked;rerenderUnalloc();
+}
+function toggleIpAll(e){
+  e?.stopPropagation();
+  const can=(wizd.ipResults||[]).filter(ipResAddable),all=can.length&&can.every(r=>r.checked);
+  can.forEach(r=>{r.checked=!all});rerenderUnalloc();
+}
+function addIpResults(){
+  const did=wizd.domain||domains[0]?.id;
+  const pick=(wizd.ipResults||[]).filter(r=>r.checked&&ipResAddable(r));
+  if(!pick.length){toast("Отметьте серверы");return}
+  const ids=pick.map(r=>r.serverId||registerFakeServer(createFakeServer(r.ip,r.port),did).id);
+  document.getElementById("wiz").classList.remove("open");
+  const added=addServersToDomain(ids,did);
+  if(added.length)openNode(did,{tab:"srvs"});
+}
+function wizSetDomain(did){
+  const ta=document.getElementById("wizIps");if(ta)wizd.ipText=ta.value;
+  const p=document.getElementById("wizPort");if(p)wizd.searchPort=+p.value||20111;
+  wizd.domain=did;wd();
+}
+function wizDomainPick(){
+  if(domains.length<2)return"";
+  const did=wizd.domain||domains[0].id;
+  return `<div class="g" style="margin-bottom:10px"><div><label>${i18n("Домен")}</label><select id="wizDomain" onchange="wizSetDomain(this.value)">
+    ${domains.map(d=>`<option value="${d.id}" ${d.id===did?"selected":""}>${escHtml(locName(d))}</option>`).join("")}</select></div></div>`;
+}
+function ipResultsHtml(){
+  const res=wizd.ipResults||[],can=res.filter(ipResAddable),nSel=can.filter(r=>r.checked).length;
+  const cnt=st=>res.filter(r=>r.st===st).length;
+  const domName=locName(domains.find(d=>d.id===wizd.domain)||domains[0]);
+  const ST={new:["Найден","ok"],unalloc:["Найден · нераспределённый","ok"],taken:["Уже в домене","mu"],missing:["Не отвечает","err"]};
+  let h=`<div class="ipres-sum">
+    <span class="ipst ipst-ok">${i18n("Можно добавить")}: <b>${can.length}</b></span>
+    ${cnt("taken")?`<span class="ipst ipst-mu">${i18n("Уже в доменах")}: <b>${cnt("taken")}</b></span>`:""}
+    ${cnt("missing")?`<span class="ipst ipst-err">${i18n("Не отвечают")}: <b>${cnt("missing")}</b></span>`:""}
+  </div>`;
+  if(wizd.ipBad?.length)h+=`<div class="nt err">${i18n("Не распознано")} (${wizd.ipBad.length}): ${escHtml(wizd.ipBad.slice(0,8).join(", "))}${wizd.ipBad.length>8?"…":""}</div>`;
+  if(wizd.ipOver)h+=`<div class="nt">${i18n("Опрошены первые")} ${IP_LIMIT} ${i18n("адресов. Сузьте диапазон, чтобы проверить остальные.")}</div>`;
+  if(can.length)h+=`<div class="unalloc-bulk"><div class="unalloc-all" onclick="toggleIpAll(event)"><input type="checkbox" ${nSel===can.length?"checked":""} onclick="toggleIpAll(event)">${i18n("Выбрать все найденные")} <span class="sub">${nSel} / ${can.length}</span></div></div>`;
+  h+=`<div class="unalloc-scroll">${res.map((r,i)=>{
+    const ok=ipResAddable(r),[lb,cls]=ST[r.st];
+    const note=r.st==="taken"?`${i18n(lb)} «${escHtml(r.domName)}»`:r.st==="unalloc"&&r.domName?`${i18n(lb)} · «${escHtml(r.domName)}»`:i18n(lb);
+    return `<div class="it unalloc-row${ok?"":" done"}${r.checked&&ok?" picked":""}"${ok?` onclick="toggleIpRes(${i},event)"`:""}>
+      <span class="unalloc-chk-slot">${ok?`<input type="checkbox" ${r.checked?"checked":""} onclick="toggleIpRes(${i},event)">`:""}</span><span>${ic("server")}</span>
+      <span style="flex:1;min-width:0">${escHtml(r.ip)}:${r.port}${r.name?`<small>${escHtml(r.name)}</small>`:""}</span>
+      <span class="ipst ipst-${cls}">${note}</span></div>`}).join("")}</div>`;
+  h+=`<p class="sub" style="margin:10px 0 0">${can.length?`${i18n("Отмеченные серверы будут добавлены в")} «${escHtml(domName)}».`:i18n("Добавлять нечего — измените список адресов.")}</p>`;
+  return h;
 }
 function needsParent(type){
   return["sensor","relay","mic","acfa_sensor","acfa_lock","acfa_fence"].includes(type);
@@ -4814,7 +5673,7 @@ function parentOpts(s,type){
 }
 function wizardTitle(){
   if(wizd.mode==="device-add")return"Добавить устройство";
-  if(wizd.mode==="server-manual")return"Найти сервер";
+  if(wizd.mode==="server-manual")return"Найти серверы по IP-адресам";
   if(wizd.serverOnly)return"Добавить сервер";
   if(wizd.view==="acfa")return"Добавить ACFA";
   if(wizd.view==="sys"||wizd.cat==="svc")return"Добавить службу";
@@ -4837,19 +5696,21 @@ function wd(){
   document.querySelector("#wiz .df").style.display=serverList?"none":"";
   document.getElementById("wst").innerHTML=serverFlow?"":[1,2].map(i=>`<div class="stp ${i<=ws?"on":""}"></div>`).join("");
   document.getElementById("wst").style.display=serverFlow?"none":"";
-  const manualSearch=wizd.mode==="server-manual"&&wizd.ipPhase==="search";
-  const manualFound=wizd.mode==="server-manual"&&wizd.ipPhase==="found";
-  const hideBack=serverList||(ws===1&&!manualFound);
+  const manualSearch=wizd.mode==="server-manual"&&wizd.ipPhase!=="results";
+  const manualRes=wizd.mode==="server-manual"&&wizd.ipPhase==="results";
+  const hideBack=serverList||(ws===1&&!manualRes);
   const wb=document.getElementById("wb"),wn=document.getElementById("wn");
   wb.style.display=hideBack?"none":"";
   wb.disabled=hideBack;
   wn.style.display=serverList?"none":"";
-  document.getElementById("wizT").textContent=wizardTitle();
-  wn.textContent=manualSearch?"Найти":manualFound?"Добавить в домен":ws===2?"Добавить":"Далее";
+  document.getElementById("wizT").textContent=i18n(wizardTitle());
+  const nIpSel=manualRes?(wizd.ipResults||[]).filter(r=>r.checked&&ipResAddable(r)).length:0;
+  wn.textContent=manualSearch?i18n("Найти"):manualRes?`${i18n("Добавить в домен")} (${nIpSel})`:ws===2?"Добавить":"Далее";
+  wn.disabled=manualRes&&!nIpSel;
   let h="";
   if(serverList){
     const did=wizd.domain||domains[0]?.id;
-    h+=`<div class="srv-wrap">
+    h+=`<div class="srv-wrap">${wizDomainPick()}
       <div class="wiz-unalloc-hd">
         <div class="wsec">Найденные нераспределённые серверы</div>
         <button type="button" class="ch-act" title="Обновить список" onclick="refreshUnallocInWizard('${did}')"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13.2 8a5.2 5.2 0 1 1-1.3-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12.2 2.4v3.2h-3.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Обновить</button>
@@ -4865,18 +5726,16 @@ function wd(){
     });
     if(!wizd.mode)h+=`<p class="sub">Выберите, что нужно добавить.</p>`;
   }else if(wizd.mode==="server-manual"){
-    if(wizd.ipPhase==="found"){
-      const s=servers.find(x=>x.id===wizd.foundServerId);
-      const domName=domains.find(d=>d.id===wizd.domain)?.name||"—";
-      h+=`<div class="nt ok">Сервер найден в сети</div>
-        <div class="it" style="margin-bottom:12px"><span>${ic("server")}</span><span style="flex:1;min-width:0">${s?.name||"—"}<small>${s?.ip||""}${s?.port?":"+s.port:""}</small></span></div>
-        <p class="sub" style="margin:0">Будет добавлен в «${escHtml(domName)}».</p>`;
-    }else{
-      h+=`<p class="sub" style="margin:0 0 10px">Укажите IP-адрес сервера для поиска в сети.</p>
-        <div class="g">
-        <div><label>IP-адрес</label><input id="wizIp" value="${escHtml(wizd.searchIp||"")}" placeholder="10.30.0.12"></div>
-        <div><label>Порт</label><input id="wizPort" type="number" value="${wizd.searchPort||20111}"></div>
-      </div>${wizd.searchMsg?`<div class="nt err">${escHtml(wizd.searchMsg)}</div>`:""}`;
+    h+=wizDomainPick();
+    if(manualRes)h+=ipResultsHtml();
+    else{
+      h+=`<label for="wizIps">${i18n("IP-адреса")}</label>
+        <textarea id="wizIps" class="ip-list" rows="7" spellcheck="false" placeholder="10.30.0.12&#10;10.30.0.20-40&#10;10.30.1.0/28&#10;10.30.2.5:20112"
+          oninput="ipCountHint()" onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey)){event.preventDefault();runIpSearch()}">${escHtml(wizd.ipText||"")}</textarea>
+        <div class="ip-list-foot"><span class="sub" id="wizIpsCnt"></span><span class="sub">Ctrl+Enter — ${i18n("найти")}</span></div>
+        <p class="sub" style="margin:6px 0 10px">${i18n("По одному на строку, через запятую или пробел. Диапазон: 10.30.0.20-40 или 10.30.0.20-10.30.1.10. Подсеть: 10.30.1.0/24. Свой порт: 10.30.0.5:20112. За раз — до 1024 адресов.")}</p>
+        <div class="g"><div><label>${i18n("Порт по умолчанию")}</label><input id="wizPort" type="number" min="1" max="65535" value="${wizd.searchPort||20111}" oninput="ipCountHint()"></div></div>
+        ${wizd.searchMsg?`<div class="nt err" style="margin-top:10px">${escHtml(wizd.searchMsg)}</div>`:""}`;
     }
   }else{
     const svcFlow=wizd.view==="sys"||wizd.cat==="svc";
@@ -4916,12 +5775,7 @@ function wnx(){
     ws=2;wd();return;
   }
   if(wizd.mode==="server-manual"){
-    if(wizd.ipPhase==="found"){
-      const id=wizd.foundServerId;
-      if(!id){toast("Сервер не найден");return}
-      document.getElementById("wiz").classList.remove("open");
-      addToDomain(id,wizd.domain);return;
-    }
+    if(wizd.ipPhase==="results"){addIpResults();return}
     runIpSearch();return;
   }
   const svcFlow=wizd.view==="sys"||wizd.cat==="svc";
@@ -4944,16 +5798,43 @@ function wnx(){
   open.add(parent.id);sel=id;tab="gen";treeMatchCache.clear();searchMatchCache.clear();
   document.getElementById("wiz").classList.remove("open");toast(name+" добавлен");paint();
 }
-function paint(){if(_lastApp!==app){aside();_lastApp=app}else renderTree();
-  const ui={dev:gear,srvs:gear,rules:rulesUI,acc:accUI,sys:sysUI,log:logUI};
+// Стрелки по дереву: ↑↓ — соседняя строка, → раскрыть, ← свернуть
+function treeRows(){return[...document.querySelectorAll("#tree .n:not(.n-add):not(.n-empty)")].filter(el=>el.dataset.pick||el.onclick)}
+function treeMove(dir,fromSearch){
+  const rows=treeRows();if(!rows.length)return;
+  let i=rows.findIndex(el=>el.classList.contains("on"));
+  if(fromSearch){const h=rows.findIndex(el=>el.classList.contains("qhit"));i=h>=0?h:0}
+  else i=i<0?0:Math.max(0,Math.min(rows.length-1,i+dir));
+  const row=rows[i];
+  if(row.dataset.pick)pick(row.dataset.pick,{ctx:row.dataset.ctx});else row.click();
+  scrollSelIntoView();
+}
+function treeFold(expand){
+  const row=document.querySelector("#tree .n.on[data-tid]");if(!row)return;
+  const id=row.dataset.tid,isOpen=row.querySelector(".tw")?.textContent.trim()==="▾";
+  if(expand!==isOpen)treeToggleId(id);
+}
+function inTextField(t){return!!t?.closest?.("input,textarea,select,[contenteditable]")}
+function overlayOpen(){return["wiz","confirm"].some(id=>document.getElementById(id)?.classList.contains("open"))}
+// Боковую панель пересобираем при смене раздела, среза или группировки — в ней их кнопки
+function paint(){const key=app+"|"+viewKey();if(_lastApp!==key){aside();_lastApp=key}else renderTree();
+  const ui={hw:gear,rules:rulesUI,acc:accUI,sys:sysUI,log:logUI};
   (ui[app]||gear)();
-  if(app!=="dev")syncDomAct();
-  syncHeaderLoad();
+  if(app!=="hw")syncDomAct();
+  syncNavActive();
 }
 function upd(){paint()}
-const rsz=document.getElementById("rsz");let drag=false;
-rsz.onmousedown=e=>{drag=true;rsz.classList.add("on");e.preventDefault()};
-window.onmousemove=e=>{if(!drag)return;asideW=Math.max(300,Math.min(600,e.clientX));document.getElementById("ws").style.setProperty("--aw",asideW+"px");if(filtPop)placeFiltPop()};
+const rsz=document.getElementById("rsz");let drag=false,asideUserW=false;
+rsz.onmousedown=e=>{drag=true;asideUserW=true;rsz.classList.add("on");e.preventDefault()};
+// Пока ширину не тянули руками, панель остаётся четвертью окна
+window.addEventListener("resize",()=>{
+  if(asideUserW)return;
+  asideW=clampAsideW(window.innerWidth/4);
+  document.getElementById("ws")?.style.setProperty("--aw",asideW+"px");
+});
+window.onmousemove=e=>{if(!drag)return;
+  const railW=document.getElementById("rail")?.offsetWidth||0;
+  asideW=clampAsideW(e.clientX-railW);document.getElementById("ws").style.setProperty("--aw",asideW+"px");if(filtPop)placeFiltPop()};
 window.onmouseup=()=>{drag=false;rsz.classList.remove("on")};
 document.onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key==="k"){e.preventDefault();openJump()}
   if(document.getElementById("confirm")?.classList.contains("open")){
@@ -4961,8 +5842,15 @@ document.onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key==="k"){e.preventDefault(
     if(e.key==="Enter"){e.preventDefault();runConfirmOk();return}
   }
   if(e.key==="Escape"){closeJump();closeTreeCtx();if(treeSel.size>1){clearTreeSel()}}
-  if((e.key==="Delete"||e.key==="Backspace")&&treeSel.size>1&&app==="dev"&&!e.target.closest("input,textarea,select")){e.preventDefault();deleteSelected()}};
+  if((e.key==="Delete"||e.key==="Backspace")&&treeSel.size>1&&app==="hw"&&!e.target.closest("input,textarea,select")){e.preventDefault();deleteSelected()}
+  if(inTextField(e.target)||overlayOpen()||e.ctrlKey||e.metaKey||e.altKey)return;
+  if(e.key==="/"){const q=document.getElementById("q");if(q){e.preventDefault();q.focus();q.select()}return}
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();treeMove(e.key==="ArrowDown"?1:-1);return}
+  if(e.key==="ArrowRight"||e.key==="ArrowLeft"){e.preventDefault();treeFold(e.key==="ArrowRight")}
+};
 document.addEventListener("mousedown",e=>{if(!e.target.closest("#tctx"))closeTreeCtx()});
+// Индекс find() сбрасываем до обработчиков: действие могло изменить модель
+["mousedown","click","input","change","keydown","drop"].forEach(t=>window.addEventListener(t,invalidateFind,true));
 syncLocalePack();applyStaticUi();
 if(!applyDeepLink()){resetTreeSel(sel);paint();}
 </script>
