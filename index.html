@@ -420,6 +420,51 @@ table.gtbl-cams td.gtbl-na{color:var(--mu);text-align:left}
 .ipsrv-or.on{background:#152232;color:#e8eef8}
 .ipsrv-or-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ipsrv-or-id{flex:0 0 52px;text-align:left;color:var(--tx);font-variant-numeric:tabular-nums}
+/* Все устройства сети: одна таблица, где видно и своё, и чужое, и новое */
+#lanCard{container-type:inline-size;container-name:lanc}
+.lan-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 10px}
+.lan-sq{flex:1 1 240px;min-width:200px;max-width:420px}
+.lan-chips{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.lan-arch{display:flex;align-items:center;gap:8px;margin-left:auto;font-size:12px;color:var(--mu)}
+.lan-arch label{margin:0;white-space:nowrap}
+.lan-arch select{height:var(--ctrl-h);font-size:12px;padding:0 8px}
+.lan-arch.nt{margin-left:auto}
+.lan-selbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px;padding:6px 10px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);font-size:12px}
+.lan-selbar .lk{margin-left:auto}
+.lan-scroll{max-height:min(58vh,560px);overflow:auto}
+.gtbl-grid.lan{min-width:760px}
+.gtbl-grid.lan .gtbl-h,.gtbl-grid.lan .gtbl-r{grid-template-columns:34px minmax(170px,1.6fr) 112px minmax(96px,.8fr) minmax(96px,.9fr) minmax(120px,1fr) 132px}
+.gtbl-grid.lan .gtbl-h>div{padding:0}
+.lan-nm2{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.lan-nm-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lan-sub{display:none;color:var(--mu);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Узкая карточка: производитель и модель уходят под имя, таблица перестаёт скроллиться вбок */
+@container lanc (max-width:760px){
+  .gtbl-grid.lan{min-width:0}
+  .gtbl-grid.lan .gtbl-h,.gtbl-grid.lan .gtbl-r{grid-template-columns:32px minmax(140px,1.7fr) 104px minmax(104px,1fr) 118px}
+  .gtbl-grid.lan .lan-c-vendor,.gtbl-grid.lan .lan-c-model{display:none}
+  .lan-sub{display:block}
+}
+.lan-sort{display:inline-flex;align-items:center;gap:4px;width:100%;border:0;background:0;color:inherit;font:inherit;font-weight:500;padding:8px 10px;cursor:pointer;text-align:left}
+.lan-sort:hover{color:#e8eef8}
+.lan-sort.on{color:#e8eef8}
+.lan-arw{font-size:9px;opacity:.8}
+.lan-cb{display:flex;align-items:center;justify-content:center;padding:0!important}
+.lan-r .lan-act{padding:4px 8px!important;display:flex;justify-content:flex-end}
+.lan-act .btn{white-space:nowrap}
+.lan-pill{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 8px;border-radius:99px;font-size:11px;background:#1b2636;color:var(--mu)}
+.lan-pill.lan-here{background:#143625;color:#75e1a9}
+.lan-pill.lan-other{background:#2a2438;color:#c3b0ee}
+.lan-pill.lan-new{background:#2d2a1a;color:#e6c86a}
+.lan-r.lan-new .lan-name{color:#e8eef8}
+.lan-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px}
+.lan-foot .sub{margin:0}
+.lan-foot-acts{display:flex;gap:8px}
+.lan-note{margin-top:10px}
+html[data-theme="light"] .lan-pill{background:#eaeff7;color:var(--mu)}
+html[data-theme="light"] .lan-pill.lan-here{background:#e2f6ea;color:#1a7a48}
+html[data-theme="light"] .lan-pill.lan-other{background:#efeaf9;color:#5a45a8}
+html[data-theme="light"] .lan-pill.lan-new{background:#faf1d8;color:#8a6a12}
 .gtbl .nm-cell{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden}
 .gtbl .nm-cell span:last-child{overflow:hidden;text-overflow:ellipsis}
 .gtbl .nm-cell .tw{width:12px;flex:none;color:var(--mu);cursor:pointer;user-select:none}
@@ -748,7 +793,7 @@ html[data-theme="light"] .sq-kbd,html[data-theme="light"] .hkbd{border-color:#d5
   </div>
 </div>
 </div>
-<div class="mask" id="wiz">
+<div class="mask" id="wiz" onclick="if(event.target===this)closeWizard()">
   <div class="dr" id="wizDr">
     <div class="dh"><b id="wizT">Добавить сервер</b><button class="btn s" onclick="closeWizard()">✕</button></div>
     <div class="st" id="wst"></div>
@@ -2302,10 +2347,10 @@ function jumpKey(e){
   }else if(e.key==="Enter"){
     e.preventDefault();jumpPick(jumpIdx);
   }else if(e.key==="Escape"){
-    e.preventDefault();
+    e.preventDefault();e.stopPropagation();
     const{inp}=omniEls();
     // Первый Esc — очистить запрос, второй — закрыть список (и не гасить его раньше времени)
-    if(inp?.value){e.stopPropagation();inp.value="";jumpList();return}
+    if(inp?.value){inp.value="";jumpList();return}
     if(inp)inp.blur();
     closeJump();
   }
@@ -3094,15 +3139,16 @@ function addTreeLabel(n){
   if(slice==="sys"||isSvc(n))return i18n("Добавить службу");
   return i18n("Добавить устройство");
 }
+// Устройства заводятся на вкладке «Все устройства сети», отдельной кнопки для них нет
 function canInspectorAdd(n){
   if(!n||n.type==="unalloc"||n.type==="det")return false;
   if(n.type==="domain")return true;
   if(n.type==="server")return !isUnallocated(n.id);
-  return app==="hw"&&groupBy==="folder";
+  return false;
 }
 function inspectorAddBtn(n){
   if(!canInspectorAdd(n))return"";
-  const lb=addTreeLabel(n),act=n.type==="domain"?"openW('server')":(n.type==="server"?"openW('svc')":"openW()");
+  const lb=addTreeLabel(n),act=n.type==="domain"?"openW('server')":"openW('svc')";
   return `<button class="btn s" onclick="${act}">＋ ${lb}</button>`;
 }
 function canWizardAdd(n){return n&&(n.type==="domain"||n.type==="server")}
@@ -3231,6 +3277,7 @@ function tctxSep(){return`<div class="tctx-sep" role="separator"></div>`}
 function tctxPlusIcon(){return`<span class="tctx-ic tctx-plus" aria-hidden="true">+</span>`}
 function tctxSearchIcon(){return`<span class="tctx-ic tctx-search" aria-hidden="true"></span>`}
 function tctxNewTabIcon(){return`<span class="tctx-ic tctx-newtab" aria-hidden="true">${svgIc(`<rect x="2.2" y="4.2" width="7.6" height="7.6" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M6.2 2.2h5.6v5.6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.8 2.2 7 7" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>`)}</span>`}
+function tctxLanIcon(){return`<span class="tctx-ic" aria-hidden="true">${svgIc(`<circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M2.4 8h11.2M8 2.4c1.6 1.7 2.4 3.6 2.4 5.6S9.6 11.9 8 13.6C6.4 11.9 5.6 10 5.6 8S6.4 4.1 8 2.4z" fill="none" stroke="currentColor" stroke-width="1.3"/>`)}</span>`}
 function tctxStarIcon(on){return`<span class="tctx-ic tctx-star${on?" on":""}" aria-hidden="true">${on?FAV_ON:FAV_OFF}</span>`}
 function tctxItem(label,action,icon,disabled){
   const ic=icon||`<span class="tctx-ic"></span>`;
@@ -3281,10 +3328,10 @@ function canRenameShort(n){
   return n&&n.type!=="domain"&&n.type!=="server"&&n.type!=="unalloc"&&n.type!=="det"&&n.type!=="folder"&&inSlice(n);
 }
 function treeCtxAttr(id){return ` oncontextmenu="treeCtx(event,'${id}')"`;}
+// Остался только для служб сервера: устройства заводятся на вкладке «Все устройства сети»
 function addTreeRow(level,n){
   const pad=8+level*14,lb=addTreeLabel(n);
-  const act=n.type==="server"?"openW('svc')":"openW()";
-  return `<div class="n n-add" style="padding-left:${pad}px" onclick="event.stopPropagation();pick('${n.id}');${act}" title="${lb}">
+  return `<div class="n n-add" style="padding-left:${pad}px" onclick="event.stopPropagation();pick('${n.id}');openW('svc')" title="${lb}">
     <span style="width:11px;flex:none"></span><span class="nm">＋ ${lb}</span></div>`;
 }
 function addManualSrvRow(level,domainId){
@@ -3321,10 +3368,12 @@ function openTreeCtx(n,xy){
       addItems.push(tctxItem(i18n("Найти по IP-адресам…"),`closeTreeCtx();openFindServerByIp('${n.id}')`,tctxPlusIcon()));
       addItems.push(tctxItem(i18n("Новый домен"),`createDomain()`,tctxPlusIcon()));
     }else if(canTreeCtxAdd(n)){
-      const lb=addTreeLabel(n);
-      const act=n.type==="domain"?`closeTreeCtx();openW('server')`:(n.type==="server"?`closeTreeCtx();openW('svc')`:"closeTreeCtx();openW()");
-      addItems.push(tctxItem(lb,act,tctxPlusIcon()));
+      // Устройства не «добавляют» из меню: меню ведёт на вкладку со всеми устройствами сети
+      if(n.type==="server")addItems.push(tctxItem(addTreeLabel(n),`closeTreeCtx();openW('svc')`,tctxPlusIcon()));
       if(n.type==="folder")addItems.push(tctxItem(i18n("Подпапка"),`addSubfolder('${n.id}')`,tctxPlusIcon()));
+    }
+    if(n.type==="server"&&!isUnallocated(n.id)||n.type==="folder"){
+      addItems.push(tctxItem(i18n("Все устройства сети"),`closeTreeCtx();openNode('${n.id}',{tab:'lan'})`,tctxLanIcon()));
     }
     const rest=[];
     if(n.type==="server"&&isUnallocated(n.id)){
@@ -3541,7 +3590,6 @@ function frow(f,l,force){
   if(op){
     h+=subs;
     h+=devs.map(d=>nrow(d,l+1,"f:"+f.id,childForce)).join("");
-    h+=addTreeRow(l+1,f);
   }
   return h;
 }
@@ -3748,11 +3796,11 @@ function tabsFor(n){
   if(n.type==="domain")return[["gen","Общие"],["srvs","Серверы"],["lic","Лицензии"]];
   if(n.type==="unalloc")return[];
   if(n.type==="server"&&isUnallocated(n.id))return[];
-  if(n.type==="server")return[["gen","Общие"],["svc","Службы"],["disk","Хранилище"],["net","Сеть"]];
+  if(n.type==="server")return[["gen","Общие"],["svc","Службы"],["disk","Хранилище"],["net","Сеть"],["lan","Все устройства сети"]];
   if(n.type==="archive")return[["gen","Хранилище"],["cams","Камеры"]];
   if(n.type==="norec"||n.type==="nofolder"||n.type==="gpu"||n.type==="det")return[];
 
-  if(n.type==="folder")return[["gen","Состав"],["tbl","Таблица"]];
+  if(n.type==="folder")return[["gen","Состав"],["tbl","Таблица"],["lan","Все устройства сети"]];
   if(n.type==="camera")return[["gen","Подключение"],["vid","Видео"],["rec","Архив"],["det","Детекторы"]];
   if(n.type==="ipsrv")return ipsrvCameras(n).length?[["gen","Подключение"],["rec","Архив"],["kids","Дочерние"]]:[["gen","Подключение"],["kids","Дочерние"]];
   if(n.type==="channel")return[["gen","Основные"],["kids","Дочерние"]];
@@ -3980,7 +4028,7 @@ function camsCardTitle(node){
   return `<span class="ch-cams-title">${i18n("Камеры")} <span class="ch-cams-cnt">(<b>${total}</b>)</span></span>`;
 }
 function camsCardHeadActions(){
-  return `<span class="ch-cams-actions"><button type="button" class="btn s" onclick="openW()">＋</button><button type="button" class="btn s" onclick="exportCamsTableCsv()">${i18n("Экспорт CSV")}</button></span>`;
+  return `<span class="ch-cams-actions"><button type="button" class="btn s" onclick="exportCamsTableCsv()">${i18n("Экспорт CSV")}</button></span>`;
 }
 function camsTableHtml(server){
   const filt=tblFilt.cams;
@@ -4210,6 +4258,307 @@ function camDetectorsHtml(n){
       `<button type="button" class="btn s" onclick="deleteDetector('${n.id}','${cur.id}')">${i18n("Удалить")}</button>`)+
     detZoneCardHtml(n,cur);
 }
+// ── Все устройства сети ───────────────────────────────────────────────────
+// Вместо мастера-диалога: у сервера и у папки есть вкладка, где видно всё, что
+// автопоиск нашёл в сети, — и то, что уже заведено в системе, и то, чего в ней
+// нет. Привязка (запись в архив этого сервера либо размещение в этой папке)
+// делается прямо в строке, поэтому отдельной кнопки «Добавить устройство» нет.
+const LAN_CHIPS=[["all","Все"],["here","Здесь"],["free","Свободные"],["other","В другом месте"],["new","Нет в системе"]];
+const LAN_COLS=[["name","Устройство"],["ip","IP-адрес"],["vendor","Производитель"],["model","Модель"],["where","Привязка"]];
+const LAN_ST_ORDER={here:0,free:1,other:2,new:3};
+let lanQ="",lanChip="all",lanSortKey="where",lanSortDir=1,lanArch="",lanScanState="idle",lanShown=0,lanTimer=null;
+const lanSel=new Set();
+function lanHost(){
+  const n=find(sel)?.n;
+  if(!n)return null;
+  if(n.type==="folder")return n;
+  return n.type==="server"&&!isUnallocated(n.id)?n:null;
+}
+function lanHostDomain(h){return h.type==="folder"?folderDomain(h.id):(domainOf(h.id)?.id||SERVER_DOMAIN[h.id]||null)}
+function lanHostIsFolder(h){return h.type==="folder"}
+// Цель для нумерации ID: идентификаторы уникальны в пределах всего пула устройств
+function lanTarget(){return{id:"pool",type:"folder",name:"",devices:devicePool}}
+function lanSeedKnown(s){return devicePool.some(n=>n.ip===s.ip&&(!n.mac||!s.mac||n.mac===s.mac))}
+function lanRows(h){
+  const rows=[];
+  devicePool.forEach(n=>{
+    if(!n.ip||n.type==="det")return;
+    rows.push({key:n.id,id:n.id,node:n,name:locName(n),ip:n.ip,port:n.port||80,mac:n.mac||"",
+      vendor:n.vendor||"",model:n.model||"",type:n.type,added:true,seed:null});
+  });
+  DEVICE_DISCOVERY_SEED.slice(0,lanShown).forEach(s=>{
+    if(lanSeedKnown(s))return;
+    rows.push({key:"net:"+s.id,id:null,node:null,name:s.name,ip:s.ip,port:s.port||80,mac:s.mac||"",
+      vendor:s.vendor||"",model:s.model||"",type:s.type||"camera",added:false,seed:s});
+  });
+  rows.forEach(r=>r.bind=lanBindState(r,h));
+  return rows;
+}
+// Привязка всегда относительно открытого объекта: «здесь», «в другом месте», «свободно»
+function lanBindState(r,h){
+  if(!r.added)return{st:"new",label:i18n("Нет в системе")};
+  if(lanHostIsFolder(h)){
+    const fs=foldersOfDevice(r.id);
+    if(fs.some(f=>f.id===h.id))return{st:"here",label:i18n("В этой папке")};
+    // Вложенная папка — тоже «здесь»: в дереве объект виден внутри этой ветки
+    const nested=fs.find(f=>folderPath(f.id).some(p=>p.id===h.id));
+    if(nested)return{st:"here",nested:true,label:i18n("Во вложенной:")+" "+locName(nested)};
+    if(fs.length)return{st:"other",label:fs.map(f=>folderPathName(f.id)).join(", ")};
+    return{st:"free",label:i18n("Без папки")};
+  }
+  const s=srv(r.id);
+  if(s&&s.id===h.id)return{st:"here",label:i18n("Пишется сюда")};
+  if(s)return{st:"other",label:locName(s),goId:s.id};
+  return{st:"free",label:i18n("Без записи")};
+}
+// Почему привязать нельзя — говорим сразу, а не после нажатия
+function lanBlockReason(r,h){
+  if(!r.added&&(r.seed?.status==="bad"||!r.vendor||!r.model))return"Производитель не определён — заведите вручную";
+  const hd=lanHostDomain(h);
+  if(r.added){
+    const dd=deviceDomain(r.id);
+    if(dd&&hd&&dd!==hd)return"Устройство в другом домене";
+  }
+  if(!lanHostIsFolder(h)){
+    if(r.type!=="camera")return"Запись в архив ведут только камеры";
+    if(!serverArchives(h.id).length)return"У сервера нет архива";
+  }
+  return"";
+}
+function lanActLabel(r,h){
+  if(!r.added)return"Добавить";
+  if(lanHostIsFolder(h))return"В папку";
+  return r.bind.st==="other"?"Перенести":"Писать сюда";
+}
+function lanActHint(r,h){
+  if(!r.added)return lanHostIsFolder(h)?"Завести в системе и положить в эту папку":"Завести в системе и включить запись на этот сервер";
+  if(lanHostIsFolder(h))return"Положить объект в эту папку";
+  return r.bind.st==="other"?"Перенести запись на этот сервер":"Назначить архив этого сервера и включить запись";
+}
+function lanArchOf(h){
+  const list=serverArchives(h.id);
+  return list.find(a=>a.id===lanArch)||list[0]||null;
+}
+function lanSetArch(v){lanArch=v;lanRender()}
+function lanRowByKey(h,key){return lanRows(h).find(r=>r.key===key)||null}
+// Заводим найденное устройство в системе: тот же путь, что и у мастера
+function lanCreate(r,h,disabled){
+  const s=r.seed||{};
+  const data={...s,name:s.name||"",short:"",identifier:"",group:"",lat:"0",lon:"0",azimuth:"0",
+    arch:lanHostIsFolder(h)?"":(lanArchOf(h)?.id||""),record:"motion"};
+  const node=deviceNodeFromData(data,lanTarget(),{configMode:"current",disabled:!!disabled});
+  devicePool.push(node);
+  DEVICE_DOMAIN[node.id]=lanHostDomain(h)||domains[0]?.id;
+  r.id=node.id;r.node=node;r.added=true;
+  return node.id;
+}
+function lanBindRow(r,h,disabled){
+  if(lanBlockReason(r,h))return false;
+  const id=r.id||lanCreate(r,h,disabled);
+  if(!id)return false;
+  if(lanHostIsFolder(h)){folderAddDevice(h.id,id);return true}
+  const a=lanArchOf(h);if(!a)return false;
+  const n=find(id)?.n;if(!n)return false;
+  n.arch=a.id;
+  if(!n.rec||n.rec==="none")n.rec="motion";
+  return true;
+}
+function lanUnbindRow(r,h){
+  if(!r.id)return false;
+  if(lanHostIsFolder(h)){
+    const f=folderById(h.id);if(!f)return false;
+    if(!f.items.includes(r.id)){toast("Объект лежит во вложенной папке — уберите его там");return false}
+    f.items=f.items.filter(x=>x!==r.id);
+    return true;
+  }
+  const n=find(r.id)?.n;if(!n)return false;
+  n.rec="none";n.arch="";
+  return true;
+}
+function lanAfterChange(msg){
+  remakeAcfa();invalidateFind();treeMatchCache.clear();searchMatchCache.clear();
+  renderTree();lanRender();
+  if(msg)toast(msg);
+}
+function lanApplyBind(list,h,disabled){
+  let n=0;list.forEach(r=>{if(lanBindRow(r,h,disabled&&missingDeviceCredentials(r.seed||r.node||{})))n++});
+  lanSel.clear();
+  lanAfterChange(n>1?i18n("Привязано устройств")+`: ${n}`:(n?i18n("Привязано"):i18n("Ничего не изменилось")));
+}
+// Учётные данные спрашиваем так же, как мастер: без них устройство заводится выключенным
+function lanRunBind(list,h){
+  const fresh=list.filter(r=>!r.added);
+  if(fresh.some(r=>missingDeviceCredentials(r.seed||{}))){
+    askAddWithoutCredentials(()=>lanApplyBind(list,h,true),list.length>1);
+    return;
+  }
+  lanApplyBind(list,h,false);
+}
+function lanBind(key){
+  const h=lanHost();if(!h)return;
+  const r=lanRowByKey(h,key);if(!r)return;
+  const why=lanBlockReason(r,h);
+  if(why){toast(why);return}
+  lanRunBind([r],h);
+}
+function lanUnbind(key){
+  const h=lanHost();if(!h)return;
+  const r=lanRowByKey(h,key);if(!r)return;
+  if(lanUnbindRow(r,h))lanAfterChange(lanHostIsFolder(h)?"Убрано из папки":"Запись отключена");
+}
+function lanBindSelected(){
+  const h=lanHost();if(!h)return;
+  const list=lanRows(h).filter(r=>lanSel.has(r.key)&&r.bind.st!=="here"&&!lanBlockReason(r,h));
+  if(!list.length){toast("Нечего привязывать");return}
+  lanRunBind(list,h);
+}
+function lanUnbindSelected(){
+  const h=lanHost();if(!h)return;
+  const list=lanRows(h).filter(r=>lanSel.has(r.key)&&r.bind.st==="here"&&!r.bind.nested);
+  let n=0;list.forEach(r=>{if(lanUnbindRow(r,h))n++});
+  lanSel.clear();
+  lanAfterChange(n?i18n("Отвязано устройств")+`: ${n}`:"Ничего не изменилось");
+}
+function lanPick(key,on){if(on)lanSel.add(key);else lanSel.delete(key);lanRender()}
+function lanPickAll(on){
+  const h=lanHost();if(!h)return;
+  lanVisibleRows(h).forEach(r=>{if(on)lanSel.add(r.key);else lanSel.delete(r.key)});
+  lanRender();
+}
+function lanClearSel(){lanSel.clear();lanRender()}
+function lanRowClick(key){
+  const h=lanHost();if(!h)return;
+  const r=lanRowByKey(h,key);if(!r)return;
+  if(r.id)openNode(r.id);else lanPick(key,!lanSel.has(key));
+}
+function lanSortBy(k){
+  if(lanSortKey===k)lanSortDir=-lanSortDir;else{lanSortKey=k;lanSortDir=1}
+  lanRender();
+}
+function lanSetQ(v){lanQ=v;lanRender()}
+function lanSetChip(c){lanChip=c;lanRender()}
+function lanSortVal(r,k){
+  if(k==="where")return String(LAN_ST_ORDER[r.bind.st])+"|"+r.name.toLowerCase();
+  if(k==="ip")return r.ip.split(".").map(x=>String(x).padStart(3,"0")).join(".");
+  if(k==="type")return i18n(LB[r.type]||r.type).toLowerCase();
+  return String(r[k]||"").toLowerCase();
+}
+function lanMatch(r,q){return!q||textHit([r.name,r.ip,r.mac,r.vendor,r.model,i18n(LB[r.type]||r.type)].join(" "),q)}
+function lanVisibleRows(h){
+  const q=normText(lanQ).trim();
+  const rows=lanRows(h).filter(r=>lanMatch(r,q)&&(lanChip==="all"||r.bind.st===lanChip));
+  return rows.sort((a,b)=>{
+    const va=lanSortVal(a,lanSortKey),vb=lanSortVal(b,lanSortKey);
+    return va<vb?-lanSortDir:va>vb?lanSortDir:0;
+  });
+}
+function lanStartScan(force){
+  if(lanScanState==="scanning"&&!force)return;
+  lanStopScan();
+  lanScanState="scanning";lanShown=0;
+  lanTimer=setInterval(()=>{
+    if(!document.getElementById("lanCard")){lanStopScan();return}
+    lanShown=Math.min(DEVICE_DISCOVERY_SEED.length,lanShown+1);
+    if(lanShown>=DEVICE_DISCOVERY_SEED.length){lanStopScan();lanScanState="done"}
+    lanRender();
+  },140);
+}
+function lanStopScan(){if(lanTimer){clearInterval(lanTimer);lanTimer=null}}
+function lanRescan(){lanSel.clear();lanStartScan(true);lanRender()}
+function lanScanProgress(){return Math.round(lanShown/DEVICE_DISCOVERY_SEED.length*100)}
+function lanChipCount(rows,c){return c==="all"?rows.length:rows.filter(r=>r.bind.st===c).length}
+function lanHeadHtml(allOn){
+  const cols=LAN_COLS.map(([k,l])=>`<div class="lan-c-${k}"><button type="button" class="lan-sort ${lanSortKey===k?"on":""}" onclick="lanSortBy('${k}')">${i18n(l)}<span class="lan-arw">${lanSortKey===k?(lanSortDir>0?"↑":"↓"):""}</span></button></div>`).join("");
+  return `<div class="gtbl-h lan-h"><div class="lan-cb"><input type="checkbox" id="lanAll" ${allOn?"checked":""} title="${i18n("Выбрать все показанные")}" onchange="lanPickAll(this.checked)"></div>${cols}<div></div></div>`;
+}
+function lanRowHtml(r,h,q){
+  const st=r.bind.st,block=lanBlockReason(r,h);
+  const dot=r.node?deviceStatusDotHtml(r.node,"i","dot"):"";
+  const act=st==="here"
+    ?`<button type="button" class="btn s" title="${i18n(r.bind.nested?"Объект лежит во вложенной папке — уберите его там":(lanHostIsFolder(h)?"Убрать объект из этой папки":"Выключить запись на этот сервер"))}" ${r.bind.nested?"disabled":""} onclick="event.stopPropagation();lanUnbind('${r.key}')">${i18n(lanHostIsFolder(h)?"Убрать":"Отвязать")}</button>`
+    :`<button type="button" class="btn s" title="${escHtml(i18n(block||lanActHint(r,h)))}" ${block?"disabled":""} onclick="event.stopPropagation();lanBind('${r.key}')">${i18n(lanActLabel(r,h))}</button>`;
+  const sub=[r.vendor,r.model].filter(Boolean).join(" · ");
+  return `<div class="gtbl-r lan-r lan-${st}" onclick="lanRowClick('${r.key}')" title="${escHtml(r.id?i18n("Открыть карточку объекта"):i18n("Устройства нет в системе"))}">
+    <div class="lan-cb"><input type="checkbox" ${lanSel.has(r.key)?"checked":""} onclick="event.stopPropagation()" onchange="lanPick('${r.key}',this.checked)"></div>
+    <div class="lan-name"><div class="nm-cell">${dot}<span>${ic(r.type)}</span><span class="lan-nm2"><span class="lan-nm-t">${hlText(r.name,q)}</span><small class="lan-sub">${escHtml(sub||"—")}</small></span></div></div>
+    <div>${hlText(r.ip,q)}${r.port&&r.port!==80?`<span class="sub">:${r.port}</span>`:""}</div>
+    <div class="lan-c-vendor">${hlText(r.vendor||"—",q)}</div>
+    <div class="lan-c-model">${hlText(r.model||"—",q)}</div>
+    <div><span class="lan-pill lan-${st}">${escHtml(r.bind.label)}</span></div>
+    <div class="lan-act">${act}</div>
+  </div>`;
+}
+function lanBarHtml(h,rows){
+  const q=lanQ.trim();
+  const chips=LAN_CHIPS.map(([c,l])=>{
+    const n=lanChipCount(rows,c);
+    const lab=c==="here"?(lanHostIsFolder(h)?"В этой папке":"Пишутся сюда"):l;
+    return `<button type="button" class="stchip ${lanChip===c?"on":""}" onclick="lanSetChip('${c}')"><span class="stchip-lab">${i18n(lab)}</span><span class="stchip-n">${n}</span></button>`;
+  }).join("");
+  const arch=lanHostIsFolder(h)?"":lanArchSelectHtml(h);
+  return `<div class="lan-bar">
+    <div class="sq lan-sq">
+      <span class="sq-lead" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="6.8" cy="6.8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="m9.8 9.8 3.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+      <input id="lanQ" value="${escHtml(lanQ)}" placeholder="${i18n("Имя, IP, MAC, производитель, модель")}" autocomplete="off" oninput="lanSetQ(this.value)">
+      <button type="button" class="sq-clear ${q?"":"hide"}" title="${i18n("Очистить")}" onclick="lanSetQ('')">✕</button>
+    </div>
+    <div class="lan-chips">${chips}</div>
+    ${arch}
+  </div>`;
+}
+function lanArchSelectHtml(h){
+  const list=serverArchives(h.id);
+  if(!list.length)return `<div class="lan-arch nt">${i18n("У сервера нет архива")} <button type="button" class="lk" onclick="addArchive('${h.id}')">${i18n("Создать архив")}</button></div>`;
+  const cur=lanArchOf(h);
+  return `<div class="lan-arch"><label for="lanArch">${i18n("Писать в архив")}</label>
+    <select id="lanArch" onchange="lanSetArch(this.value)">${list.map(a=>`<option value="${a.id}" ${cur&&a.id===cur.id?"selected":""}>${escHtml(locName(a))}</option>`).join("")}</select></div>`;
+}
+function lanSelBarHtml(h){
+  if(!lanSel.size)return"";
+  const rows=lanRows(h).filter(r=>lanSel.has(r.key));
+  const bind=rows.filter(r=>r.bind.st!=="here"&&!lanBlockReason(r,h)).length;
+  const un=rows.filter(r=>r.bind.st==="here"&&!r.bind.nested).length;
+  return `<div class="lan-selbar">
+    <span>${i18n("Выбрано:")} <b>${rows.length}</b></span>
+    <button type="button" class="btn s pri" ${bind?"":"disabled"} onclick="lanBindSelected()">${i18n(lanHostIsFolder(h)?"В эту папку":"Писать сюда")} (${bind})</button>
+    <button type="button" class="btn s" ${un?"":"disabled"} onclick="lanUnbindSelected()">${i18n("Отвязать")} (${un})</button>
+    <button type="button" class="lk" onclick="lanClearSel()">${i18n("Снять выделение")}</button>
+  </div>`;
+}
+function lanCardHtml(h){
+  if(lanScanState==="idle")lanStartScan();
+  const all=lanRows(h),rows=lanVisibleRows(h),q=normText(lanQ).trim();
+  const scanning=lanScanState==="scanning";
+  const allOn=rows.length>0&&rows.every(r=>lanSel.has(r.key));
+  const body=rows.length?rows.map(r=>lanRowHtml(r,h,q)).join("")
+    :`<div class="empty">${scanning?`${i18n("Идёт поиск в сети…")} ${lanScanProgress()}%`:i18n("Ничего не найдено")}</div>`;
+  const head=`<span class="ch-cams-title">${i18n("Найдено в сети")} <span class="ch-cams-cnt">(<b>${all.length}</b>)</span></span>`;
+  const act=`<span class="ch-cams-actions">${scanning?`<span class="ch-act"><span class="dev-spin" aria-hidden="true"></span>${i18n("Поиск…")} ${lanScanProgress()}%</span>`
+    :`<button type="button" class="ch-act" title="${i18n("Повторить поиск в сети")}" onclick="lanRescan()"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13.2 8a5.2 5.2 0 1 1-1.3-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12.2 2.4v3.2h-3.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>${i18n("Обновить")}</button>`}</span>`;
+  const foot=`<div class="lan-foot">
+    <span class="sub">${i18n("Показано:")} ${rows.length} ${i18n("из")} ${all.length}${lanChip!=="all"||q?` · <button type="button" class="lk" onclick="lanReset()">${i18n("Сбросить фильтр")}</button>`:""}</span>
+    <span class="lan-foot-acts"><button type="button" class="btn s" onclick="openDeviceEntry('manual')">${i18n("Завести вручную")}</button><button type="button" class="btn s" onclick="openDeviceEntry('csv')">${i18n("Импорт из файла")}</button></span>
+  </div>`;
+  return `<div id="lanCard">`+card(head,`${lanBarHtml(h,all)}${lanSelBarHtml(h)}
+    <div class="gtbl lan-scroll"><div class="gtbl-grid lan">${lanHeadHtml(allOn)}${body}</div></div>${foot}
+    <p class="sub lan-note">${i18n(lanHostIsFolder(h)
+      ?"Папка задаёт расположение: устройство может лежать сразу в нескольких папках, на запись это не влияет."
+      :"Камера попадает под сервер через архив: «Писать сюда» назначает архив этого сервера и включает запись.")}</p>`,act)+`</div>`;
+}
+function lanReset(){lanQ="";lanChip="all";lanRender()}
+function lanRender(){
+  const el=document.getElementById("lanCard"),h=lanHost();
+  if(!el||!h||app!=="hw"||tab!=="lan"){lanStopScan();return}
+  const sc=el.querySelector(".lan-scroll"),top=sc?sc.scrollTop:0;
+  const act=document.activeElement,onQ=act&&act.id==="lanQ",caret=onQ?act.selectionStart:null;
+  el.outerHTML=lanCardHtml(h);
+  const sc2=document.querySelector("#lanCard .lan-scroll");
+  if(sc2)sc2.scrollTop=top;
+  if(onQ){const i=document.getElementById("lanQ");if(i){i.focus();try{i.setSelectionRange(caret,caret)}catch(e){}}}
+}
+// Ручной ввод и импорт из файла — те же экраны мастера, но без шага поиска:
+// поиск живёт здесь, на вкладке, и дублировать его в диалоге незачем
+function openDeviceEntry(mode){openW(mode==="csv"?"dev-csv":"dev-manual")}
 function form(n){
   if(n.type==="archive"){
     const sv=archServer(n),cams=archCameras(n.id),net=archIsNetwork(n);
@@ -4251,9 +4600,10 @@ function form(n){
       `<p class="sub">${i18n("Эти камеры работают, но архив им не назначен, поэтому сервера у них нет. Назначить архив — на камере, вкладка «Архив».")}</p>`;
   }
   if(n.type==="folder"){
+    if(tab==="lan")return lanCardHtml(n);
     if(tab==="tbl"){
       const tn=tableNode();
-      return slice==="acfa"?card("ACFA-устройства",acfaTableHtml(tn),`<button class="btn s" onclick="openW()">＋</button>`)
+      return slice==="acfa"?card("ACFA-устройства",acfaTableHtml(tn))
         :card(camsCardTitle(tn),camsTableHtml(tn),camsCardHeadActions());
     }
     return folderCardHtml(n);
@@ -4308,6 +4658,7 @@ function form(n){
         `<button type="button" class="btn s" onclick="addArchive('${n.id}')">＋ ${i18n("Архив")}</button>`)+
       card("Камеры, которые пишутся на этот сервер",recCams.map(c=>`<div class="it" onclick="openNode('${c.id}')"><span>${ic("camera")}</span><span>${escHtml(locName(c))}<small>${escHtml(deviceFolderNote(c.id))}</small></span></div>`).join("")||`<p class='sub'>${i18n("Запись не настроена")}</p>`);
     }
+    if(tab==="lan")return lanCardHtml(n);
     if(tab==="net")return card("Сеть",`<div class="g">${fld("IP",n.ip)}${fld("Маска","255.255.255.0")}${fld("Шлюз","10.20.1.1")}${fld("DNS","8.8.8.8")}</div>`);
     if(tab==="svc"){const svcs=(n.devices||[]).filter(d=>isSvc(d));
       return card("Службы сервера",svcs.map(d=>`<div class="it" onclick="pick('${d.id}')"><span>${ic(d.type)}</span><span>${d.name}<small>${LB[d.type]}</small></span>${bdg(d)}</div>`).join("")||"<p class='sub'>Нет служб</p>",
@@ -4329,7 +4680,7 @@ function form(n){
       <p class="sub">${i18n("Устройства не привязаны к серверу — они в срезе")} <button class="lk" onclick="setSlice('cam');setGroupBy('folder')">${i18n("Камеры по папкам")}</button>. ${i18n("Сервер появляется у камеры только через архив, на котором ведётся запись.")}</p>`)}
   if(n.type==="ipsrv"){
     if(tab==="rec")return nvrRecCardHtml(n);
-    if(tab==="kids")return card("Дочерние объекты",childList(n),`<button class="btn s" onclick="openW()">＋</button>`)+
+    if(tab==="kids")return card("Дочерние объекты",childList(n))+
       (n.subtype==="nvr"?`<p class="sub">NVR отображается как IP-сервер с камерами и каналами. Под каналом — датчики и реле.</p>`:
       n.subtype==="io"?`<p class="sub">I/O-устройство без камер: датчики и реле под каналом.</p>`:
       n.subtype==="sip"||n.subtype==="mic"?`<p class="sub">Аудио-устройство: микрофоны и/или динамики без видеоканалов.</p>`:"");
@@ -4337,7 +4688,7 @@ function form(n){
       ${fld("Производитель",n.vendor)}${fld("Модель",n.model)}${sl("Тип",[IPSUB[n.subtype]||"IP-сервер"])}</div>
       <div class="g" style="margin-top:10px">${fld("Широта",n.lat??"")}${fld("Долгота",n.lon??"")}${fld("Азимут",n.azimuth??"","number")}</div>
       <div class="ln"><div>Отправлять настройки устройству</div><div class="sw on" onclick="this.classList.toggle('on');setD(true)"></div></div>`)
-      +deviceFoldersCardHtml(n)+card("Дерево объектов",ipsrvObjTreeHtml(n),`<button class="btn s" onclick="openW()">＋</button>`)}
+      +deviceFoldersCardHtml(n)+card("Дерево объектов",ipsrvObjTreeHtml(n))}
   if(n.type==="channel"){
     if(tab==="kids")return card("Датчики и реле",childList(n, d=>d.type==="sensor"||d.type==="relay"));
     return card("Канал",`${bdg(n)}${enabledToggleHtml(n)}<div class="g" style="margin-top:10px">${fld("Имя",n.name)}${fld("Номер канала",n.ch??0,"number")}</div>${childList(n)}`)}
@@ -5567,13 +5918,13 @@ function renderDeviceWizardFooter(){
   df.style.display="";df.classList.add("device-footer");wb.style.display="none";wn.style.display="none";
   if(wizd.deviceTab==="manual"){
     const templateMissing=wizd.devMode==="template"&&!wizd.templateId;
-    foot.innerHTML=`<div class="dev-footer-left"><button type="button" class="lk" onclick="setDeviceTab('search')">← К результатам поиска</button></div>
+    foot.innerHTML=`<div class="dev-footer-left">${wizd.noSearch?"":`<button type="button" class="lk" onclick="setDeviceTab('search')">← К результатам поиска</button>`}</div>
       <div class="dev-footer-right dev-footer-manual">${wizd.manualAddedId?`<div class="dev-action-btns dev-action-btns-inline">${devAddedActionsHtml(wizd.manualAddedId)}</div>`:`${deviceAddParamsHtml()}<button class="btn pri" onclick="addManualDevice()" ${templateMissing?"disabled":""}>Добавить устройство</button>`}</div>`;
     return;
   }
   if(wizd.deviceTab==="csv"){
     const valid=csvImportableRows(wizd.csvRows||[]).length;
-    foot.innerHTML=`<div class="dev-footer-left"><button type="button" class="lk" onclick="setDeviceTab('search')">← К результатам поиска</button></div>
+    foot.innerHTML=`<div class="dev-footer-left">${wizd.noSearch?"":`<button type="button" class="lk" onclick="setDeviceTab('search')">← К результатам поиска</button>`}</div>
       <div class="dev-footer-right">${valid?`<button class="btn pri" onclick="importCsvDevices()">Импортировать (${valid})</button>`:""}</div>`;
     return;
   }
@@ -5617,7 +5968,8 @@ function openW(preset){
   const c=addContext(),n=c.node;
   const existing=n?.type==="server"&&isUnallocated(n.id)?n.id:null;
   const serverOnly=preset==="server"||preset==="manual"||n?.type==="domain"||n?.type==="unalloc";
-  const deviceWizard=!serverOnly&&preset!=="svc"&&c.view!=="sys";
+  const entry=preset==="dev-manual"||preset==="dev-csv";
+  const deviceWizard=entry||(!serverOnly&&preset!=="svc"&&c.view!=="sys");
   wizd=deviceWizard?initDeviceWizard(c):{
       mode:preset==="manual"?"server-manual":(serverOnly?"server-list":null),
       existing,cat:preset==="svc"?"svc":null,lockedCat:preset==="svc"?"svc":null,type:null,
@@ -5630,13 +5982,14 @@ function openW(preset){
       ipPhase:preset==="manual"?"search":null,foundServerId:null,searchMsg:null,
       searchIp:"",searchPort:20111
     };
+  if(entry){wizd.deviceTab=preset==="dev-csv"?"csv":"manual";wizd.noSearch=true}
   ws=preset==="manual"?2:1;
   document.getElementById("wizDr").classList.toggle("device-wizard",deviceWizard);
   document.getElementById("wizDr").classList.toggle("server-list",!!serverOnly&&preset!=="manual");
   document.querySelector("#wiz .df").style.display="";
   document.getElementById("wiz").classList.add("open");
   wd();
-  if(deviceWizard)refreshDeviceSearch();
+  if(deviceWizard&&!wizd.noSearch)refreshDeviceSearch();
 }
 function wizGoIp(fromList){
   wizd.mode="server-manual";wizd.ipPhase="search";wizd.foundServerId=null;wizd.searchMsg=null;
@@ -5955,6 +6308,27 @@ function treeFold(expand){
   if(expand!==isOpen)treeToggleId(id);
 }
 function inTextField(t){return!!t?.closest?.("input,textarea,select,[contenteditable]")}
+function isOpenEl(id){return!!document.getElementById(id)?.classList.contains("open")}
+// Всплывающие меню внутри мастера — верхний слой: Esc сначала закрывает их, а не весь диалог
+function closeWizardPops(){
+  if(!isOpenEl("wiz")||!(wizd.modePop||wizd.tplPop||wizd.devFiltPop||wizd.devFieldsPop))return false;
+  wizd.modePop=wizd.tplPop=wizd.devFiltPop=wizd.devFieldsPop=false;wizd.tplFilter="";
+  renderDeviceWizard();
+  return true;
+}
+// Esc закрывает ровно один слой сверху: сначала меню, потом диалог, потом то, что открыто на странице
+function escClose(){
+  if(closeWizardPops())return true;
+  if(isOpenEl("confirm")){closeConfirm();return true}
+  if(isOpenEl("wiz")){closeWizard();return true}
+  if(isOpenEl("tctx")){closeTreeCtx();return true}
+  if(isOpenEl("upop")){closeUserMenu();return true}
+  if(jumpPanelOpen()){closeJump();return true}
+  if(filtPop){closeFiltPop();return true}
+  if(treeRenameId){cancelTreeRename();return true}
+  if(treeSel.size>1){clearTreeSel();return true}
+  return false;
+}
 function overlayOpen(){return["wiz","confirm"].some(id=>document.getElementById(id)?.classList.contains("open"))}
 // Боковую панель пересобираем при смене раздела, среза или группировки — в ней их кнопки
 function paint(){const key=app+"|"+viewKey();if(_lastApp!==key){aside();_lastApp=key}else renderTree();
@@ -5977,11 +6351,8 @@ window.onmousemove=e=>{if(!drag)return;
   asideW=clampAsideW(e.clientX-railW);document.getElementById("ws").style.setProperty("--aw",asideW+"px");if(filtPop)placeFiltPop()};
 window.onmouseup=()=>{drag=false;rsz.classList.remove("on")};
 document.onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key==="k"){e.preventDefault();openJump()}
-  if(document.getElementById("confirm")?.classList.contains("open")){
-    if(e.key==="Escape"){e.preventDefault();closeConfirm();return}
-    if(e.key==="Enter"){e.preventDefault();runConfirmOk();return}
-  }
-  if(e.key==="Escape"){closeJump();closeTreeCtx();if(treeSel.size>1){clearTreeSel()}}
+  if(isOpenEl("confirm")&&e.key==="Enter"){e.preventDefault();runConfirmOk();return}
+  if(e.key==="Escape"){if(escClose())e.preventDefault();return}
   if((e.key==="Delete"||e.key==="Backspace")&&treeSel.size>1&&app==="hw"&&!e.target.closest("input,textarea,select")){e.preventDefault();deleteSelected()}
   if(inTextField(e.target)||overlayOpen()||e.ctrlKey||e.metaKey||e.altKey)return;
   if(e.key==="/"){const q=document.getElementById("q");if(q){e.preventDefault();q.focus();q.select()}return}
