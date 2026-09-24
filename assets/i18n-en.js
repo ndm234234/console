@@ -8,6 +8,7 @@ window.I18N_EN={
 "Сервера":"Servers","Устройства":"Devices","Оборудование":"Hardware","Детекторы":"Detectors","Архив":"Archive","Автоматизация":"Automation","Пользователи":"Users","Опции":"Options","Журнал":"Log",
 "Журнал событий — просмотр и аудит, не настройка":"Event log — view and audit, not configuration",
 "ЦПУ":"CPU","ОЗУ":"RAM","Сеть":"Network","Язык":"Language","Тема":"Theme","Тёмная":"Dark","Светлая":"Light","Русский":"Russian","English":"English",
+"Подписи разделов":"Section labels","Показывать":"Show","Скрывать":"Hide",
 "Выйти":"Sign out","Выход (прототип)":"Sign out (prototype)",
 "Сохраняется только выбранный объект":"Only the selected object is saved","Отменить":"Cancel","Сохранить":"Save","Сохранено":"Saved","Отменено":"Discarded",
 "Перейти к объекту…  (камера, датчик, сервер)":"Go to object… (camera, sensor, server)",
