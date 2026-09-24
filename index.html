@@ -76,32 +76,51 @@ html[data-theme="light"] .usign:hover{background:#fdecee}
 .usign:hover{background:#3a1d25}
 .ws{min-height:0;display:grid;grid-template-columns:var(--aw,360px) 4px 1fr}.ws.one{grid-template-columns:1fr}.ws.one .rsz{display:none}
 aside,main{min-height:0;overflow:hidden}aside{background:#0b1018;border-right:1px solid var(--ln);display:flex;flex-direction:column;container-type:inline-size}
-/* Узкая панель: у кнопок срезов остаются подписи, картинки уступают место тексту */
-@container (max-width:430px){.view-sw .fchip .ici{display:none}.view-sw .fchip{padding:6px 5px}}
+/* Узкая панель: счётчик уступает место названию среза */
+@container (max-width:300px){.ph-cnt{display:none}}
 .rsz{width:4px;cursor:col-resize;background:transparent;position:relative;z-index:2}
 .rsz:hover,.rsz.on{background:var(--bl)}
 .box{padding:4px 8px;border-bottom:1px solid var(--ln);flex:none}
 .srch{display:flex;gap:4px}.srch input{flex:1;height:var(--ctrl-h);padding:0 10px;font-size:13px;box-sizing:border-box}
 .srch .btn{padding:0 10px;height:var(--ctrl-h);flex:none;box-sizing:border-box}
 .filt{display:grid;grid-template-columns:1.35fr 1.2fr 1fr;gap:4px;margin-bottom:4px}
-.view-sw{display:flex;flex-wrap:wrap;flex:none;gap:2px;padding:10px 8px 0;margin:0;border:0;border-radius:0;background:#0b1018}
-.view-sw .fchip{flex:1 1 auto;min-width:58px;border:0;border-radius:8px;background:transparent;color:var(--mu);min-height:32px;padding:6px 7px;font-size:12px;line-height:1.2;text-align:center;font-weight:600;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:background .12s,color .12s}
-.view-sw .fchip .ici{flex:none;line-height:0;opacity:.92}
-.view-sw .fchip .ici .ic-svg{width:15px;height:15px;display:block}
-.view-sw .fchip span{flex:none;white-space:normal;text-align:center}
-.view-sw .fchip:hover:not(.on){color:var(--tx);background:#172234}
-.view-sw .fchip.on{color:#fff;background:#1a2d4d}
+/* Заголовок панели. Срез назван всегда: он меняет состав и структуру дерева.
+   Группировка и фильтры — за значками рядом: их трогают на порядок реже. */
+.ph{position:relative;display:flex;align-items:center;gap:4px;flex:none;padding:6px 6px 6px 8px;background:#0d1522;border-bottom:1px solid #182334}
+.ph-sel{display:flex;align-items:center;gap:6px;flex:1;min-width:0;border:1px solid transparent;border-radius:6px;padding:4px 6px;background:transparent;color:#fff;font-size:12.5px;font-weight:700;text-align:left;cursor:pointer}
+.ph-sel:hover,.ph-sel.on{background:#16223a;border-color:#27384f}
+.ph-sel .ici{flex:none;line-height:0;opacity:.95}
+.ph-sel .ici .ic-svg{width:14px;height:14px;display:block}
+.ph-nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ph-cnt{flex:none;font-size:10px;font-weight:600;color:#8fa4bf;background:#16233a;border-radius:4px;padding:1px 5px}
+.ph-chev{flex:none;margin-left:auto;padding-left:4px;color:#7f92ab;font-size:9px}
+.ph-ib{position:relative;flex:none;display:grid;place-items:center;width:28px;height:28px;border:0;border-radius:6px;background:transparent;color:#7f92ab;padding:0;cursor:pointer}
+.ph-ib:hover{background:#16223a;color:var(--tx)}
+.ph-ib.on{background:#152945;color:#9ec8ff}
+.ph-ib.hot{color:#9ec8ff}
+.ph-ib.hot:after{content:"";position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:var(--bl)}
+.ph-ib svg{width:15px;height:15px;display:block}
+.ph-pop{position:absolute;z-index:22;top:calc(100% + 4px);min-width:212px;max-width:calc(100% - 12px);background:var(--p);border:1px solid var(--ln);border-radius:9px;box-shadow:0 16px 40px #000c;padding:5px}
+.ph-pop.sl{left:6px}
+.ph-pop.vw{right:6px;min-width:184px}
+.ph-mi{display:flex;align-items:center;gap:7px;width:100%;border:0;border-radius:6px;background:transparent;color:#dbe4f2;padding:6px 8px;font:inherit;font-size:12px;text-align:left;cursor:pointer}
+.ph-mi:hover{background:#172a46}
+.ph-mi.on{background:#18304f;color:#fff}
+.ph-mi .ici{flex:none;line-height:0;opacity:.85}
+.ph-mi .ici .ic-svg{width:13px;height:13px;display:block}
+.ph-mi .lbl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ph-mi .cnt{flex:none;font-size:9.5px;color:#7f92ab;font-variant-numeric:tabular-nums}
+.ph-mi.on .cnt{color:#b9cde8}
+.ph-mi .tick{flex:none;color:#9ec8ff;font-size:11px}
+/* Сам заголовок светлую тему не получает намеренно: панель дерева под ним тёмная
+   в обеих темах, и светлая полоса над тёмным деревом читалась бы как дефект.
+   Всплывающие меню — наоборот, темизуются, как и соседняя панель фильтров. */
+html[data-theme="light"] .ph-mi{color:var(--tx)}
+html[data-theme="light"] .ph-mi:hover{background:#e8eef8}
+html[data-theme="light"] .ph-mi.on{background:#2f6fed;color:#fff}
+html[data-theme="light"] .ph-mi.on .cnt,html[data-theme="light"] .ph-mi.on .tick{color:#dbe7fb}
 .gear-body{flex:1;display:flex;flex-direction:column;min-height:0;background:#0b1018}
 .gear-tree-head{flex:none;padding:8px 8px 6px}
-.grp-sw{display:flex;gap:4px;margin:0 0 6px;padding:2px;border:1px solid #1e2d42;border-radius:7px;background:#0a1018}
-.grp-b{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:5px;background:transparent;color:var(--mu);padding:5px 8px;font-size:11px;font-weight:600;line-height:1.2;cursor:pointer}
-.grp-b .ici{flex:none;line-height:0;opacity:.85}
-.grp-b .ici .ic-svg{width:13px;height:13px;display:block}
-.grp-b:hover:not(.on){color:var(--tx);background:#152232}
-.grp-b.on{color:#fff;background:#1a2d4d}
-html[data-theme="light"] .grp-sw{border-color:var(--ln);background:var(--p2)}
-html[data-theme="light"] .grp-b:hover:not(.on){background:#e8eef8;color:var(--tx)}
-html[data-theme="light"] .grp-b.on{background:#2f6fed;color:#fff}
 .gear-tree-head .sq{min-height:28px;border-radius:6px;background:#0b1018;border:1px solid transparent;box-shadow:none;transition:background .12s,border-color .12s,box-shadow .12s}
 .gear-tree-head .sq:hover{background:#152232}
 .gear-tree-head .sq:focus-within{border-color:#4a7ab8;background:#0b1018;box-shadow:0 0 0 1px #2a4a7855}
@@ -985,7 +1004,7 @@ let deviceSearchTimer=null,deviceSearchInterval=null;
 let app="hw",_lastApp=null,sel="d1",tab="gen",dirty=false,rule="r1",role="adm",sys="ntp",slice="all";
 // Дерево — главный инструмент, поэтому панель сразу занимает четверть экрана
 function clampAsideW(px){return Math.max(280,Math.min(Math.round(window.innerWidth*.5),Math.round(px)))}
-let detSel=null,groupBy="server",selFolder=null,logFilt="all",asideW=clampAsideW(window.innerWidth/4),recent=[],treeQ="",filtPop=false,jumpIdx=0,jumpIds=[],jumpItems=[],typesExpanded=false,treeRenameId=null,treeRenameField="name";
+let detSel=null,groupBy="server",selFolder=null,logFilt="all",asideW=clampAsideW(window.innerWidth/4),recent=[],treeQ="",filtPop=false,slicePop=false,viewPop=false,jumpIdx=0,jumpIds=[],jumpItems=[],typesExpanded=false,treeRenameId=null,treeRenameField="name";
 // Группировку запоминаем для каждого среза: вернувшись в «Камеры», получим тот же вид
 const groupOfSlice={all:"server",cam:"folder",acfa:"folder",sys:"server",srv:"server"};
 // Запрос поиска у каждого раздела свой; у «Оборудования» — treeQ
@@ -2775,7 +2794,8 @@ function placeFiltPop(){
 function closeFiltPop(){if(!filtPop)return;filtPop=false;typesExpanded=false;aside()}
 function toggleFiltPop(e){
   if(e)e.stopPropagation();
-  filtPop=!filtPop;if(!filtPop)typesExpanded=false;aside();
+  filtPop=!filtPop;if(!filtPop)typesExpanded=false;else{slicePop=false;viewPop=false}
+  aside();
 }
 // Сколько объектов даст каждый вариант при остальных активных условиях (запрос, другая группа)
 function facetCounts(){
@@ -2937,15 +2957,16 @@ function filtPopHtml(){
 }
 function aside(){
   document.removeEventListener("mousedown",onFiltOutside);
+  document.removeEventListener("mousedown",onHeadPopOutside);
   window.removeEventListener("resize",placeFiltPop);
-  const gearScope=app==="hw"?`<div class="view-sw" role="tablist" aria-label="${i18n("Срез дерева")}">${Object.entries(SLICE_SW).map(([id,l])=>`<button type="button" class="fchip fchip-${id} ${slice===id?"on":""}" role="tab" aria-selected="${slice===id?"true":"false"}" title="${SLICE[id]}" onclick="setSlice('${id}')">${ic(SLICE_IC[id])}<span>${l}</span></button>`).join("")}</div>`:"";
-  const gearBody=app==="hw"?`<div class="gear-body"><div class="gear-tree-head">${groupSwHtml()}<div class="sq-wrap">
+  if(app!=="hw"){slicePop=false;viewPop=false}
+  const gearScope=app==="hw"?panelHeadHtml():"";
+  const gearBody=app==="hw"?`<div class="gear-body"><div class="gear-tree-head"><div class="sq-wrap">
       <div class="sq">
         <span class="sq-lead" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="6.8" cy="6.8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="m9.8 9.8 3.4 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
         <input id="q" placeholder="${i18n("По имени, IP, производителю…")}" title="${i18n("Поиск по названию, короткому имени, ID, IP, производителю и модели. / — перейти к поиску, Enter — открыть первый, ↓ — к дереву, Esc — очистить")}" value="${escHtml(treeQ)}" oninput="setTreeQ(this.value)" onkeydown="searchKey(event)" autocomplete="off">
         <button type="button" class="sq-clear ${treeQ.trim()?"":"hide"}" id="sqClear" title="${i18n("Очистить")}" onclick="clearTreeQ(event)">✕</button>
         <kbd class="sq-kbd" title="${i18n("Перейти к поиску")}">/</kbd>
-        <button type="button" class="sq-menu ${filtPop?"on":""} ${hasMenuFilters()?"hot":""}" id="filtBtn" title="${i18n("Фильтры поиска")}" onclick="toggleFiltPop(event)"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 3.5H14L9.5 9.5V13.5H6.5V9.5L2 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
       <div class="filt-tags" id="filtTags">${tagsHtml()}</div>
       <div class="filt-hint" id="filtHint">${filtHintText()}</div>
@@ -2969,14 +2990,60 @@ function aside(){
   bindTreeDbl();
   _lastApp=app+"|"+viewKey();
   if(app==="hw"&&filtPop){placeFiltPop();document.addEventListener("mousedown",onFiltOutside);window.addEventListener("resize",placeFiltPop)}
+  if(app==="hw"&&(slicePop||viewPop))document.addEventListener("mousedown",onHeadPopOutside);
 }
-// Переключатель группировки показываем только там, где выбор есть:
-// у ACFA (только папки), у Служб и Серверов (только серверы) он лишь отвлекал
-function groupSwHtml(){
-  const gs=groupsOf();
-  if(gs.length<2)return"";
-  return`<div class="grp-sw" role="group" aria-label="${i18n("Группировка")}">${gs.map(g=>
-    `<button type="button" class="grp-b ${groupBy===g?"on":""}" aria-pressed="${groupBy===g}" title="${i18n(GROUP_HINT[g])}" onclick="setGroupBy('${g}')">${ic(GROUP_IC[g])}<span>${i18n(GROUP_SW[g])}</span></button>`).join("")}</div>`;
+// Сколько объектов в каждом срезе — независимо от того, какой выбран сейчас.
+// Счёт по составу системы, без учёта запроса и фильтров: это ориентир «куда идти»,
+// а сколько показано при текущих условиях, говорит «Найдено: N» под поиском.
+function sliceCounts(){
+  const c={all:0,cam:0,acfa:0,sys:0,srv:0},seen=new Set();
+  walkAll(n=>{
+    const k=sliceOf(n);
+    if(!k||seen.has(n.id))return;
+    seen.add(n.id);
+    c.all++;
+    if(k==="srv"||k==="sys")c.srv++;   // срез «Серверы» — сами серверы и то, что на них запущено
+    if(k!=="srv")c[k]++;
+  });
+  return c;
+}
+// Кнопку группировки показываем только там, где выбор есть: у ACFA (только папки),
+// у Служб и Серверов (только серверы) она лишь отвлекала
+function panelHeadHtml(){
+  const c=sliceCounts(),gs=groupsOf();
+  const slices=Object.entries(SLICE_SW).map(([id,l])=>
+    `<button type="button" class="ph-mi ${slice===id?"on":""}" role="option" aria-selected="${slice===id}" title="${escHtml(SLICE[id])}" onclick="pickSlice('${id}')">${ic(SLICE_IC[id])}<span class="lbl">${escHtml(SLICE[id])}</span><span class="cnt">${c[id]||0}</span>${slice===id?`<span class="tick" aria-hidden="true">✓</span>`:""}</button>`).join("");
+  const groups=gs.map(g=>
+    `<button type="button" class="ph-mi ${groupBy===g?"on":""}" role="menuitemradio" aria-checked="${groupBy===g}" title="${i18n(GROUP_HINT[g])}" onclick="pickGroupBy('${g}')">${ic(GROUP_IC[g])}<span class="lbl">${i18n(GROUP_SW[g])}</span>${groupBy===g?`<span class="tick" aria-hidden="true">✓</span>`:""}</button>`).join("");
+  return`<div class="ph">
+    <button type="button" class="ph-sel ${slicePop?"on":""}" id="sliceBtn" aria-haspopup="listbox" aria-expanded="${slicePop}" title="${escHtml(SLICE[slice])}" onclick="toggleSlicePop(event)">${ic(SLICE_IC[slice])}<span class="ph-nm">${SLICE_SW[slice]}</span><span class="ph-cnt">${c[slice]||0}</span><span class="ph-chev" aria-hidden="true">▾</span></button>
+    ${gs.length<2?"":`<button type="button" class="ph-ib ${viewPop?"on":""}" id="viewBtn" aria-haspopup="menu" aria-expanded="${viewPop}" aria-label="${i18n("Группировка")}" title="${i18n("Группировка")}" onclick="toggleViewPop(event)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4.5h7M12 4.5h2M2 11.5h2M7 11.5h7" stroke-linecap="round"/><circle cx="10.5" cy="4.5" r="1.8"/><circle cx="4.5" cy="11.5" r="1.8"/></svg></button>`}
+    <button type="button" class="ph-ib ${filtPop?"on":""} ${hasMenuFilters()?"hot":""}" id="filtBtn" aria-haspopup="menu" aria-expanded="${filtPop}" aria-label="${i18n("Фильтры поиска")}" title="${i18n("Фильтры поиска")}" onclick="toggleFiltPop(event)"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 3.5H14L9.5 9.5V13.5H6.5V9.5L2 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    ${slicePop?`<div class="ph-pop sl" id="slicePop" role="listbox" aria-label="${i18n("Срез дерева")}">${slices}</div>`:""}
+    ${viewPop?`<div class="ph-pop vw" id="viewPop" role="menu" aria-label="${i18n("Группировка")}">${groups}</div>`:""}
+  </div>`;
+}
+// Меню заголовка и панель фильтров — соседи: одновременно открыт только один
+function toggleSlicePop(e){
+  if(e)e.stopPropagation();
+  slicePop=!slicePop;viewPop=false;
+  if(slicePop){filtPop=false;typesExpanded=false}
+  aside();
+}
+function toggleViewPop(e){
+  if(e)e.stopPropagation();
+  viewPop=!viewPop;slicePop=false;
+  if(viewPop){filtPop=false;typesExpanded=false}
+  aside();
+}
+function closeHeadPops(){if(!slicePop&&!viewPop)return false;slicePop=false;viewPop=false;aside();return true}
+function pickSlice(v){slicePop=false;viewPop=false;setSlice(v)}
+// setGroupBy молча выходит, если группировка та же — меню всё равно надо закрыть
+function pickGroupBy(g){const same=groupBy===g;slicePop=false;viewPop=false;if(same)aside();else setGroupBy(g)}
+function onHeadPopOutside(e){
+  if(!slicePop&&!viewPop)return;
+  if(e.target.closest("#slicePop,#sliceBtn,#viewPop,#viewBtn"))return;
+  closeHeadPops();
 }
 function renderTree(){invalidateFind();const treeEl=document.getElementById("tree");if(!treeEl)return;
   const fn={hw:treeHw,rules:treeRules,acc:treeRoles,sys:treeOpts,log:treeLog}[app];
@@ -6350,6 +6417,7 @@ function escClose(){
   if(isOpenEl("tctx")){closeTreeCtx();return true}
   if(isOpenEl("upop")){closeUserMenu();return true}
   if(jumpPanelOpen()){closeJump();return true}
+  if(closeHeadPops())return true;
   if(filtPop){closeFiltPop();return true}
   if(treeRenameId){cancelTreeRename();return true}
   if(treeSel.size>1){clearTreeSel();return true}
